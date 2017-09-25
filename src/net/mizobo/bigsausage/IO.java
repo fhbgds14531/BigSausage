@@ -19,28 +19,27 @@ import sx.blah.discord.handle.obj.IGuild;
 
 public class IO {
 
-	private static Map<String, Map<String, String>> guildSpecificSettings;
+	private static Map<String, State> guildSpecificStates;
 
-	@SuppressWarnings("unchecked")
 	static void loadSettingsForGuild(IGuild guild) {
-		if(guildSpecificSettings == null) guildSpecificSettings = new HashMap<String, Map<String, String>>();
+		if(guildSpecificStates == null) guildSpecificStates = new HashMap<String, State>();
 		File settingsDir = new File("settings/" + guild.getStringID());
 		File f = new File("settings/" + guild.getStringID() + "/settings.bs");
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
-			Map<String, String> map = (Map<String, String>) in.readObject();
+			State s = (State) in.readObject();
 			in.close();
-			guildSpecificSettings.put(guild.getStringID(), map);
+			guildSpecificStates.put(guild.getStringID(), s);
 		}catch(FileNotFoundException e){
 			try {
 				settingsDir.mkdirs();
 				f.createNewFile();
-				Map<String, String> map = new HashMap<String, String>();
-				guildSpecificSettings.put(guild.getStringID(), map);
+				State s = State.Disabled;
+				guildSpecificStates.put(guild.getStringID(), s);
+				saveSettingsForGuild(guild);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			setStateForGuild(guild, BigSausage.statePerGuild.get(guild.getStringID()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -53,9 +52,9 @@ public class IO {
 				f.delete();
 			}
 			f.createNewFile();
-			Map<String, String> map = guildSpecificSettings.get(guild.getStringID());
+			State s = (State) guildSpecificStates.get(guild.getStringID());
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
-			out.writeObject(map);
+			out.writeObject(s);
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,8 +62,14 @@ public class IO {
 	}
 
 	public static void setStateForGuild(IGuild guild, State state) {
-		guildSpecificSettings.get(guild.getStringID()).put("state", State.Enabled.toString());
+		System.out.println(state);
+		guildSpecificStates.put(guild.getStringID(), state);
 		saveSettingsForGuild(guild);
+	}
+	
+	public static State getStateForGuild(IGuild guild) {
+		State s = guildSpecificStates.get(guild.getStringID());
+		return s;
 	}
 
 	public static List<String> getTriggersForGuild(IGuild guild, String forWhat) {

@@ -42,22 +42,25 @@ public class BigSausage {
 	private static String TOKEN = "";
 	private static final String PREFIX = "!bs";
 	private static IDiscordClient client;
-	static Map<String, State> statePerGuild = new HashMap<>();
+	// static Map<String, State> statePerGuild = new HashMap<>();
 	static Map<String, List<String>> trustedUsersPerGuild = new HashMap<String, List<String>>();
-	private static final File sausage = new File("Thomas_Sausage.wav");
-	private static final File ugly = new File("Ugly.wav");
-	private static final File fire = new File("Fire.wav");
-	private static final File enemy = new File("enemy_spotted.wav");
-	private static final File linked = new File("linked.wav");
-	private static final File miceway = new File("miceway.wav");
-	private static final File sceptre = new File("sceptre.wav");
-	private static final File hatemyself = new File("hatemyself.wav");
-	private static final File hcw = new File("hcw.wav");
-	private static final File korean = new File("korean.wav");
-	private static final File bursela = new File("bursela.wav");
-	private static final File burse = new File("burse.wav");
-	private static final File egg = new File("egg.wav");
-	private static final File whiskey = new File("whiskey.wav");
+	static final File sausage = new File("Thomas_Sausage.wav");
+	static final File ugly = new File("Ugly.wav");
+	static final File fire = new File("Fire.wav");
+	static final File enemy = new File("enemy_spotted.wav");
+	static final File linked = new File("linked.wav");
+	static final File miceway = new File("miceway.wav");
+	static final File sceptre = new File("sceptre.wav");
+	static final File hatemyself = new File("hatemyself.wav");
+	static final File hcw = new File("hcw.wav");
+	static final File korean = new File("korean.wav");
+	static final File bursela = new File("bursela.wav");
+	static final File burse = new File("burse.wav");
+	static final File choice = new File("choice.wav");
+	static final File grunch = new File("grunch.wav");
+	static final File sainte = new File("sainte.wav");
+	static final File egg = new File("egg.wav");
+	static final File whiskey = new File("whiskey.wav");
 	private static final File corndog = new File("corndog.png");
 	private static final int maxQueueSize = 4;
 	private static final String myUserID = "198575970624471040";
@@ -73,8 +76,11 @@ public class BigSausage {
 	private static final List<String> koreanList = Arrays.asList(new String[] { "policewoman", "korea" });
 	private static final List<String> burselaList = Arrays.asList(new String[] { "ursela" });
 	private static final List<String> burseList = Arrays.asList(new String[] { "burse", "limit" });
-	private static final List<String> whiskeyList = Arrays.asList(new String[] { 
-			"beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
+	private static final List<String> choiceList = Arrays.asList(new String[] { "choice", "santa" });
+	private static final List<String> grunchList = Arrays.asList(new String[] { "grinch", "grunch" });
+	private static final List<String> sainteList = Arrays.asList(new String[] { "saint" });
+	private static final List<String> whiskeyList = Arrays
+			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
 	private static final List<String> eggList = Arrays.asList(new String[] { "audio-easter-egg" });
 
 	private static final String VERSION = "0.1.2";
@@ -85,14 +91,6 @@ public class BigSausage {
 	public static void main(String[] args) throws DiscordException, RateLimitException, FileNotFoundException, IOException, ClassNotFoundException {
 		TOKEN = Files.readAllLines(new File("BigSausage.token").toPath()).get(0);
 		if (!serverSettings.exists()) serverSettings.mkdirs();
-		Map<String, State> tempMap = new HashMap<String, State>();
-		File statesFile = new File("states.s");
-		if (statesFile.exists()) {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream(statesFile));
-			tempMap = (HashMap<String, State>) in.readObject();
-			in.close();
-		}
-		statePerGuild = tempMap;
 		Map<String, List<String>> tempMap1 = new HashMap<String, List<String>>();
 		File trustedUsersFile = new File("trusted.s");
 		if (trustedUsersFile.exists()) {
@@ -115,10 +113,10 @@ public class BigSausage {
 	@EventSubscriber
 	public void onJoin(GuildCreateEvent event) {
 		IO.loadSettingsForGuild(event.getGuild());
-		if (!statePerGuild.containsKey(event.getGuild().getStringID())) {
-			statePerGuild.put(event.getGuild().getStringID(), State.Disabled);
-			System.out.println("Added guild \"" + event.getGuild().getName() + "\" to the states registry.");
-		}
+		// if (!statePerGuild.containsKey(event.getGuild().getStringID())) {
+		// statePerGuild.put(event.getGuild().getStringID(), State.Disabled);
+		// System.out.println("Added guild \"" + event.getGuild().getName() + "\" to the states registry.");
+		// }
 		if (!trustedUsersPerGuild.containsKey(event.getGuild().getStringID())) {
 			trustedUsersPerGuild.put(event.getGuild().getStringID(), new ArrayList<String>());
 			List<String> trusted = trustedUsersPerGuild.get(event.getGuild().getStringID());
@@ -143,357 +141,124 @@ public class BigSausage {
 
 		IChannel channel = message.getChannel();
 		IGuild guild = message.getGuild();
-		for (String word : words) {
-			List<String> wordList = Arrays.asList(words);
-			// TODO Commands go here
-			if (words[0].contentEquals(PREFIX)) {
-				if (word.toLowerCase().contentEquals("target")) {
-					if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Trusted)) {
-							String username = wordList.get(wordList.indexOf(word) + 1);
-							String word1 = wordList.get(wordList.indexOf(username) + 1);
-							System.out.println(username + ", " + word1);
-							IUser u = message.getGuild().getUserByID(Long.valueOf(username.replace("@", "").replace("<", "").replace(">", "")));
-							if (statePerGuild.get(guild.getStringID()) == State.Enabled) {
-								this.checkListAndQueueFile(word1, "sausage", sausage, guild, u, channel);
-								this.checkListAndQueueFile(word1, "ugly", ugly, guild, u, channel);
-								this.checkListAndQueueFile(word1, "enemy", enemy, guild, u, channel);
-								this.checkListAndQueueFile(word1, "fire", fire, guild, u, channel);
-								this.checkListAndQueueFile(word1, "linked", linked, guild, u, channel);
-								this.checkListAndQueueFile(word1, "sceptre", sceptre, guild, u, channel);
-								this.checkListAndQueueFile(word1, "hatemyself", hatemyself, guild, u, channel);
-								this.checkListAndQueueFile(word1, "miceway", miceway, guild, u, channel);
-								this.checkListAndQueueFile(word1, "hcw", hcw, guild, u, channel);
-								this.checkListAndQueueFile(word1, "korean", korean, guild, u, channel);
-								this.checkListAndQueueFile(word1, "burse", burse, guild, u, channel);
-								this.checkListAndQueueFile(word1, "bursela", bursela, guild, u, channel);
-								this.checkListAndQueueFile(word1, "whiskey", whiskey, guild, u, channel);
-								this.checkListAndQueueFile(word1, "egg", egg, guild, u, channel);
-								if (word.toLowerCase().contains("succ") && !sharedSucc) {
-									channel.sendFile(corndog);
-									sharedSucc = true;
-								}
-							}
-						} else {
-							channel.sendMessage("Who do you think you are, " + user.mention() + "?");
-						}
-					}
-				}
-				if (word.toLowerCase().contentEquals("removetrust")) {
-					if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
-							List<String> trusted = trustedUsersPerGuild.get(guild.getStringID());
-							if ((wordList.indexOf(word) != wordList.size() - 1)) {
-								String mention = wordList.get(wordList.indexOf(word) + 1);
-								mention = mention.replace("<@", "").replace(">", "");
-								if (trusted.contains(mention)) {
-									trusted.remove(mention);
-									channel.sendMessage("Removed <@" + mention + "> from the trusted users list.");
-								}
-							}
-						}
-					}
-				}
-				if (word.toLowerCase().contentEquals("trust")) {
-					if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
-							List<String> trusted = trustedUsersPerGuild.get(guild.getStringID());
-							if (words.length == 2) {
-								String out = "";
-								for (String username : trusted) {
-									// if(!username.contentEquals(myUserID)){
-									out += "<@" + username + ">, ";
-									// }
-								}
-								channel.sendMessage("Trusted users: " + out.substring(0, out.lastIndexOf(", ")));
-							} else {
-								if ((wordList.indexOf(word) != wordList.size() - 1)) {
-									String mention = wordList.get(wordList.indexOf(word) + 1);
-									mention = mention.replace("<@", "").replace(">", "");
-									trusted.add(mention);
-									trustedUsersPerGuild.put(guild.getStringID(), trusted);
-									channel.sendMessage("Added <@" + mention + "> to the trusted users list.");
-								}
-							}
-						}
-					}
-				}
-				if (word.toLowerCase().contentEquals("shutdown")) {
-					if (!wordList.contains("help")) {
-						if (message.getAuthor().getStringID().contentEquals(myUserID)) {
-							channel.sendMessage("Yes master...");
-							try {
-								File serverStates = new File("states.s");
-								File trustedUsers = new File("trusted.s");
-								if (serverStates.exists()) {
-									serverStates.delete();
-								}
-								if (trustedUsers.exists()) {
-									trustedUsers.delete();
-								}
-								serverStates.createNewFile();
-								trustedUsers.createNewFile();
-								ObjectOutputStream statesOut = new ObjectOutputStream(new FileOutputStream(serverStates));
-								statesOut.writeObject(statePerGuild);
-								statesOut.close();
-								ObjectOutputStream trustedOut = new ObjectOutputStream(new FileOutputStream(trustedUsers));
-								trustedOut.writeObject(trustedUsersPerGuild);
-								trustedOut.close();
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							client.logout();
-							if (!client.isLoggedIn()) {
-								System.out.println("Successfully logged out.");
-							}
-						} else {
-							channel.sendMessage("You're not my master! You can't tell me what to do!");
-						}
-					}
-				}
-				if (word.toLowerCase().contentEquals("save-all")) {
-					if (!wordList.contains("help")) {
-						if (message.getAuthor().getStringID().contentEquals(myUserID)) {
-							try {
-								File serverStates = new File("states.s");
-								File trustedUsers = new File("trusted.s");
-								if (serverStates.exists()) {
-									serverStates.delete();
-								}
-								if (trustedUsers.exists()) {
-									trustedUsers.delete();
-								}
-								serverStates.createNewFile();
-								trustedUsers.createNewFile();
-								ObjectOutputStream statesOut = new ObjectOutputStream(new FileOutputStream(serverStates));
-								statesOut.writeObject(statePerGuild);
-								statesOut.close();
-								ObjectOutputStream trustedOut = new ObjectOutputStream(new FileOutputStream(trustedUsers));
-								trustedOut.writeObject(trustedUsersPerGuild);
-								trustedOut.close();
-								channel.sendMessage("Successfully saved all settings globally.");
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						} else {
-							channel.sendMessage("You're not my master! You can't tell me what to do!");
-						}
-					}
-				}
-				if (word.toLowerCase().contentEquals("help")) {
-					if (words.length == 2) {
-						channel.sendMessage("!bs <enable, disable, clips, status, target, trust, removetrust, setupdefaults, addtriggerfor, removetriggerfor, listtriggersfor, help>");
-					} else {
-						String nextWord = "";
-						if (wordList.indexOf(word) != wordList.size() - 1) {
-							nextWord = wordList.get(wordList.indexOf(word) + 1);
-						}
-						switch (nextWord) {
-							case "enable":
-								channel.sendMessage("Enables the bot's functionality, stupid.");
-								break;
-							case "disable":
-								channel.sendMessage("Disables the bot's functionality, stupid.");
-								break;
-							case "status":
-								channel.sendMessage("Checks the status of the bot's funcionality (Enabled/Disabled)");
-								break;
-							case "target":
-								channel.sendMessage("Usage: !bs target \\@username <list of things to say, seperated by spaces>");
-								break;
-							case "trust":
-								channel.sendMessage("Adds a trusted user, can only be used by admin. Usage: !bs trust \\@username");
-								break;
-							case "setupdefaults":
-								channel.sendMessage("Resets all trigger words back to the default values, can only be used by an admin. Usage: !bs setupdefaults");
-								break;
-							case "clips":
-								channel.sendMessage("Lists the names of all the available audio clips. Usage: !bs clips");
-								break;
-							case "removetrust":
-								channel.sendMessage("Removes a trusted user, can only be used by admin. Usage: !bs removetrust \\@username");
-								break;
-							case "addtriggerfor":
-								channel.sendMessage(
-										"Adds a trigger word for an audio clip, can only be used by an admin. Available clips: use !bs clips Usage: !bs addtriggerfor <clipname> <newTrigger>");
-								break;
-							case "removetriggerfor":
-								channel.sendMessage(
-										"Removes a trigger word for an audio clip, can only be used by an admin. Available clips: use !bs clips Usage: !bs removetriggerfor <clipname> <oldTrigger>");
-								break;
-							case "listtriggersfor":
-								channel.sendMessage(
-										"Lists all the trigger words for an audio clip, can only be used by a trusted user. Available clips: use !bs clips Usage: !bs listtriggersfor <clipname>");
-								break;
-							default:
-								channel.sendMessage("Usage: !bs help <command name>");
-								break;
-						}
-					}
-				}
-				if (word.toLowerCase().contentEquals("clips")) {
-					if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Trusted)) {
-							channel.sendMessage("sausage, ugly, enemy, fire, linked, linked, hatemyself, miceway, sceptre, hcw, korean, bursela, burse, whiskey");
-						}
-					}
+		List<String> wordList = Arrays.asList(words);
 
-				}
-				if (word.toLowerCase().contentEquals("disable")) {
-					if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Trusted)) {
-							channel.sendMessage("BigSausage disabled. Type \"!bs enable\" to reenable me!");
-							statePerGuild.put(guild.getStringID(), State.Disabled);
-						} else {
-							channel.sendMessage("You can't tell me what to do, ask an administrator.");
-						}
+		if (words[0].contentEquals(PREFIX) && words.length > 1) {
+			EnumCommand c = EnumCommand.getFromString(words[1]);
+			switch (c) {
+				case add_trigger:
+				case list_triggers:
+				case remove_trigger:
+					Commands.editTriggers(c, wordList, guild, user, channel);
+					break;
+				case clips:
+					channel.sendMessage("Available clips are: " + EnumClips.getCommaSeparatedList());
+					break;
+				case disable:
+					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
+						channel.sendMessage("BigSausage disabled. Type \"!bs enable\" to reenable me!");
+						IO.setStateForGuild(guild, State.Disabled);
+					} else {
+						channel.sendMessage("You can't tell me what to do, ask an administrator.");
 					}
-				}
-				if (word.toLowerCase().contentEquals("enable")) {
-					if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Trusted)) {
-							channel.sendMessage("BigSausage enabled. Type \"!bs disable\" to disable me!");
-							statePerGuild.put(guild.getStringID(), State.Enabled);
-						} else {
-							channel.sendMessage("You can't tell me what to do, ask an administrator.");
-						}
+					break;
+				case enable:
+					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
+						channel.sendMessage("BigSausage enabled. Type \"!bs enable\" to disable me!");
+						IO.setStateForGuild(guild, State.Enabled);
+					} else {
+						channel.sendMessage("You can't tell me what to do, ask an administrator.");
 					}
-				}
-				if (word.toLowerCase().contentEquals("status")) {
-					if (!wordList.contains("help")) {
-						State state = statePerGuild.get(message.getGuild().getStringID());
-						if (state != null) {
-							channel.sendMessage("BigSausage is " + state.toString().toLowerCase());
-						} else {
-							channel.sendMessage("BigSausage is " + State.Disabled.toString().toLowerCase());
-						}
-					}
-				}
-				if (word.toLowerCase().contentEquals("setupdefaults")) {
-					if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
-							this.setupDefaults(guild);
-							channel.sendMessage("Reset all triggers to their default state.");
-						}
-					}
-				}
-				if (word.toLowerCase().contentEquals("addtriggerfor")) {
-					if (wordList.size() != 4) {
-						channel.sendMessage("Invalid number of arguments. Use \"!bs help addtriggerfor\" to see the correct usage.");
-					} else if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
-							String nextWord = wordList.get(wordList.indexOf(word) + 1).toLowerCase();
-							String trigger = wordList.get(wordList.indexOf(nextWord) + 1).toLowerCase();
-							switch (nextWord) {
-								case "sausage":
-								case "ugly":
-								case "enemy":
-								case "fire":
-								case "linked":
-								case "miceway":
-								case "sceptre":
-								case "hatemyself":
-								case "hcw":
-								case "korean":
-								case "bursela":
-								case "burse":
-								case "whiskey":
-								case "egg":
-									IO.addTriggerWord(trigger, nextWord, guild);
-									break;
-								default:
-									channel.sendMessage("Unknown type: \"" + nextWord + "\" Use \"!bs help addtriggerfor\" to see the correct usage.");
-									break;
+					break;
+				case remove_trust:
+					if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
+						List<String> trusted = trustedUsersPerGuild.get(guild.getStringID());
+						if ((wordList.size() > 2)) {
+							String mention = wordList.get(2);
+							mention = mention.replace("<@", "").replace(">", "");
+							if (trusted.contains(mention)) {
+								trusted.remove(mention);
+								channel.sendMessage("Removed <@" + mention + "> from the trusted users list.");
 							}
 						}
 					}
-				}
-				if (word.toLowerCase().contentEquals("removetriggerfor")) {
-					if (wordList.size() != 4) {
-						channel.sendMessage("Invalid number of arguments. Use \"!bs help removetriggerfor\" to see the correct usage.");
-					} else if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
-							String nextWord = wordList.get(wordList.indexOf(word) + 1).toLowerCase();
-							String trigger = wordList.get(wordList.indexOf(nextWord) + 1).toLowerCase();
-							switch (nextWord) {
-								case "sausage":
-								case "ugly":
-								case "enemy":
-								case "fire":
-								case "linked":
-								case "miceway":
-								case "sceptre":
-								case "hatemyself":
-								case "hcw":
-								case "korean":
-								case "bursela":
-								case "burse":
-								case "whiskey":
-								case "egg":
-									IO.removeTriggerWord(trigger, nextWord, guild);
-									break;
-								default:
-									channel.sendMessage("Unknown type: \"" + nextWord + "\" Use \"!bs help removetriggerfor\" to see the correct usage.");
-									break;
-							}
+					break;
+				case save_all:
+					if (user.getStringID().contentEquals(myUserID)) {
+						save();
+						channel.sendMessage("Successfully saved all settings globally");
+					}
+					break;
+				case setup_defaults:
+					if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
+						setupDefaults(guild);
+						channel.sendMessage("Reset settings to default.");
+					}
+					break;
+				case shutdown:
+					if (user.getStringID().contentEquals(myUserID)) {
+						save();
+						channel.sendMessage("Yes, master...");
+						client.logout();
+						if (!client.isLoggedIn()) {
+							System.out.println("Successfully logged out.");
 						}
 					}
-				}
-				if (word.toLowerCase().contentEquals("listtriggersfor")) {
-					if (wordList.size() != 3) {
-						channel.sendMessage("Invalid number of arguments. Use \"!bs help listtriggersfor\" to see the correct usage.");
-					} else if (!wordList.contains("help")) {
-						if (getHasPermission(user, guild, TrustLevel.Trusted)) {
-							String nextWord = wordList.get(wordList.indexOf(word) + 1).toLowerCase();
-							switch (nextWord) {
-								case "sausage":
-								case "ugly":
-								case "enemy":
-								case "fire":
-								case "linked":
-								case "miceway":
-								case "sceptre":
-								case "hatemyself":
-								case "hcw":
-								case "korean":
-								case "bursela":
-								case "burse":
-								case "whiskey":
-								case "egg":
-									List<String> triggers = IO.getTriggersForGuild(guild, nextWord);
-									String out = "";
-									for (String s : triggers) {
-										out += s + ", ";
-									}
-									out = out.substring(0, out.lastIndexOf(", "));
-									channel.sendMessage("Triggers for \"" + nextWord + "\" are as follows: " + out);
-									break;
-								default:
-									channel.sendMessage("Unknown type: \"" + nextWord + "\" Use \"!bs help listtriggersfor\" to see the correct usage.");
-									break;
+					break;
+				case status:
+					channel.sendMessage("BigSausage is " + (IO.getStateForGuild(guild).toString()));
+					break;
+				case target:
+					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
+						String username = wordList.get(2);
+						IUser targetedUser = message.getGuild().getUserByID(Long.valueOf(username.replace("@", "").replace("<", "").replace(">", "")));
+						if (IO.getStateForGuild(guild) == State.Enabled) {
+							this.checkListAndQueueFile(wordList, guild, targetedUser, channel);
+						}
+					} else {
+						channel.sendMessage("Who do you think you are, " + user.mention() + "?");
+					}
+					break;
+				case trust:
+					if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
+						List<String> trusted = trustedUsersPerGuild.get(guild.getStringID());
+						if (words.length == 2) {
+							String out = "";
+							for (String username : trusted) {
+								// if(!username.contentEquals(myUserID)){
+								out += "<@" + username + ">, ";
+								// }
 							}
+							channel.sendMessage("Trusted users: " + out.substring(0, out.lastIndexOf(", ")));
+						} else {
+							String mention = wordList.get(2);
+							mention = mention.replace("<@", "").replace(">", "");
+							trusted.add(mention);
+							trustedUsersPerGuild.put(guild.getStringID(), trusted);
+							channel.sendMessage("Added <@" + mention + "> to the trusted users list.");
 						}
 					}
-				}
-				if (word.toLowerCase().contentEquals("version")) {
-					channel.sendMessage("I am BigSausage! Version " + VERSION + ", fear me!");
-				}
-			} else { // TODO trigger words
-				if (statePerGuild.get(guild.getStringID()) == State.Enabled) {
-					this.checkListAndQueueFile(word, "sausage", sausage, guild, user, channel);
-					this.checkListAndQueueFile(word, "ugly", ugly, guild, user, channel);
-					this.checkListAndQueueFile(word, "enemy", enemy, guild, user, channel);
-					this.checkListAndQueueFile(word, "fire", fire, guild, user, channel);
-					this.checkListAndQueueFile(word, "linked", linked, guild, user, channel);
-					this.checkListAndQueueFile(word, "sceptre", sceptre, guild, user, channel);
-					this.checkListAndQueueFile(word, "hatemyself", hatemyself, guild, user, channel);
-					this.checkListAndQueueFile(word, "miceway", miceway, guild, user, channel);
-					this.checkListAndQueueFile(word, "hcw", hcw, guild, user, channel);
-					this.checkListAndQueueFile(word, "korean", korean, guild, user, channel);
-					this.checkListAndQueueFile(word, "burse", burse, guild, user, channel);
-					this.checkListAndQueueFile(word, "bursela", bursela, guild, user, channel);
-					this.checkListAndQueueFile(word, "whiskey", whiskey, guild, user, channel);
-					this.checkListAndQueueFile(word, "egg", egg, guild, user, channel);
+					break;
+				case version:
+					channel.sendMessage("I am BigSausage version " + VERSION);
+					break;
+				default:
+				case help:
+					if (wordList.size() == 2) {
+						String commandList = EnumCommand.getCommaSeparatedList();
+						channel.sendMessage("For specific help use !bs help <" + commandList + ">");
+					} else {
+						EnumCommand com = EnumCommand.getFromString(wordList.get(2));
+						channel.sendMessage(com.getHelpText());
+					}
+					break;
+			}
+		} else if (words[0].contentEquals(PREFIX) && words.length == 1) {
+			channel.sendMessage("For help please use !bs help");
+		} else {
+			if (IO.getStateForGuild(guild) == State.Enabled) {
+				for (String word : wordList) {
+					this.checkListAndQueueFile(wordList, guild, user, channel);
 					if (word.toLowerCase().contains("succ") && !sharedSucc) {
 						channel.sendFile(corndog);
 						sharedSucc = true;
@@ -518,15 +283,46 @@ public class BigSausage {
 		IO.saveTriggersForGuild(guild, burseList, "burse");
 		IO.saveTriggersForGuild(guild, eggList, "egg");
 		IO.saveTriggersForGuild(guild, whiskeyList, "whiskey");
+		IO.saveTriggersForGuild(guild, choiceList, "choice");
+		IO.saveTriggersForGuild(guild, grunchList, "grunch");
+		IO.saveTriggersForGuild(guild, sainteList, "sainte");
 	}
 
-	public void checkListAndQueueFile(String word, String listName, File filetoQueue, IGuild guild, IUser triggerUser, IChannel triggerChannel) {
-		List<String> list = IO.getTriggersForGuild(guild, listName);
-		for (String s : list) {
-			if (word.toLowerCase().contains(s)) {
-				for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
-					if (vChannel.getConnectedUsers().contains(triggerUser)) {
-						this.queueFile(filetoQueue, guild, vChannel, triggerUser, triggerChannel);
+	public void save() {
+		try {
+			File serverStates = new File("states.s");
+			File trustedUsers = new File("trusted.s");
+			if (serverStates.exists()) {
+				serverStates.delete();
+			}
+			if (trustedUsers.exists()) {
+				trustedUsers.delete();
+			}
+			serverStates.createNewFile();
+			trustedUsers.createNewFile();
+			// ObjectOutputStream statesOut = new ObjectOutputStream(new FileOutputStream(serverStates));
+			// statesOut.writeObject(statePerGuild);
+			// statesOut.close();
+			ObjectOutputStream trustedOut = new ObjectOutputStream(new FileOutputStream(trustedUsers));
+			trustedOut.writeObject(trustedUsersPerGuild);
+			trustedOut.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void checkListAndQueueFile(List<String> commandText, IGuild guild, IUser triggerUser, IChannel triggerChannel) {
+		if (commandText.size() == 0 || commandText.get(0).contentEquals(PREFIX)) return;
+		for (EnumClips clip : EnumClips.values()) {
+			List<String> list = IO.getTriggersForGuild(guild, clip.toString());
+			for (String s : list) {
+				for (String word : commandText) {
+					if (word.toLowerCase().contains(s)) {
+						for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
+							if (vChannel.getConnectedUsers().contains(triggerUser)) {
+								this.queueFile(clip.getFile(), guild, vChannel, triggerUser, triggerChannel);
+							}
+						}
 					}
 				}
 			}
@@ -585,7 +381,7 @@ public class BigSausage {
 		return AudioPlayer.getAudioPlayerForGuild(guild);
 	}
 
-	private boolean getHasPermission(IUser user, IGuild guild, TrustLevel level) {
+	static boolean getHasPermission(IUser user, IGuild guild, TrustLevel level) {
 		List<String> trustedUsers = trustedUsersPerGuild.get(guild.getStringID());
 		switch (level) {
 			case Admin_Only:
@@ -597,11 +393,22 @@ public class BigSausage {
 		}
 	}
 
-	private static enum TrustLevel {
+	static enum TrustLevel {
 		Admin_Only, Trusted;
 	}
 
 	static enum State {
 		Enabled, Disabled;
+
+		public static State getFromString(String s) {
+			switch (s) {
+				case "enabled":
+					return Enabled;
+				case "disabled":
+					return Disabled;
+				default:
+					return Disabled;
+			}
+		}
 	}
 }
