@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ public class BigSausage {
 	static final File egg = new File("egg.wav");
 	static final File whiskey = new File("whiskey.wav");
 	private static final File corndog = new File("corndog.png");
+	private static final File silence = new File("silence.wav");
 	private static final int maxQueueSize = 4;
 	private static final String myUserID = "198575970624471040";
 	private static final List<String> sausageList = Arrays.asList(new String[] { "sausage", "thomas", "daddy" });
@@ -74,16 +76,16 @@ public class BigSausage {
 	private static final List<String> sceptreList = Arrays.asList(new String[] { "sceptre", "boost" });
 	private static final List<String> hcwList = Arrays.asList(new String[] { "hcw", "buns" });
 	private static final List<String> koreanList = Arrays.asList(new String[] { "policewoman", "korea" });
-	private static final List<String> burselaList = Arrays.asList(new String[] { "ursela" });
+	private static final List<String> burselaList = Arrays.asList(new String[] { "ursula" });
 	private static final List<String> burseList = Arrays.asList(new String[] { "burse", "limit" });
-	private static final List<String> choiceList = Arrays.asList(new String[] { "choice", "santa" });
+	private static final List<String> choiceList = Arrays.asList(new String[] { "choice", "claus" });
 	private static final List<String> grunchList = Arrays.asList(new String[] { "grinch", "grunch" });
 	private static final List<String> sainteList = Arrays.asList(new String[] { "saint" });
 	private static final List<String> whiskeyList = Arrays
 			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
 	private static final List<String> eggList = Arrays.asList(new String[] { "audio-easter-egg" });
 
-	private static final String VERSION = "0.1.2";
+	private static final String VERSION = "0.1.4.1";
 
 	private static final File serverSettings = new File("settings");
 
@@ -164,7 +166,7 @@ public class BigSausage {
 					break;
 				case enable:
 					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
-						channel.sendMessage("BigSausage enabled. Type \"!bs enable\" to disable me!");
+						channel.sendMessage("BigSausage enabled. Type \"!bs disable\" to disable me!");
 						IO.setStateForGuild(guild, State.Enabled);
 					} else {
 						channel.sendMessage("You can't tell me what to do, ask an administrator.");
@@ -211,9 +213,15 @@ public class BigSausage {
 				case target:
 					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
 						String username = wordList.get(2);
-						IUser targetedUser = message.getGuild().getUserByID(Long.valueOf(username.replace("@", "").replace("<", "").replace(">", "")));
+						IUser targetedUser = message.getGuild().getUserByID(Long.valueOf(username.replace("@", "").replace("<", "").replace(">", "").replace("!", "")));
 						if (IO.getStateForGuild(guild) == State.Enabled) {
-							this.checkListAndQueueFile(wordList, guild, targetedUser, channel);
+							List<String> newList = new ArrayList<String>();
+							for(String s : wordList){
+								if(!s.contains(PREFIX)){
+									newList.add(s);
+								}
+							}
+							this.checkListAndQueueFile(newList, guild, targetedUser, channel);
 						}
 					} else {
 						channel.sendMessage("Who do you think you are, " + user.mention() + "?");
@@ -257,8 +265,8 @@ public class BigSausage {
 			channel.sendMessage("For help please use !bs help");
 		} else {
 			if (IO.getStateForGuild(guild) == State.Enabled) {
+				this.checkListAndQueueFile(wordList, guild, user, channel);
 				for (String word : wordList) {
-					this.checkListAndQueueFile(wordList, guild, user, channel);
 					if (word.toLowerCase().contains("succ") && !sharedSucc) {
 						channel.sendFile(corndog);
 						sharedSucc = true;
@@ -320,6 +328,10 @@ public class BigSausage {
 					if (word.toLowerCase().contains(s)) {
 						for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
 							if (vChannel.getConnectedUsers().contains(triggerUser)) {
+								SecureRandom rand = new SecureRandom();
+								if(rand.nextFloat() < 0.1F){
+									this.queueFile(silence, guild, vChannel, triggerUser, triggerChannel);
+								}
 								this.queueFile(clip.getFile(), guild, vChannel, triggerUser, triggerChannel);
 							}
 						}

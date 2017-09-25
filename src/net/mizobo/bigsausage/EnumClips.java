@@ -5,7 +5,7 @@ import java.io.File;
 public enum EnumClips {
 	sausage(BigSausage.sausage), ugly(BigSausage.ugly), enemy(BigSausage.enemy), fire(BigSausage.fire), 
 	linked(BigSausage.linked), miceway(BigSausage.miceway), sceptre(BigSausage.sceptre), hatemyself(BigSausage.hatemyself), 
-	hcw(BigSausage.hcw), korean(BigSausage.korean), bursela(BigSausage.burse), burse(BigSausage.burse), whiskey(BigSausage.whiskey), egg(BigSausage.egg),
+	hcw(BigSausage.hcw), korean(BigSausage.korean), bursela(BigSausage.bursela), burse(BigSausage.burse), whiskey(BigSausage.whiskey), egg(BigSausage.egg),
 	choice(BigSausage.choice), grunch(BigSausage.grunch), sainte(BigSausage.sainte);
 
 	private File file;
