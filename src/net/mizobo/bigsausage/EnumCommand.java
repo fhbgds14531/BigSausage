@@ -9,12 +9,17 @@ public enum EnumCommand {
 	trust(false, "Add a user to the trusted users list. Usage: [!bs trust \\@<username>] to add a user or [!bs trust] to list trusted users."), 
 	remove_trust(false, "Remove a user from the trusted users list. Usage: !bs removetrust \\@<username>"), 
 	setup_defaults(false, "Reset all trigger lists to their default settings, can only be used by an admin. Usage: !bs setupdefaults"), 
-	add_trigger(false, "Add a trigger word for an audio clip. Usage: !bs add-trigger <clip name> <trigger word>"), 
-	remove_trigger(false, "Remove a trigger word for an audio clip. Usage: !bs remove-trigger <clip name> <trigger word>"), 
-	list_triggers(false, "List all trigger words for an audio clip. Usage: !bs list-triggers <clip name>"), 
+	add_trigger(false, "Add a trigger word for an audio clip or image. Usage: !bs add-trigger <clip or image name> <trigger word>"), 
+	remove_trigger(false, "Remove a trigger word for an audio clip or image. Usage: !bs remove-trigger <clip or image name> <trigger word>"), 
+	list_triggers(false, "List all trigger words for an audio clip or image. Usage: !bs list-triggers <clip or image name>"), 
 	version(false, "List the current version of BigSausage. Usage: !bs version"),
+	tts(false, "Repeat a random tts string from the tts list. Usage: !bs tts"),
+	remove_tts(false, "Remove a tts string from the tts list. Usage: !bs remove-tts <exact tts string>"),
+	add_tts(false, "Add a tts string to the tts list. Usage: !bs add-tts <exact tts string>"),
+	images(false, "List all the image names BigSausage can link. Usage: !bs images"),
 	help(false, "What"), 
 	save_all(true, ""), 
+	update(true, ""),
 	shutdown(true, "");
 
 	private boolean isSecret;
@@ -61,6 +66,14 @@ public enum EnumCommand {
 				return shutdown;
 			case "version":
 				return version;
+			case "tts":
+				return tts;
+			case "remove-tts":
+				return remove_tts;
+			case "add-tts":
+				return add_tts;
+			case "images":
+				return images;
 			default:
 				return help;
 		}

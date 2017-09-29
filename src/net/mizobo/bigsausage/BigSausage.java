@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,53 +40,57 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
+	private static final String VERSION = "0.1.5.6";
 
 	private static String TOKEN = "";
 	private static final String PREFIX = "!bs";
 	private static IDiscordClient client;
 	// static Map<String, State> statePerGuild = new HashMap<>();
 	static Map<String, List<String>> trustedUsersPerGuild = new HashMap<String, List<String>>();
-	static final File sausage = new File("Thomas_Sausage.wav");
-	static final File ugly = new File("Ugly.wav");
-	static final File fire = new File("Fire.wav");
-	static final File enemy = new File("enemy_spotted.wav");
-	static final File linked = new File("linked.wav");
-	static final File miceway = new File("miceway.wav");
-	static final File sceptre = new File("sceptre.wav");
-	static final File hatemyself = new File("hatemyself.wav");
-	static final File hcw = new File("hcw.wav");
-	static final File korean = new File("korean.wav");
-	static final File bursela = new File("bursela.wav");
-	static final File burse = new File("burse.wav");
-	static final File choice = new File("choice.wav");
-	static final File grunch = new File("grunch.wav");
-	static final File sainte = new File("sainte.wav");
-	static final File egg = new File("egg.wav");
-	static final File whiskey = new File("whiskey.wav");
-	private static final File corndog = new File("corndog.png");
-	private static final File silence = new File("silence.wav");
+	static final File sausage = new File("files/Thomas_Sausage.wav");
+	static final File ugly = new File("files/Ugly.wav");
+	static final File fire = new File("files/Fire.wav");
+	static final File enemy = new File("files/enemy_spotted.wav");
+	static final File linked = new File("files/linked.wav");
+	static final File miceway = new File("files/miceway.wav");
+	static final File sceptre = new File("files/sceptre.wav");
+	static final File hatemyself = new File("files/hatemyself.wav");
+	static final File hcw = new File("files/hcw.wav");
+	static final File korean = new File("files/korean.wav");
+	static final File bursela = new File("files/bursela.wav");
+	static final File burse = new File("files/burse.wav");
+	static final File choice = new File("files/choice.wav");
+	static final File grunch = new File("files/grunch.wav");
+	static final File sainte = new File("files/sainte.wav");
+	static final File egg = new File("files/egg.wav");
+	static final File whiskey = new File("files/whiskey.wav");
+	static final File corndog = new File("files/corndog.png");
+	static final File lego = new File("files/lego.png");
+	static final File horse = new File("files/horse.jpg");
+	private static final File silence = new File("files/silence.wav");
 	private static final int maxQueueSize = 4;
 	private static final String myUserID = "198575970624471040";
-	private static final List<String> sausageList = Arrays.asList(new String[] { "sausage", "thomas", "daddy" });
-	private static final List<String> uglyList = Arrays.asList(new String[] { "ugly", "motherfucker", "jame" });
-	private static final List<String> enemyList = Arrays.asList(new String[] { "enemy", "spotted", "pubg" });
-	private static final List<String> fireList = Arrays.asList(new String[] { "hole", "fire", "grenade", "bomb", "molotov" });
-	private static final List<String> linkedList = Arrays.asList(new String[] { "link", "daughter" });
-	private static final List<String> hateMyselfList = Arrays.asList(new String[] { "hate", "myself" });
-	private static final List<String> miceWayList = Arrays.asList(new String[] { "blind" });
-	private static final List<String> sceptreList = Arrays.asList(new String[] { "sceptre", "boost" });
-	private static final List<String> hcwList = Arrays.asList(new String[] { "hcw", "buns" });
-	private static final List<String> koreanList = Arrays.asList(new String[] { "policewoman", "korea" });
-	private static final List<String> burselaList = Arrays.asList(new String[] { "ursula" });
-	private static final List<String> burseList = Arrays.asList(new String[] { "burse", "limit" });
-	private static final List<String> choiceList = Arrays.asList(new String[] { "choice", "claus" });
-	private static final List<String> grunchList = Arrays.asList(new String[] { "grinch", "grunch" });
-	private static final List<String> sainteList = Arrays.asList(new String[] { "saint" });
-	private static final List<String> whiskeyList = Arrays
+	static final List<String> sausageList = Arrays.asList(new String[] { "sausage", "thomas", "daddy" });
+	static final List<String> uglyList = Arrays.asList(new String[] { "ugly", "motherfucker", "jame" });
+	static final List<String> enemyList = Arrays.asList(new String[] { "enemy", "spotted", "pubg" });
+	static final List<String> fireList = Arrays.asList(new String[] { "hole", "fire", "grenade", "bomb", "molotov" });
+	static final List<String> linkedList = Arrays.asList(new String[] { "link", "daughter" });
+	static final List<String> hateMyselfList = Arrays.asList(new String[] { "hate", "myself" });
+	static final List<String> miceWayList = Arrays.asList(new String[] { "blind" });
+	static final List<String> sceptreList = Arrays.asList(new String[] { "sceptre", "boost" });
+	static final List<String> hcwList = Arrays.asList(new String[] { "hcw", "buns" });
+	static final List<String> koreanList = Arrays.asList(new String[] { "policewoman", "korea" });
+	static final List<String> burselaList = Arrays.asList(new String[] { "ursula" });
+	static final List<String> burseList = Arrays.asList(new String[] { "burse", "limit" });
+	static final List<String> choiceList = Arrays.asList(new String[] { "choice", "claus" });
+	static final List<String> grunchList = Arrays.asList(new String[] { "grinch", "grunch" });
+	static final List<String> sainteList = Arrays.asList(new String[] { "saint" });
+	static final List<String> succList = Arrays.asList(new String[] { "succ" });
+	static final List<String> horseList = Arrays.asList(new String[] { "horse" });
+	static final List<String> legoList = Arrays.asList(new String[] { "lego" });
+	static final List<String> whiskeyList = Arrays
 			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
-	private static final List<String> eggList = Arrays.asList(new String[] { "audio-easter-egg" });
-
-	private static final String VERSION = "0.1.4.1";
+	static final List<String> eggList = Arrays.asList(new String[] { "audio-easter-egg" });
 
 	private static final File serverSettings = new File("settings");
 
@@ -113,7 +118,7 @@ public class BigSausage {
 	}
 
 	@EventSubscriber
-	public void onJoin(GuildCreateEvent event) {
+	public void onJoin(GuildCreateEvent event) throws IOException {
 		IO.loadSettingsForGuild(event.getGuild());
 		// if (!statePerGuild.containsKey(event.getGuild().getStringID())) {
 		// statePerGuild.put(event.getGuild().getStringID(), State.Disabled);
@@ -130,11 +135,46 @@ public class BigSausage {
 			this.setupDefaults(event.getGuild());
 			System.out.println("Setup default triggers for \"" + event.getGuild().getName() + "\"");
 		}
+		for (EnumClips clip : EnumClips.values()) {
+			File triggersFile = new File("settings/" + event.getGuild().getStringID() + "/triggers/" + clip.toString() + ".txt");
+			if (!triggersFile.exists()) {
+				triggersFile.createNewFile();
+				Files.write(triggersFile.toPath(), clip.getDefaultTriggers(), StandardOpenOption.WRITE);
+				System.out.println("Recreated missing triggers file for \"" + clip.toString() + "\" in guild \"" + event.getGuild().getName() + "\"");
+			}
+		}
+		for (EnumImage image : EnumImage.values()) {
+			File triggersFile = new File("settings/" + event.getGuild().getStringID() + "/triggers/" + image.toString() + ".txt");
+			if (!triggersFile.exists()) {
+				triggersFile.createNewFile();
+				Files.write(triggersFile.toPath(), image.getDefaultTriggers(), StandardOpenOption.WRITE);
+				System.out.println("Recreated missing triggers file for \"" + image.toString() + "\" in guild \"" + event.getGuild().getName() + "\"");
+			}
+		}
+		File ttsFile = new File("settings/" + event.getGuild().getStringID() + "/tts.txt");
+		if (!ttsFile.exists()) {
+			ttsFile.createNewFile();
+			System.out.println("Created tts file for guild \"" + event.getGuild().getName() + "\"");
+		}
+		File serverInfo = new File("settings/" + event.getGuild().getStringID() + "/Server_Info.txt");
+		if (serverInfo.exists()) serverInfo.delete();
+		serverInfo.createNewFile();
+		List<String> info = new ArrayList<String>();
+		info.add("Server ID: " + event.getGuild().getStringID());
+		info.add("Server Name: \"" + event.getGuild().getName() + "\"");
+		info.add("Server Owner: " + event.getGuild().getOwner().getName() + " (" + event.getGuild().getOwnerLongID() + ")");
+		info.add("Number of Users: " + event.getGuild().getTotalMemberCount());
+		String userList = "";
+		for (IUser user : event.getGuild().getUsers()) {
+			userList += user.getStringID() + "[" + user.getName() + ", " + user.getNicknameForGuild(event.getGuild()) + "], ";
+		}
+		info.add("Users: " + userList.substring(0, userList.lastIndexOf(", ")));
+		Files.write(serverInfo.toPath(), info, StandardOpenOption.WRITE);
 	}
 
 	@EventSubscriber
 	public void onMessage(MessageReceivedEvent event) throws RateLimitException, DiscordException, MissingPermissionsException, UnsupportedAudioFileException, IOException {
-		boolean sharedSucc = false;
+		SecureRandom rand = new SecureRandom();
 		IMessage message = event.getMessage();
 		IUser user = message.getAuthor();
 		if (user.isBot()) return;
@@ -147,7 +187,61 @@ public class BigSausage {
 
 		if (words[0].contentEquals(PREFIX) && words.length > 1) {
 			EnumCommand c = EnumCommand.getFromString(words[1]);
+			final File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
+			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
+				case update:
+					if(user.getStringID().equals(myUserID)){
+						
+					}
+					break;
+				case images:
+					channel.sendMessage("Available images are: " + EnumImage.getCommaSeparatedList());
+					break;
+				case tts:
+					if (tts.size() > 0) {
+						String ttsString = tts.get(rand.nextInt(tts.size()));
+						channel.sendMessage(ttsString, true);
+					} else {
+						channel.sendMessage("There are currently no tts strings in the registry for this server. try adding some!");
+					}
+					break;
+				case add_tts:
+					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
+						String ttsAddString = "";
+						for (String s : wordList) {
+							if (wordList.indexOf(s) > 1) {
+								ttsAddString += s + " ";
+							}
+						}
+						tts.add(ttsAddString.trim());
+						ttsFile.delete();
+						ttsFile.createNewFile();
+						Files.write(ttsFile.toPath(), tts, StandardOpenOption.WRITE);
+						channel.sendMessage(ttsAddString.trim(), true);
+					}
+					break;
+				case remove_tts:
+					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
+						String ttsRemoveString = "";
+						for (String s : wordList) {
+							if (wordList.indexOf(s) > 1) {
+								ttsRemoveString += s + " ";
+							}
+						}
+						boolean removed = tts.remove(ttsRemoveString.trim());
+						String reply = "";
+						if (removed) {
+							reply = "Successfully removed string \"" + ttsRemoveString + "\" from the tts list.";
+						} else {
+							reply = "Failed to remove string \"" + ttsRemoveString + "\" from the tts list. Is it exactly the same as an existing string? If not, this command won't work.";
+						}
+						ttsFile.delete();
+						ttsFile.createNewFile();
+						Files.write(ttsFile.toPath(), tts, StandardOpenOption.WRITE);
+						channel.sendMessage(reply);
+					}
+					break;
 				case add_trigger:
 				case list_triggers:
 				case remove_trigger:
@@ -216,8 +310,8 @@ public class BigSausage {
 						IUser targetedUser = message.getGuild().getUserByID(Long.valueOf(username.replace("@", "").replace("<", "").replace(">", "").replace("!", "")));
 						if (IO.getStateForGuild(guild) == State.Enabled) {
 							List<String> newList = new ArrayList<String>();
-							for(String s : wordList){
-								if(!s.contains(PREFIX)){
+							for (String s : wordList) {
+								if (!s.contains(PREFIX)) {
 									newList.add(s);
 								}
 							}
@@ -266,12 +360,6 @@ public class BigSausage {
 		} else {
 			if (IO.getStateForGuild(guild) == State.Enabled) {
 				this.checkListAndQueueFile(wordList, guild, user, channel);
-				for (String word : wordList) {
-					if (word.toLowerCase().contains("succ") && !sharedSucc) {
-						channel.sendFile(corndog);
-						sharedSucc = true;
-					}
-				}
 			}
 		}
 	}
@@ -294,6 +382,8 @@ public class BigSausage {
 		IO.saveTriggersForGuild(guild, choiceList, "choice");
 		IO.saveTriggersForGuild(guild, grunchList, "grunch");
 		IO.saveTriggersForGuild(guild, sainteList, "sainte");
+		IO.saveTriggersForGuild(guild, succList, "succ");
+		IO.saveTriggersForGuild(guild, horseList, "horse");
 	}
 
 	public void save() {
@@ -319,17 +409,26 @@ public class BigSausage {
 		}
 	}
 
-	public void checkListAndQueueFile(List<String> commandText, IGuild guild, IUser triggerUser, IChannel triggerChannel) {
+	public void checkListAndQueueFile(List<String> commandText, IGuild guild, IUser triggerUser, IChannel triggerChannel) throws FileNotFoundException {
 		if (commandText.size() == 0 || commandText.get(0).contentEquals(PREFIX)) return;
-		for (EnumClips clip : EnumClips.values()) {
-			List<String> list = IO.getTriggersForGuild(guild, clip.toString());
-			for (String s : list) {
-				for (String word : commandText) {
+		for (String word : commandText) {
+			for (EnumImage image : EnumImage.values()) {
+				List<String> list = IO.getTriggersForGuild(guild, image.toString());
+				for (String trigger : list) {
+					if (word.toLowerCase().contains(trigger)) {
+						triggerChannel.sendFile(image.getFile());
+						break;
+					}
+				}
+			}
+			for (EnumClips clip : EnumClips.values()) {
+				List<String> list = IO.getTriggersForGuild(guild, clip.toString());
+				for (String s : list) {
 					if (word.toLowerCase().contains(s)) {
 						for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
 							if (vChannel.getConnectedUsers().contains(triggerUser)) {
 								SecureRandom rand = new SecureRandom();
-								if(rand.nextFloat() < 0.1F){
+								if (rand.nextFloat() < 0.1F) {
 									this.queueFile(silence, guild, vChannel, triggerUser, triggerChannel);
 								}
 								this.queueFile(clip.getFile(), guild, vChannel, triggerUser, triggerChannel);

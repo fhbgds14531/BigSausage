@@ -1,17 +1,23 @@
 package net.mizobo.bigsausage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public enum EnumClips {
-	sausage(BigSausage.sausage), ugly(BigSausage.ugly), enemy(BigSausage.enemy), fire(BigSausage.fire), 
-	linked(BigSausage.linked), miceway(BigSausage.miceway), sceptre(BigSausage.sceptre), hatemyself(BigSausage.hatemyself), 
-	hcw(BigSausage.hcw), korean(BigSausage.korean), bursela(BigSausage.bursela), burse(BigSausage.burse), whiskey(BigSausage.whiskey), egg(BigSausage.egg),
-	choice(BigSausage.choice), grunch(BigSausage.grunch), sainte(BigSausage.sainte);
+	sausage(BigSausage.sausage, BigSausage.sausageList), ugly(BigSausage.ugly, BigSausage.uglyList), enemy(BigSausage.enemy, BigSausage.enemyList), 
+	fire(BigSausage.fire, BigSausage.fireList), linked(BigSausage.linked, BigSausage.linkedList), miceway(BigSausage.miceway, BigSausage.miceWayList), 
+	sceptre(BigSausage.sceptre, BigSausage.sceptreList), hatemyself(BigSausage.hatemyself, BigSausage.hateMyselfList), hcw(BigSausage.hcw, BigSausage.hcwList), 
+	korean(BigSausage.korean, BigSausage.koreanList), bursela(BigSausage.bursela, BigSausage.burselaList), burse(BigSausage.burse, BigSausage.burseList), 
+	whiskey(BigSausage.whiskey, BigSausage.whiskeyList), egg(BigSausage.egg, BigSausage.eggList), choice(BigSausage.choice, BigSausage.choiceList), 
+	grunch(BigSausage.grunch, BigSausage.grunchList), sainte(BigSausage.sainte, BigSausage.sainteList);
 
 	private File file;
+	private List<String> defaultTriggers;
 
-	private EnumClips(File fileToPlay) {
+	private EnumClips(File fileToPlay, List<String> defaultTriggers) {
 		this.file = fileToPlay;
+		this.defaultTriggers = defaultTriggers;
 	}
 
 	public static EnumClips getFromString(String s) {
@@ -57,6 +63,12 @@ public enum EnumClips {
 	
 	public File getFile(){
 		return this.file;
+	}
+	
+	public List<String> getDefaultTriggers(){
+		List<String> list = new ArrayList<String>();
+		list.addAll(defaultTriggers);
+		return list;
 	}
 
 	public static String getCommaSeparatedList() {
