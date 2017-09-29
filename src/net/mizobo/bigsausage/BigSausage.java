@@ -43,7 +43,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.7.1";
+	private static final String VERSION = "0.1.7.2";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -70,6 +70,7 @@ public class BigSausage {
 	static final File corndog = new File("files/corndog.png");
 	static final File lego = new File("files/lego.png");
 	static final File horse = new File("files/horse.jpg");
+	static final File grout = new File("files/grout.jpg");
 	private static final File silence = new File("files/silence.wav");
 	private static final int maxQueueSize = 4;
 	private static final String myUserID = "198575970624471040";
@@ -90,6 +91,7 @@ public class BigSausage {
 	static final List<String> sainteList = Arrays.asList(new String[] { "saint" });
 	static final List<String> succList = Arrays.asList(new String[] { "succ" });
 	static final List<String> horseList = Arrays.asList(new String[] { "horse" });
+	static final List<String> groutList = Arrays.asList(new String[] { "grout", "groot", "vin" });
 	static final List<String> legoList = Arrays.asList(new String[] { "lego" });
 	static final List<String> whiskeyList = Arrays
 			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
@@ -99,8 +101,8 @@ public class BigSausage {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DiscordException, RateLimitException, FileNotFoundException, IOException, ClassNotFoundException {
-		for(EnumClips clip : EnumClips.values()){
-			if(!clip.getFile().exists()){
+		for (EnumClips clip : EnumClips.values()) {
+			if (!clip.getFile().exists()) {
 				String filename = clip.getFile().getName().replace("files/", "");
 				System.out.println("File \"" + filename + "\" not detected... Attempting to download it.");
 				URL url = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/files/" + filename + "?raw=true");
@@ -108,8 +110,8 @@ public class BigSausage {
 				System.out.println("Success!");
 			}
 		}
-		for(EnumImage image : EnumImage.values()){
-			if(!image.getFile().exists()){
+		for (EnumImage image : EnumImage.values()) {
+			if (!image.getFile().exists()) {
 				String filename = image.getFile().getName().replace("files/", "");
 				System.out.println("File \"" + filename + "\" not detected... Attempting to download it.");
 				URL url = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/files/" + filename + "?raw=true");
@@ -212,20 +214,24 @@ public class BigSausage {
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
 				case update:
-					if(user.getStringID().equals(myUserID)){
+					if (user.getStringID().equals(myUserID)) {
 						URL url = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/newVersion.txt?raw=true");
 						File version = new File("newVersion.txt");
 						download(url, version);
 						String newVersionString = Files.readAllLines(version.toPath()).get(0);
-						if(!newVersionString.contentEquals(VERSION)){
-								URL update = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/jar/" + newVersionString + "/BigSausage.jar?raw=true");
-								download(update, new File("BigSausage_1.jar"));
-								channel.sendMessage("Restarting...");
-								File me = new File("BigSausage.jar");
-								me.deleteOnExit();
-								Runtime.getRuntime().exec("rename.bat");
-								client.logout();
-						}else{
+						if (!newVersionString.contentEquals(VERSION)) {
+							System.out.println("Successfull update command given. Updating from " + VERSION + " to " + newVersionString);
+							System.out.println("Downloading jar");
+							URL update = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/jar/" + newVersionString + "/BigSausage.jar?raw=true");
+							download(update, new File("BigSausage_1.jar"));
+							System.out.println("Done! Attempting to restart...");
+							channel.sendMessage("Restarting...");
+							File me = new File("BigSausage.jar");
+							me.deleteOnExit();
+							client.logout();
+							Runtime.getRuntime().exec("start rename.bat");
+							System.exit(0);
+						} else {
 							channel.sendMessage("I am already the latest version, silly! (" + VERSION + ", " + newVersionString + ")");
 						}
 					}
@@ -419,6 +425,7 @@ public class BigSausage {
 		IO.saveTriggersForGuild(guild, sainteList, "sainte");
 		IO.saveTriggersForGuild(guild, succList, "succ");
 		IO.saveTriggersForGuild(guild, horseList, "horse");
+		IO.saveTriggersForGuild(guild, groutList, "grout");
 	}
 
 	public void save() {
@@ -557,7 +564,7 @@ public class BigSausage {
 			}
 		}
 	}
-	
+
 	public static void download(URL url, File location) throws IOException {
 		URLConnection c = url.openConnection();
 		InputStream in = c.getInputStream();

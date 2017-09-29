@@ -7,7 +7,8 @@ import java.util.List;
 public enum EnumImage {
 	succ(BigSausage.corndog, BigSausage.succList),
 	horse(BigSausage.horse, BigSausage.horseList),
-	lego(BigSausage.lego, BigSausage.legoList);
+	lego(BigSausage.lego, BigSausage.legoList),
+	grout(BigSausage.grout, BigSausage.groutList);
 	
 	File fileToLink;
 	List<String> defaultTriggers;
@@ -22,6 +23,8 @@ public enum EnumImage {
 				return succ;
 			case "horse":
 				return horse;
+			case "grout":
+				return grout;
 			default:
 				return succ;
 		}
