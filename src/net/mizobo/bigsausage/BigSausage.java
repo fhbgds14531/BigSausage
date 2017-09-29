@@ -43,7 +43,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.7";
+	private static final String VERSION = "0.1.7.1";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -198,7 +198,7 @@ public class BigSausage {
 		SecureRandom rand = new SecureRandom();
 		IMessage message = event.getMessage();
 		IUser user = message.getAuthor();
-		if (user.isBot()) return;
+		if (user.getName().contentEquals("BigSausage")) return;
 
 		String[] words = message.getContent().split(" ");
 
