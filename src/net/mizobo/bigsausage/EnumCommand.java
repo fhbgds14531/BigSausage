@@ -74,6 +74,8 @@ public enum EnumCommand {
 				return add_tts;
 			case "images":
 				return images;
+			case "update":
+				return update;
 			default:
 				return help;
 		}
