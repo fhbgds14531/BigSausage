@@ -10,7 +10,7 @@ settings/
 .mtj.tmp/
 
 # Package Files #
-*.jar
+Discord*.jar
 *.war
 *.ear
 
