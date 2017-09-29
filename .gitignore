@@ -1,5 +1,4 @@
 settings/
-*.txt
 *.class
 *.s
 *.classpath
