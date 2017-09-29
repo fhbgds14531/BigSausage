@@ -43,7 +43,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.6";
+	private static final String VERSION = "0.1.7";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -105,6 +105,15 @@ public class BigSausage {
 				System.out.println("File \"" + filename + "\" not detected... Attempting to download it.");
 				URL url = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/files/" + filename + "?raw=true");
 				download(url, clip.getFile());
+				System.out.println("Success!");
+			}
+		}
+		for(EnumImage image : EnumImage.values()){
+			if(!image.getFile().exists()){
+				String filename = image.getFile().getName().replace("files/", "");
+				System.out.println("File \"" + filename + "\" not detected... Attempting to download it.");
+				URL url = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/files/" + filename + "?raw=true");
+				download(url, image.getFile());
 				System.out.println("Success!");
 			}
 		}
