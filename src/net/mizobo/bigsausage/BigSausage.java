@@ -137,6 +137,7 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
+		EnumCommand.help.setHelpString("For specific help use !bs help <" + EnumCommand.getCommaSeparatedList() + ">");
 		System.out.println("BigSausage ready for mouths.");
 	}
 

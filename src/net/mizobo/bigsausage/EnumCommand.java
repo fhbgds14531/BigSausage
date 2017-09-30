@@ -18,7 +18,7 @@ public enum EnumCommand {
 	add_tts(false, "Add a tts string to the tts list. Usage: !bs add-tts <exact tts string>"),
 	images(false, "List all the image names BigSausage can link. Usage: !bs images"),
 	changelog(false, "List the notable changes since the last version. Usage: !bs changelog"),
-	help(false, "For specific help use !bs help <" + getCommaSeparatedList() + ">"), 
+	help(false, ""), 
 	save_all(true, ""), 
 	update(true, ""),
 	force_update(true, ""),
@@ -34,6 +34,10 @@ public enum EnumCommand {
 
 	public boolean getIsSecret() {
 		return this.isSecret;
+	}
+	
+	public void setHelpString(String s){
+		this.helpText = s;
 	}
 
 	public static EnumCommand getFromString(String s) {
