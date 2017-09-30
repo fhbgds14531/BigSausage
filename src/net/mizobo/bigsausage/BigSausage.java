@@ -71,6 +71,7 @@ public class BigSausage {
 	static final File lego = new File("files/lego.png");
 	static final File horse = new File("files/horse.jpg");
 	static final File grout = new File("files/grout.jpg");
+	static final File seeded = new File("files/seeded.jpg");
 	private static final File silence = new File("files/silence.wav");
 	private static final int maxQueueSize = 4;
 	private static final String myUserID = "198575970624471040";
@@ -93,6 +94,7 @@ public class BigSausage {
 	static final List<String> horseList = Arrays.asList(new String[] { "horse" });
 	static final List<String> groutList = Arrays.asList(new String[] { "grout", "groot", "vin" });
 	static final List<String> legoList = Arrays.asList(new String[] { "lego" });
+	static final List<String> seededList = Arrays.asList(new String[] { "seeded" });
 	static final List<String> whiskeyList = Arrays
 			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
 	static final List<String> eggList = Arrays.asList(new String[] { "audio-easter-egg" });
@@ -227,9 +229,7 @@ public class BigSausage {
 							download(update, new File("BigSausage_1.jar"));
 							System.out.println("Done! Attempting to restart...");
 							channel.sendMessage("Restarting...");
-							File me = new File("BigSausage.jar");
-							me.deleteOnExit();
-							Runtime.getRuntime().exec("start rename.bat");
+							Runtime.getRuntime().exec("rename.bat");
 							client.logout();
 							version.deleteOnExit();
 							System.exit(0);

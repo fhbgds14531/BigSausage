@@ -8,7 +8,8 @@ public enum EnumImage {
 	succ(BigSausage.corndog, BigSausage.succList),
 	horse(BigSausage.horse, BigSausage.horseList),
 	lego(BigSausage.lego, BigSausage.legoList),
-	grout(BigSausage.grout, BigSausage.groutList);
+	grout(BigSausage.grout, BigSausage.groutList),
+	seeded(BigSausage.seeded, BigSausage.seededList);
 	
 	File fileToLink;
 	List<String> defaultTriggers;
@@ -25,6 +26,8 @@ public enum EnumImage {
 				return horse;
 			case "grout":
 				return grout;
+			case "seeded":
+				return seeded;
 			default:
 				return succ;
 		}
