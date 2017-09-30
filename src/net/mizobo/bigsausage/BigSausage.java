@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -195,7 +193,7 @@ public class BigSausage {
 	}
 
 	@EventSubscriber
-	public void onMessage(MessageReceivedEvent event) throws RateLimitException, DiscordException, MissingPermissionsException, UnsupportedAudioFileException, IOException {
+	public void onMessage(MessageReceivedEvent event) throws Exception {
 		SecureRandom rand = new SecureRandom();
 		IMessage message = event.getMessage();
 		IUser user = message.getAuthor();
@@ -229,7 +227,7 @@ public class BigSausage {
 							download(update, new File("BigSausage_1.jar"));
 							System.out.println("Done! Attempting to restart...");
 							channel.sendMessage("Restarting...");
-							Runtime.getRuntime().exec("rename.bat");
+							startRenameBat();
 							client.logout();
 							version.deleteOnExit();
 							System.exit(0);
@@ -409,10 +407,10 @@ public class BigSausage {
 	}
 
 	public void setupDefaults(IGuild guild) {
-		for(EnumClips clip : EnumClips.values()){
+		for (EnumClips clip : EnumClips.values()) {
 			IO.saveTriggersForGuild(guild, clip.getDefaultTriggers(), clip.toString());
 		}
-		for(EnumImage image : EnumImage.values()){
+		for (EnumImage image : EnumImage.values()) {
 			IO.saveTriggersForGuild(guild, image.getDefaultTriggers(), image.toString());
 		}
 	}
@@ -565,5 +563,14 @@ public class BigSausage {
 		}
 		in.close();
 		out.close();
+	}
+
+	public void startRenameBat() throws Exception{
+		ArrayList<String> command = new ArrayList<String>();
+		command.add("rename.bat");
+
+		final ProcessBuilder builder = new ProcessBuilder(command);
+		builder.start();
+		System.exit(0);
 	}
 }
