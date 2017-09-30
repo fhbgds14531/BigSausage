@@ -70,7 +70,7 @@ public class BigSausage {
 	static final File horse = new File("files/horse.jpg");
 	static final File grout = new File("files/grout.jpg");
 	static final File seeded = new File("files/seeded.jpg");
-	static final File science = new File("files/science.jpg");
+	static final File science = new File("files/science.png");
 	static final File never = new File("files/never.wav");
 	static final File silence = new File("files/silence.wav");
 	private static final String myUserID = "198575970624471040";
