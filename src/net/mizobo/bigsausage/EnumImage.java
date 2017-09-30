@@ -9,6 +9,7 @@ public enum EnumImage {
 	horse(BigSausage.horse, BigSausage.horseList),
 	lego(BigSausage.lego, BigSausage.legoList),
 	grout(BigSausage.grout, BigSausage.groutList),
+	science(BigSausage.science, BigSausage.scienceList),
 	seeded(BigSausage.seeded, BigSausage.seededList);
 	
 	File fileToLink;
@@ -28,6 +29,8 @@ public enum EnumImage {
 				return grout;
 			case "seeded":
 				return seeded;
+			case "science":
+				return science;
 			default:
 				return succ;
 		}
