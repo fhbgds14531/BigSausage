@@ -228,7 +228,7 @@ public class BigSausage {
 							download(update, new File("BigSausage_1.jar"));
 							System.out.println("Done! Attempting to restart...");
 							channel.sendMessage("Restarting...");
-							Runtime.getRuntime().exec("cmd.exe rename.bat");
+							Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "rename.bat"});
 							client.logout();
 							version.deleteOnExit();
 							System.exit(0);
