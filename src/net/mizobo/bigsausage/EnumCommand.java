@@ -17,9 +17,11 @@ public enum EnumCommand {
 	remove_tts(false, "Remove a tts string from the tts list. Usage: !bs remove-tts <exact tts string>"),
 	add_tts(false, "Add a tts string to the tts list. Usage: !bs add-tts <exact tts string>"),
 	images(false, "List all the image names BigSausage can link. Usage: !bs images"),
-	help(false, "What"), 
+	changelog(false, "List the notable changes since the last version. Usage: !bs changelog"),
+	help(false, "For specific help use !bs help <" + getCommaSeparatedList() + ">"), 
 	save_all(true, ""), 
 	update(true, ""),
+	force_update(true, ""),
 	shutdown(true, "");
 
 	private boolean isSecret;
@@ -76,6 +78,10 @@ public enum EnumCommand {
 				return images;
 			case "update":
 				return update;
+			case "force-update":
+				return force_update;
+			case "changelog":
+				return changelog;
 			default:
 				return help;
 		}
@@ -93,7 +99,9 @@ public enum EnumCommand {
 	public static String getCommaSeparatedList() {
 		String out = "";
 		for (EnumCommand com : EnumCommand.values()) {
-			out += com.toString() + ", ";
+			if(!com.isSecret){
+				out += com.toString() + ", ";
+			}
 		}
 		return out.substring(0, out.lastIndexOf(", "));
 	}

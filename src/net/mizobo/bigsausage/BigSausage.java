@@ -43,12 +43,12 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.7.2";
+	private static final String VERSION = "0.1.7.3";
+	private static final String CHANGELOG = "Added changelog command, minor startup time improvements.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
 	private static IDiscordClient client;
-	// static Map<String, State> statePerGuild = new HashMap<>();
 	static Map<String, List<String>> trustedUsersPerGuild = new HashMap<String, List<String>>();
 	static final File sausage = new File("files/Thomas_Sausage.wav");
 	static final File ugly = new File("files/Ugly.wav");
@@ -143,10 +143,6 @@ public class BigSausage {
 	@EventSubscriber
 	public void onJoin(GuildCreateEvent event) throws IOException {
 		IO.loadSettingsForGuild(event.getGuild());
-		// if (!statePerGuild.containsKey(event.getGuild().getStringID())) {
-		// statePerGuild.put(event.getGuild().getStringID(), State.Disabled);
-		// System.out.println("Added guild \"" + event.getGuild().getName() + "\" to the states registry.");
-		// }
 		if (!trustedUsersPerGuild.containsKey(event.getGuild().getStringID())) {
 			trustedUsersPerGuild.put(event.getGuild().getStringID(), new ArrayList<String>());
 			List<String> trusted = trustedUsersPerGuild.get(event.getGuild().getStringID());
@@ -213,13 +209,17 @@ public class BigSausage {
 			final File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
+				case changelog:
+					channel.sendMessage("Version: " + VERSION + "\n Notable changes: " + CHANGELOG);
+					break;
+				case force_update:
 				case update:
 					if (user.getStringID().equals(myUserID)) {
 						URL url = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/newVersion.txt?raw=true");
 						File version = new File("newVersion.txt");
 						download(url, version);
 						String newVersionString = Files.readAllLines(version.toPath()).get(0);
-						if (!newVersionString.contentEquals(VERSION)) {
+						if (!newVersionString.contentEquals(VERSION) || c == EnumCommand.force_update) {
 							System.out.println("Successfull update command given. Updating from " + VERSION + " to " + newVersionString);
 							System.out.println("Downloading jar");
 							URL update = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/jar/" + newVersionString + "/BigSausage.jar?raw=true");
@@ -228,12 +228,14 @@ public class BigSausage {
 							channel.sendMessage("Restarting...");
 							File me = new File("BigSausage.jar");
 							me.deleteOnExit();
-							client.logout();
 							Runtime.getRuntime().exec("start rename.bat");
+							client.logout();
+							version.deleteOnExit();
 							System.exit(0);
 						} else {
 							channel.sendMessage("I am already the latest version, silly! (" + VERSION + ", " + newVersionString + ")");
 						}
+						version.delete();
 					}
 					break;
 				case images:
@@ -406,26 +408,12 @@ public class BigSausage {
 	}
 
 	public void setupDefaults(IGuild guild) {
-		IO.saveTriggersForGuild(guild, sausageList, "sausage");
-		IO.saveTriggersForGuild(guild, uglyList, "ugly");
-		IO.saveTriggersForGuild(guild, enemyList, "enemy");
-		IO.saveTriggersForGuild(guild, fireList, "fire");
-		IO.saveTriggersForGuild(guild, linkedList, "linked");
-		IO.saveTriggersForGuild(guild, sceptreList, "sceptre");
-		IO.saveTriggersForGuild(guild, miceWayList, "miceway");
-		IO.saveTriggersForGuild(guild, hateMyselfList, "hatemyself");
-		IO.saveTriggersForGuild(guild, hcwList, "hcw");
-		IO.saveTriggersForGuild(guild, koreanList, "korean");
-		IO.saveTriggersForGuild(guild, burselaList, "bursela");
-		IO.saveTriggersForGuild(guild, burseList, "burse");
-		IO.saveTriggersForGuild(guild, eggList, "egg");
-		IO.saveTriggersForGuild(guild, whiskeyList, "whiskey");
-		IO.saveTriggersForGuild(guild, choiceList, "choice");
-		IO.saveTriggersForGuild(guild, grunchList, "grunch");
-		IO.saveTriggersForGuild(guild, sainteList, "sainte");
-		IO.saveTriggersForGuild(guild, succList, "succ");
-		IO.saveTriggersForGuild(guild, horseList, "horse");
-		IO.saveTriggersForGuild(guild, groutList, "grout");
+		for(EnumClips clip : EnumClips.values()){
+			IO.saveTriggersForGuild(guild, clip.getDefaultTriggers(), clip.toString());
+		}
+		for(EnumImage image : EnumImage.values()){
+			IO.saveTriggersForGuild(guild, image.getDefaultTriggers(), image.toString());
+		}
 	}
 
 	public void save() {
@@ -440,9 +428,6 @@ public class BigSausage {
 			}
 			serverStates.createNewFile();
 			trustedUsers.createNewFile();
-			// ObjectOutputStream statesOut = new ObjectOutputStream(new FileOutputStream(serverStates));
-			// statesOut.writeObject(statePerGuild);
-			// statesOut.close();
 			ObjectOutputStream trustedOut = new ObjectOutputStream(new FileOutputStream(trustedUsers));
 			trustedOut.writeObject(trustedUsersPerGuild);
 			trustedOut.close();
