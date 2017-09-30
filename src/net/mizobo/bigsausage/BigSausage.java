@@ -98,6 +98,7 @@ public class BigSausage {
 	static final List<String> eggList = Arrays.asList(new String[] { "audio-easter-egg" });
 
 	private static final File serverSettings = new File("settings");
+	static String lastTts = "";
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DiscordException, RateLimitException, FileNotFoundException, IOException, ClassNotFoundException {
@@ -227,7 +228,7 @@ public class BigSausage {
 							download(update, new File("BigSausage_1.jar"));
 							System.out.println("Done! Attempting to restart...");
 							channel.sendMessage("Restarting...");
-							startRenameBat();
+							Runtime.getRuntime().exec("cmd.exe rename.bat");
 							client.logout();
 							version.deleteOnExit();
 							System.exit(0);
@@ -242,7 +243,12 @@ public class BigSausage {
 					break;
 				case tts:
 					if (tts.size() > 0) {
-						String ttsString = tts.get(rand.nextInt(tts.size()));
+						String ttsString = "";
+						int count = 10;
+						while(count > 0 && ttsString.contentEquals(lastTts)){
+							ttsString = tts.get(rand.nextInt(tts.size()));
+						}
+						if(count == 0) System.out.println("Gave up trying to find a unique tts in guild " + guild.getName());
 						channel.sendMessage(ttsString, true);
 					} else {
 						channel.sendMessage("There are currently no tts strings in the registry for this server. try adding some!");
