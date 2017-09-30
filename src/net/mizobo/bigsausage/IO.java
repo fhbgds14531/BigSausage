@@ -22,7 +22,7 @@ public class IO {
 	private static Map<String, State> guildSpecificStates;
 
 	static void loadSettingsForGuild(IGuild guild) {
-		if(guildSpecificStates == null) guildSpecificStates = new HashMap<String, State>();
+		if (guildSpecificStates == null) guildSpecificStates = new HashMap<String, State>();
 		File settingsDir = new File("settings/" + guild.getStringID());
 		File f = new File("settings/" + guild.getStringID() + "/settings.bs");
 		try {
@@ -30,7 +30,7 @@ public class IO {
 			State s = (State) in.readObject();
 			in.close();
 			guildSpecificStates.put(guild.getStringID(), s);
-		}catch(FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			try {
 				settingsDir.mkdirs();
 				f.createNewFile();
@@ -61,12 +61,26 @@ public class IO {
 		}
 	}
 
+	public static void setMaxFilesPerMessage(IGuild guild, int i) throws Exception {
+		File f = new File("settings/" + guild.getStringID() + "/maxClips.bs");
+		if (f.exists()) f.delete();
+		f.createNewFile();
+		List<String> lines = new ArrayList<String>();
+		lines.add(String.valueOf(i));
+		Files.write(f.toPath(), lines, StandardOpenOption.WRITE);
+		System.out.println("Changed max clips per message for \"" + guild.getName() + "\" to " + i);
+	}
+
+	public static int getMaxFilesPerMessage(IGuild guild) throws Exception {
+		return Integer.valueOf(Files.readAllLines(new File("settings/" + guild.getStringID() + "/maxClips.bs").toPath()).get(0));
+	}
+
 	public static void setStateForGuild(IGuild guild, State state) {
 		System.out.println(state);
 		guildSpecificStates.put(guild.getStringID(), state);
 		saveSettingsForGuild(guild);
 	}
-	
+
 	public static State getStateForGuild(IGuild guild) {
 		State s = guildSpecificStates.get(guild.getStringID());
 		return s;
@@ -84,7 +98,7 @@ public class IO {
 
 	public static void saveTriggersForGuild(IGuild guild, List<String> triggers, String forWhat) {
 		File triggerDir = new File("settings/" + guild.getStringID() + "/triggers/");
-		if(!triggerDir.exists()) triggerDir.mkdirs();
+		if (!triggerDir.exists()) triggerDir.mkdirs();
 		try {
 			File f = new File("settings/" + guild.getStringID() + "/triggers/" + forWhat + ".txt");
 			if (f.exists()) f.delete();
@@ -94,14 +108,14 @@ public class IO {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void addTriggerWord(String word, String forWhat, IGuild guild){
+
+	public static void addTriggerWord(String word, String forWhat, IGuild guild) {
 		List<String> triggers = getTriggersForGuild(guild, forWhat);
 		triggers.add(word);
 		saveTriggersForGuild(guild, triggers, forWhat);
 	}
-	
-	public static void removeTriggerWord(String word, String forWhat, IGuild guild){
+
+	public static void removeTriggerWord(String word, String forWhat, IGuild guild) {
 		List<String> triggers = getTriggersForGuild(guild, forWhat);
 		triggers.remove(word);
 		saveTriggersForGuild(guild, triggers, forWhat);

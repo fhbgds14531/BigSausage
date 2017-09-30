@@ -5,19 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum EnumClips {
-	sausage(BigSausage.sausage, BigSausage.sausageList), ugly(BigSausage.ugly, BigSausage.uglyList), enemy(BigSausage.enemy, BigSausage.enemyList), 
-	fire(BigSausage.fire, BigSausage.fireList), linked(BigSausage.linked, BigSausage.linkedList), miceway(BigSausage.miceway, BigSausage.miceWayList), 
-	sceptre(BigSausage.sceptre, BigSausage.sceptreList), hatemyself(BigSausage.hatemyself, BigSausage.hateMyselfList), hcw(BigSausage.hcw, BigSausage.hcwList), 
-	korean(BigSausage.korean, BigSausage.koreanList), bursela(BigSausage.bursela, BigSausage.burselaList), burse(BigSausage.burse, BigSausage.burseList), 
-	whiskey(BigSausage.whiskey, BigSausage.whiskeyList), egg(BigSausage.egg, BigSausage.eggList), choice(BigSausage.choice, BigSausage.choiceList), 
-	grunch(BigSausage.grunch, BigSausage.grunchList), sainte(BigSausage.sainte, BigSausage.sainteList);
+	sausage(BigSausage.sausage, BigSausage.sausageList, false), ugly(BigSausage.ugly, BigSausage.uglyList, false), enemy(BigSausage.enemy, BigSausage.enemyList, false), 
+	fire(BigSausage.fire, BigSausage.fireList, false), linked(BigSausage.linked, BigSausage.linkedList, false), miceway(BigSausage.miceway, BigSausage.miceWayList, false), 
+	sceptre(BigSausage.sceptre, BigSausage.sceptreList, false), hatemyself(BigSausage.hatemyself, BigSausage.hateMyselfList, false), hcw(BigSausage.hcw, BigSausage.hcwList, false), 
+	korean(BigSausage.korean, BigSausage.koreanList, false), bursela(BigSausage.bursela, BigSausage.burselaList, false), burse(BigSausage.burse, BigSausage.burseList, false), 
+	whiskey(BigSausage.whiskey, BigSausage.whiskeyList, false), egg(BigSausage.egg, BigSausage.eggList, false), choice(BigSausage.choice, BigSausage.choiceList, false), 
+	grunch(BigSausage.grunch, BigSausage.grunchList, false), sainte(BigSausage.sainte, BigSausage.sainteList, false), silence(BigSausage.silence, BigSausage.emptyList, true), 
+	never(BigSausage.never, BigSausage.emptyList, true);
 
 	private File file;
 	private List<String> defaultTriggers;
+	private boolean hidden;
 
-	private EnumClips(File fileToPlay, List<String> defaultTriggers) {
+	private EnumClips(File fileToPlay, List<String> defaultTriggers, boolean hidden) {
 		this.file = fileToPlay;
 		this.defaultTriggers = defaultTriggers;
+		this.hidden = hidden;
 	}
 
 	public static EnumClips getFromString(String s) {
@@ -56,6 +59,10 @@ public enum EnumClips {
 				return sainte;
 			case "egg":
 				return egg;
+			case "silence":
+				return silence;
+			case "never":
+				return never;
 			default:
 				return null;
 		}
@@ -74,7 +81,9 @@ public enum EnumClips {
 	public static String getCommaSeparatedList() {
 		String out = "";
 		for (EnumClips clip : EnumClips.values()) {
-			out += clip.toString() + ", ";
+			if(!clip.hidden){
+				out += clip.toString() + ", ";
+			}
 		}
 		return out.substring(0, out.lastIndexOf(", "));
 	}

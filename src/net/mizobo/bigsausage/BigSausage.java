@@ -41,7 +41,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.7.3";
+	private static final String VERSION = "0.1.7.4";
 	private static final String CHANGELOG = "Added changelog command, minor startup time improvements.";
 
 	private static String TOKEN;
@@ -70,8 +70,8 @@ public class BigSausage {
 	static final File horse = new File("files/horse.jpg");
 	static final File grout = new File("files/grout.jpg");
 	static final File seeded = new File("files/seeded.jpg");
-	private static final File silence = new File("files/silence.wav");
-	private static final int maxQueueSize = 4;
+	static final File never = new File("files/never.wav");
+	static final File silence = new File("files/silence.wav");
 	private static final String myUserID = "198575970624471040";
 	static final List<String> sausageList = Arrays.asList(new String[] { "sausage", "thomas", "daddy" });
 	static final List<String> uglyList = Arrays.asList(new String[] { "ugly", "motherfucker", "jame" });
@@ -93,6 +93,7 @@ public class BigSausage {
 	static final List<String> groutList = Arrays.asList(new String[] { "grout", "groot", "vin" });
 	static final List<String> legoList = Arrays.asList(new String[] { "lego" });
 	static final List<String> seededList = Arrays.asList(new String[] { "seeded" });
+	static final List<String> emptyList = Arrays.asList(new String[] {});
 	static final List<String> whiskeyList = Arrays
 			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
 	static final List<String> eggList = Arrays.asList(new String[] { "audio-easter-egg" });
@@ -144,50 +145,57 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onJoin(GuildCreateEvent event) throws IOException {
-		IO.loadSettingsForGuild(event.getGuild());
-		if (!trustedUsersPerGuild.containsKey(event.getGuild().getStringID())) {
-			trustedUsersPerGuild.put(event.getGuild().getStringID(), new ArrayList<String>());
-			List<String> trusted = trustedUsersPerGuild.get(event.getGuild().getStringID());
-			trusted.add(myUserID);
-			System.out.println("Added guild \"" + event.getGuild().getName() + "\" to the trusted users registry.");
+		IGuild guild = event.getGuild();
+		IO.loadSettingsForGuild(guild);
+		File maxClips = new File("settings/" + guild.getStringID() + "/maxClips.bs");
+		if (!maxClips.exists()) {
+			maxClips.createNewFile();
+			Files.write(maxClips.toPath(), Arrays.asList(new String[] { "4" }), StandardOpenOption.WRITE);
+			System.out.println("Created missing file \"maxClips.bs\" for guild \"" + guild.getName() + "\"");
 		}
-		File triggersDir = new File("settings/" + event.getGuild().getStringID() + "/triggers");
+		if (!trustedUsersPerGuild.containsKey(guild.getStringID())) {
+			trustedUsersPerGuild.put(guild.getStringID(), new ArrayList<String>());
+			List<String> trusted = trustedUsersPerGuild.get(guild.getStringID());
+			trusted.add(myUserID);
+			System.out.println("Added guild \"" + guild.getName() + "\" to the trusted users registry.");
+		}
+		File triggersDir = new File("settings/" + guild.getStringID() + "/triggers");
 		if (!triggersDir.exists()) {
-			this.setupDefaults(event.getGuild());
-			System.out.println("Setup default triggers for \"" + event.getGuild().getName() + "\"");
+			this.setupDefaults(guild);
+			System.out.println("Setup default triggers for \"" + guild.getName() + "\"");
 		}
 		for (EnumClips clip : EnumClips.values()) {
-			File triggersFile = new File("settings/" + event.getGuild().getStringID() + "/triggers/" + clip.toString() + ".txt");
+			File triggersFile = new File("settings/" + guild.getStringID() + "/triggers/" + clip.toString() + ".txt");
 			if (!triggersFile.exists()) {
 				triggersFile.createNewFile();
 				Files.write(triggersFile.toPath(), clip.getDefaultTriggers(), StandardOpenOption.WRITE);
-				System.out.println("Recreated missing triggers file for \"" + clip.toString() + "\" in guild \"" + event.getGuild().getName() + "\"");
+				System.out.println("Recreated missing triggers file for \"" + clip.toString() + "\" in guild \"" + guild.getName() + "\"");
 			}
 		}
 		for (EnumImage image : EnumImage.values()) {
-			File triggersFile = new File("settings/" + event.getGuild().getStringID() + "/triggers/" + image.toString() + ".txt");
+			File triggersFile = new File("settings/" + guild.getStringID() + "/triggers/" + image.toString() + ".txt");
 			if (!triggersFile.exists()) {
 				triggersFile.createNewFile();
 				Files.write(triggersFile.toPath(), image.getDefaultTriggers(), StandardOpenOption.WRITE);
-				System.out.println("Recreated missing triggers file for \"" + image.toString() + "\" in guild \"" + event.getGuild().getName() + "\"");
+				System.out.println("Recreated missing triggers file for \"" + image.toString() + "\" in guild \"" + guild.getName() + "\"");
 			}
 		}
-		File ttsFile = new File("settings/" + event.getGuild().getStringID() + "/tts.txt");
+		File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
 		if (!ttsFile.exists()) {
 			ttsFile.createNewFile();
-			System.out.println("Created tts file for guild \"" + event.getGuild().getName() + "\"");
+			System.out.println("Created tts file for guild \"" + guild.getName() + "\"");
 		}
-		File serverInfo = new File("settings/" + event.getGuild().getStringID() + "/Server_Info.txt");
+		File serverInfo = new File("settings/" + guild.getStringID() + "/Server_Info.txt");
 		if (serverInfo.exists()) serverInfo.delete();
 		serverInfo.createNewFile();
 		List<String> info = new ArrayList<String>();
-		info.add("Server ID: " + event.getGuild().getStringID());
-		info.add("Server Name: \"" + event.getGuild().getName() + "\"");
-		info.add("Server Owner: " + event.getGuild().getOwner().getName() + " (" + event.getGuild().getOwnerLongID() + ")");
-		info.add("Number of Users: " + event.getGuild().getTotalMemberCount());
+		info.add("Server ID: " + guild.getStringID());
+		info.add("Server Name: \"" + guild.getName() + "\"");
+		info.add("Server Owner: " + guild.getOwner().getName() + " (" + guild.getOwnerLongID() + ")");
+		info.add("Number of Users: " + guild.getTotalMemberCount());
 		String userList = "";
-		for (IUser user : event.getGuild().getUsers()) {
-			userList += user.getStringID() + "[" + user.getName() + ", " + user.getNicknameForGuild(event.getGuild()) + "], ";
+		for (IUser user : guild.getUsers()) {
+			userList += user.getStringID() + "[" + user.getName() + ", " + user.getNicknameForGuild(guild) + "], ";
 		}
 		info.add("Users: " + userList.substring(0, userList.lastIndexOf(", ")));
 		Files.write(serverInfo.toPath(), info, StandardOpenOption.WRITE);
@@ -211,6 +219,49 @@ public class BigSausage {
 			final File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
+				case play_clip:
+					if (wordList.size() < 4) return;
+					if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
+						EnumClips clip = EnumClips.getFromString(wordList.get(2));
+						String channelName = "";
+						for (String word : wordList) {
+							if (wordList.indexOf(word) > 2) {
+								channelName += word + " ";
+							}
+						}
+						List<IVoiceChannel> vch = guild.getVoiceChannelsByName(channelName.trim());
+						if (vch.size() < 1) {
+							channel.sendMessage("If that channel actually exists, I can't access it.");
+							return;
+						}
+						IVoiceChannel chan = vch.get(0);
+						this.queueFile(clip.getFile(), guild, (IVoiceChannel) chan, user, true);
+					} else {
+						if (rand.nextFloat() < 0.02F) {
+							channel.sendMessage("Hey " + guild.getOwner().mention() + ", " + user.mention() + " is trying to use a restricted command!");
+						} else {
+							channel.sendMessage("You don't have permission to use this command!");
+						}
+					}
+					break;
+				case max_clips:
+					if (wordList.size() == 2) {
+						channel.sendMessage("Max audio files per message: " + IO.getMaxFilesPerMessage(guild));
+					} else {
+						if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
+							int i = Integer.valueOf(wordList.get(2));
+							if (i < 1) i = 1;
+							IO.setMaxFilesPerMessage(guild, i);
+							channel.sendMessage("Changed max clips per message to " + i);
+						} else {
+							if (rand.nextFloat() < 0.02F) {
+								channel.sendMessage("Hey " + guild.getOwner().mention() + ", " + user.mention() + " is trying to use a restricted command!");
+							} else {
+								channel.sendMessage("You don't have permission to use this command!");
+							}
+						}
+					}
+					break;
 				case changelog:
 					channel.sendMessage("Version: " + VERSION + "\n Notable changes: " + CHANGELOG);
 					break;
@@ -228,7 +279,7 @@ public class BigSausage {
 							download(update, new File("BigSausage_1.jar"));
 							System.out.println("Done! Attempting to restart...");
 							channel.sendMessage("Restarting...");
-							Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "rename.bat"});
+							Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", "rename.bat" });
 							client.logout();
 							version.deleteOnExit();
 							System.exit(0);
@@ -245,10 +296,10 @@ public class BigSausage {
 					if (tts.size() > 0) {
 						String ttsString = "";
 						int count = 10;
-						while(count > 0 && ttsString.contentEquals(lastTts)){
+						while (count > 0 && ttsString.contentEquals(lastTts)) {
 							ttsString = tts.get(rand.nextInt(tts.size()));
 						}
-						if(count == 0) System.out.println("Gave up trying to find a unique tts in guild " + guild.getName());
+						if (count == 0) System.out.println("Gave up trying to find a unique tts in guild " + guild.getName());
 						channel.sendMessage(ttsString, true);
 					} else {
 						channel.sendMessage("There are currently no tts strings in the registry for this server. try adding some!");
@@ -267,6 +318,12 @@ public class BigSausage {
 						ttsFile.createNewFile();
 						Files.write(ttsFile.toPath(), tts, StandardOpenOption.WRITE);
 						channel.sendMessage(ttsAddString.trim(), true);
+					} else {
+						if (rand.nextFloat() < 0.02F) {
+							channel.sendMessage("Hey " + guild.getOwner().mention() + ", " + user.mention() + " is trying to use a restricted command!");
+						} else {
+							channel.sendMessage("You don't have permission to use this command!");
+						}
 					}
 					break;
 				case remove_tts:
@@ -288,6 +345,12 @@ public class BigSausage {
 						ttsFile.createNewFile();
 						Files.write(ttsFile.toPath(), tts, StandardOpenOption.WRITE);
 						channel.sendMessage(reply);
+					} else {
+						if (rand.nextFloat() < 0.02F) {
+							channel.sendMessage("Hey " + guild.getOwner().mention() + ", " + user.mention() + " is trying to use a restricted command!");
+						} else {
+							channel.sendMessage("You don't have permission to use this command!");
+						}
 					}
 					break;
 				case add_trigger:
@@ -324,6 +387,12 @@ public class BigSausage {
 								trusted.remove(mention);
 								channel.sendMessage("Removed <@" + mention + "> from the trusted users list.");
 							}
+						}
+					} else {
+						if (rand.nextFloat() < 0.02F) {
+							channel.sendMessage("Hey " + guild.getOwner().mention() + ", " + user.mention() + " is trying to use a restricted command!");
+						} else {
+							channel.sendMessage("You don't have permission to use this command!");
 						}
 					}
 					break;
@@ -375,9 +444,7 @@ public class BigSausage {
 						if (words.length == 2) {
 							String out = "";
 							for (String username : trusted) {
-								// if(!username.contentEquals(myUserID)){
 								out += "<@" + username + ">, ";
-								// }
 							}
 							channel.sendMessage("Trusted users: " + out.substring(0, out.lastIndexOf(", ")));
 						} else {
@@ -386,6 +453,12 @@ public class BigSausage {
 							trusted.add(mention);
 							trustedUsersPerGuild.put(guild.getStringID(), trusted);
 							channel.sendMessage("Added <@" + mention + "> to the trusted users list.");
+						}
+					} else {
+						if (rand.nextFloat() < 0.02F) {
+							channel.sendMessage("Hey " + guild.getOwner().mention() + ", " + user.mention() + " is trying to use a restricted command!");
+						} else {
+							channel.sendMessage("You don't have permission to use this command!");
 						}
 					}
 					break;
@@ -461,9 +534,13 @@ public class BigSausage {
 							if (vChannel.getConnectedUsers().contains(triggerUser)) {
 								SecureRandom rand = new SecureRandom();
 								if (rand.nextFloat() < 0.1F) {
-									this.queueFile(silence, guild, vChannel, triggerUser, triggerChannel);
+									this.queueFile(silence, guild, vChannel, triggerUser, false);
 								}
-								this.queueFile(clip.getFile(), guild, vChannel, triggerUser, triggerChannel);
+								if (rand.nextFloat() > 0.0001) {
+									this.queueFile(clip.getFile(), guild, vChannel, triggerUser, false);
+								} else {
+									this.queueFile(never, guild, vChannel, triggerUser, false);
+								}
 							}
 						}
 					}
@@ -472,16 +549,16 @@ public class BigSausage {
 		}
 	}
 
-	private void queueFile(File f, IGuild guild, IVoiceChannel channelToJoin, IUser triggerUser, IChannel triggerChannel) {
+	private void queueFile(File f, IGuild guild, IVoiceChannel channelToJoin, IUser triggerUser, boolean commanded) {
 		int queueLength = 0;
 		try {
 			AudioPlayer player = getPlayer(guild);
 			queueLength = player.getPlaylist().size();
-			if (queueLength < maxQueueSize) {
+			if (queueLength < IO.getMaxFilesPerMessage(guild)) {
 				player.setVolume(1);
 				player.setLoop(false);
 				player.setPaused(false);
-				join(channelToJoin, triggerUser, triggerChannel);
+				join(channelToJoin, triggerUser, commanded);
 				player.queue(f);
 			}
 		} catch (Exception e) {
@@ -503,19 +580,23 @@ public class BigSausage {
 		}
 	}
 
-	private void join(IChannel channel, IUser user, IChannel general) throws RateLimitException, DiscordException, MissingPermissionsException {
-		if (!user.getVoiceStateForGuild(channel.getGuild()).getChannel().getConnectedUsers().contains(user)) {
-			// general.sendMessage("You're not in a voice channel, " + user.mention());
+	private void join(IVoiceChannel channel, IUser user, boolean commanded) throws RateLimitException, DiscordException, MissingPermissionsException {
+		if (channel == null || user == null) {
 			return;
-		} else {
-			IVoiceChannel voice = user.getVoiceStateForGuild(channel.getGuild()).getChannel();
+		}else if(user.getVoiceStateForGuild(channel.getGuild()) == null){
+			return;
+		}else if(user.getVoiceStateForGuild(channel.getGuild()).getChannel() == null){
+			channel.join();
+		} else if (user.getVoiceStateForGuild(channel.getGuild()).getChannel().getConnectedUsers().contains(user) || commanded) {
+			IVoiceChannel voice;
+			if (!commanded) {
+				voice = user.getVoiceStateForGuild(channel.getGuild()).getChannel();
+			} else {
+				voice = channel;
+			}
 			if (!voice.getModifiedPermissions(client.getOurUser()).contains(Permissions.VOICE_CONNECT)) {
-				// general.sendMessage("I can't join that voice channel!");
-			} else if (voice.getUserLimit() != 0 && voice.getConnectedUsers().size() >= voice.getUserLimit()) {
-				// general.sendMessage("That room is full!");
 			} else {
 				voice.join();
-				// general.sendMessage("Connected to **" + voice.getName() + "**.");
 			}
 		}
 	}
@@ -571,7 +652,7 @@ public class BigSausage {
 		out.close();
 	}
 
-	public void startRenameBat() throws Exception{
+	public void startRenameBat() throws Exception {
 		ArrayList<String> command = new ArrayList<String>();
 		command.add("rename.bat");
 

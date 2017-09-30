@@ -18,10 +18,12 @@ public enum EnumCommand {
 	add_tts(false, "Add a tts string to the tts list. Usage: !bs add-tts <exact tts string>"),
 	images(false, "List all the image names BigSausage can link. Usage: !bs images"),
 	changelog(false, "List the notable changes since the last version. Usage: !bs changelog"),
+	max_clips(false, "List or edit the maximum number of audio clips that BigSausage will queue per message. Usage: \"!bs max-clips\" (to list the current setting) or \"!bs max-clips <non-zero, positive integer>\" to set a new maximum."),
 	help(false, ""), 
 	save_all(true, ""), 
 	update(true, ""),
 	force_update(true, ""),
+	play_clip(true, ""),
 	shutdown(true, "");
 
 	private boolean isSecret;
@@ -86,6 +88,10 @@ public enum EnumCommand {
 				return force_update;
 			case "changelog":
 				return changelog;
+			case "max-clips":
+				return max_clips;
+			case "play-clip":
+				return play_clip;
 			default:
 				return help;
 		}
