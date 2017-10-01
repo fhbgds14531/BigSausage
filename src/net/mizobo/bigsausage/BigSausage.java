@@ -41,8 +41,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.7.5";
-	private static final String CHANGELOG = "Added science";
+	private static final String VERSION = "0.1.8";
+	private static final String CHANGELOG = "Added get-fucked command. Use \"!bs help get-fucked\" for more info.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -102,6 +102,8 @@ public class BigSausage {
 
 	private static final File serverSettings = new File("settings");
 	static String lastTts = "";
+	
+	Map<IUser, IVoiceChannel> movedFrom = new HashMap<IUser, IVoiceChannel>();
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DiscordException, RateLimitException, FileNotFoundException, IOException, ClassNotFoundException {
@@ -221,6 +223,41 @@ public class BigSausage {
 			final File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
+				case get_fucked:
+					if(getHasPermission(user, guild, TrustLevel.Admin_Only)){
+						if (wordList.size() < 5) return;
+						List<String> remainder = new ArrayList<String>();
+						for(String s : wordList){
+							if(wordList.indexOf(s) > 3){
+								remainder.add(s);
+							}
+						}
+						if(guild.getUserByID(361063755045404673L).getPermissionsForGuild(guild).contains(Permissions.VOICE_MOVE_MEMBERS)){
+							IUser target = guild.getUserByID(Long.valueOf(wordList.get(2).replace("<@", "").replace(">", "").replace("!", "")));
+							List<IVoiceChannel> vch = guild.getVoiceChannelsByName(wordList.get(3).replace("-", " ").trim());
+							if (vch.size() < 1) {
+								channel.sendMessage("If that channel actually exists, I can't access it.");
+								return;
+							}
+							IVoiceChannel chan = vch.get(0);
+							if(target.getVoiceStateForGuild(guild) != null){
+								if(target.getVoiceStateForGuild(guild).getChannel() != null){
+									if(chan.getModifiedPermissions(target).contains(Permissions.VOICE_CONNECT)){
+										movedFrom.put(target, target.getVoiceStateForGuild(guild).getChannel());
+										target.moveToVoiceChannel(chan);
+										Thread.sleep(200L);
+										this.checkListAndQueueFile(remainder, guild, target, channel);
+									}else{
+										channel.sendMessage("I can't move them there.");
+									}
+								}
+							}
+						}else{
+							channel.sendMessage("I don't have permission to move members. That command is useless right now");
+							return;
+						}
+					}
+					break;
 				case play_clip:
 					if (wordList.size() < 4) return;
 					if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
@@ -577,6 +614,13 @@ public class BigSausage {
 	public void onTrackFinish(TrackFinishEvent event) throws RateLimitException, DiscordException, MissingPermissionsException {
 		Optional<Track> newT = event.getNewTrack();
 		if (!newT.isPresent()) {
+			List<IUser> users = event.getPlayer().getGuild().getConnectedVoiceChannel().getConnectedUsers();
+			for(IUser u : users){
+				if(movedFrom.containsKey(u)){
+					u.moveToVoiceChannel(movedFrom.get(u));
+					movedFrom.remove(u);
+				}
+			}
 			event.getPlayer().getGuild().getConnectedVoiceChannel().leave();
 		} else {
 		}

@@ -18,6 +18,7 @@ public enum EnumCommand {
 	add_tts(false, "Add a tts string to the tts list. Usage: !bs add-tts <exact tts string>"),
 	images(false, "List all the image names BigSausage can link. Usage: !bs images"),
 	changelog(false, "List the notable changes since the last version. Usage: !bs changelog"),
+	get_fucked(false, "Move a user to a specific voice channel, then play the specified clip, can only be used by an admin. Usage: !bs get-fucked \\@<username> <voice-channel-name> <clips to play>"),
 	max_clips(false, "List or edit the maximum number of audio clips that BigSausage will queue per message. Usage: \"!bs max-clips\" (to list the current setting) or \"!bs max-clips <non-zero, positive integer>\" to set a new maximum."),
 	help(false, ""), 
 	save_all(true, ""), 
@@ -92,6 +93,8 @@ public enum EnumCommand {
 				return max_clips;
 			case "play-clip":
 				return play_clip;
+			case "get-fucked":
+				return get_fucked;
 			default:
 				return help;
 		}
