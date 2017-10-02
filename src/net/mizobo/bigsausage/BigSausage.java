@@ -41,8 +41,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8";
-	private static final String CHANGELOG = "Added get-fucked command. Use \"!bs help get-fucked\" for more info.";
+	private static final String VERSION = "0.1.8.2";
+	private static final String CHANGELOG = "Fixed bot linking more than one image of a type per message.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -102,11 +102,12 @@ public class BigSausage {
 
 	private static final File serverSettings = new File("settings");
 	static String lastTts = "";
-	
+
 	Map<IUser, IVoiceChannel> movedFrom = new HashMap<IUser, IVoiceChannel>();
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DiscordException, RateLimitException, FileNotFoundException, IOException, ClassNotFoundException {
+
 		for (EnumClips clip : EnumClips.values()) {
 			if (!clip.getFile().exists()) {
 				String filename = clip.getFile().getName().replace("files/", "");
@@ -136,7 +137,7 @@ public class BigSausage {
 		}
 		trustedUsersPerGuild = tempMap1;
 		System.out.println("Logging bot in...");
-		client = new ClientBuilder().withToken(TOKEN).build();
+		client = new ClientBuilder().withToken(TOKEN).withRecommendedShardCount().build();
 		client.getDispatcher().registerListener(new BigSausage());
 		client.login();
 	}
@@ -224,15 +225,15 @@ public class BigSausage {
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
 				case get_fucked:
-					if(getHasPermission(user, guild, TrustLevel.Admin_Only)){
+					if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
 						if (wordList.size() < 5) return;
 						List<String> remainder = new ArrayList<String>();
-						for(String s : wordList){
-							if(wordList.indexOf(s) > 3){
+						for (String s : wordList) {
+							if (wordList.indexOf(s) > 3) {
 								remainder.add(s);
 							}
 						}
-						if(guild.getUserByID(361063755045404673L).getPermissionsForGuild(guild).contains(Permissions.VOICE_MOVE_MEMBERS)){
+						if (guild.getUserByID(361063755045404673L).getPermissionsForGuild(guild).contains(Permissions.VOICE_MOVE_MEMBERS)) {
 							IUser target = guild.getUserByID(Long.valueOf(wordList.get(2).replace("<@", "").replace(">", "").replace("!", "")));
 							List<IVoiceChannel> vch = guild.getVoiceChannelsByName(wordList.get(3).replace("-", " ").trim());
 							if (vch.size() < 1) {
@@ -240,19 +241,19 @@ public class BigSausage {
 								return;
 							}
 							IVoiceChannel chan = vch.get(0);
-							if(target.getVoiceStateForGuild(guild) != null){
-								if(target.getVoiceStateForGuild(guild).getChannel() != null){
-									if(chan.getModifiedPermissions(target).contains(Permissions.VOICE_CONNECT)){
+							if (target.getVoiceStateForGuild(guild) != null) {
+								if (target.getVoiceStateForGuild(guild).getChannel() != null) {
+									if (chan.getModifiedPermissions(target).contains(Permissions.VOICE_CONNECT)) {
 										movedFrom.put(target, target.getVoiceStateForGuild(guild).getChannel());
 										target.moveToVoiceChannel(chan);
 										Thread.sleep(200L);
 										this.checkListAndQueueFile(remainder, guild, target, channel);
-									}else{
+									} else {
 										channel.sendMessage("I can't move them there.");
 									}
 								}
 							}
-						}else{
+						} else {
 							channel.sendMessage("I don't have permission to move members. That command is useless right now");
 							return;
 						}
@@ -395,6 +396,8 @@ public class BigSausage {
 				case add_trigger:
 				case list_triggers:
 				case remove_trigger:
+				case remove_all_triggers:
+				case reset_triggers:
 					Commands.editTriggers(c, wordList, guild, user, channel);
 					break;
 				case clips:
@@ -555,8 +558,8 @@ public class BigSausage {
 
 	public void checkListAndQueueFile(List<String> commandText, IGuild guild, IUser triggerUser, IChannel triggerChannel) throws FileNotFoundException {
 		if (commandText.size() == 0 || commandText.get(0).contentEquals(PREFIX)) return;
-		for (String word : commandText) {
-			for (EnumImage image : EnumImage.values()) {
+		for (EnumImage image : EnumImage.values()) {
+			for (String word : commandText) {
 				List<String> list = IO.getTriggersForGuild(guild, image.toString());
 				for (String trigger : list) {
 					if (word.toLowerCase().contains(trigger)) {
@@ -565,6 +568,8 @@ public class BigSausage {
 					}
 				}
 			}
+		}
+		for (String word : commandText) {
 			for (EnumClips clip : EnumClips.values()) {
 				List<String> list = IO.getTriggersForGuild(guild, clip.toString());
 				for (String s : list) {
@@ -615,8 +620,8 @@ public class BigSausage {
 		Optional<Track> newT = event.getNewTrack();
 		if (!newT.isPresent()) {
 			List<IUser> users = event.getPlayer().getGuild().getConnectedVoiceChannel().getConnectedUsers();
-			for(IUser u : users){
-				if(movedFrom.containsKey(u)){
+			for (IUser u : users) {
+				if (movedFrom.containsKey(u)) {
 					u.moveToVoiceChannel(movedFrom.get(u));
 					movedFrom.remove(u);
 				}
@@ -629,9 +634,9 @@ public class BigSausage {
 	private void join(IVoiceChannel channel, IUser user, boolean commanded) throws RateLimitException, DiscordException, MissingPermissionsException {
 		if (channel == null || user == null) {
 			return;
-		}else if(user.getVoiceStateForGuild(channel.getGuild()) == null){
+		} else if (user.getVoiceStateForGuild(channel.getGuild()) == null) {
 			return;
-		}else if(user.getVoiceStateForGuild(channel.getGuild()).getChannel() == null){
+		} else if (user.getVoiceStateForGuild(channel.getGuild()).getChannel() == null) {
 			channel.join();
 		} else if (user.getVoiceStateForGuild(channel.getGuild()).getChannel().getConnectedUsers().contains(user) || commanded) {
 			IVoiceChannel voice;

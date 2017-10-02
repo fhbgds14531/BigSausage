@@ -14,6 +14,14 @@ public class Commands {
 				String clipName = fullCommandMessage.get(2).toLowerCase();
 				String trigger = "";
 				switch (command) {
+					case reset_triggers:
+						IO.saveTriggersForGuild(guild, EnumClips.getFromString(clipName).getDefaultTriggers(), clipName);
+						channel.sendMessage("Reset triggers for \"" + clipName + "\"");
+						break;
+					case remove_all_triggers:
+						IO.saveTriggersForGuild(guild, BigSausage.emptyList, clipName);
+						channel.sendMessage("Removed all triggers from the trigger list for \"" + clipName + "\"");
+						break;
 					case add_trigger:
 						if (fullCommandMessage.size() != 4) {
 							channel.sendMessage("Invalid number of arguments. Use \"!bs help\" for help.");
@@ -28,7 +36,12 @@ public class Commands {
 						for(String s : IO.getTriggersForGuild(guild, clipName)){
 							out += s + ", ";
 						}
-						channel.sendMessage("Triggers for \"" + clipName + "\" are as follows: " + out.substring(0, out.lastIndexOf(", ")));
+						if(out.length() > 0){
+							out = "Triggers for \"" + clipName + "\" are as follows: " + out.substring(0, out.lastIndexOf(", "));
+						}else{
+							out = "There are currently no triggers for \"" + clipName + "\". Try adding some with \"!bs add-trigger " + clipName + " <trigger word>\"";
+						}
+						channel.sendMessage(out);
 						break;
 					case remove_trigger:
 						if (fullCommandMessage.size() != 4) {

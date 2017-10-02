@@ -4,12 +4,14 @@ settings/
 *.classpath
 *.project
 *.token
+lib/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
 # Package Files #
 Discord*.jar
+slf4j*.jar
 *.war
 *.ear
 
