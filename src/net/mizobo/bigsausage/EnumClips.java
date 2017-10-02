@@ -10,8 +10,8 @@ public enum EnumClips {
 	sceptre(BigSausage.sceptre, BigSausage.sceptreList, false), hatemyself(BigSausage.hatemyself, BigSausage.hateMyselfList, false), hcw(BigSausage.hcw, BigSausage.hcwList, false), 
 	korean(BigSausage.korean, BigSausage.koreanList, false), bursela(BigSausage.bursela, BigSausage.burselaList, false), burse(BigSausage.burse, BigSausage.burseList, false), 
 	whiskey(BigSausage.whiskey, BigSausage.whiskeyList, false), egg(BigSausage.egg, BigSausage.eggList, false), choice(BigSausage.choice, BigSausage.choiceList, false), 
-	grunch(BigSausage.grunch, BigSausage.grunchList, false), sainte(BigSausage.sainte, BigSausage.sainteList, false), silence(BigSausage.silence, BigSausage.emptyList, true), 
-	never(BigSausage.never, BigSausage.emptyList, true);
+	grunch(BigSausage.grunch, BigSausage.grunchList, false), sainte(BigSausage.sainte, BigSausage.sainteList, false), tube(BigSausage.tube, BigSausage.tubeList, false),
+	silence(BigSausage.silence, BigSausage.emptyList, true), never(BigSausage.never, BigSausage.emptyList, true), nightmare(BigSausage.nightmare, BigSausage.nightmareList, true);
 
 	private File file;
 	private List<String> defaultTriggers;
@@ -63,6 +63,10 @@ public enum EnumClips {
 				return silence;
 			case "never":
 				return never;
+			case "nightmare":
+				return nightmare;
+			case "tube":
+				return tube;
 			default:
 				return null;
 		}

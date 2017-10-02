@@ -41,8 +41,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.2";
-	private static final String CHANGELOG = "Fixed bot linking more than one image of a type per message.";
+	private static final String VERSION = "0.1.8.3";
+	private static final String CHANGELOG = "Added tube";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -73,6 +73,8 @@ public class BigSausage {
 	static final File science = new File("files/science.png");
 	static final File never = new File("files/never.wav");
 	static final File silence = new File("files/silence.wav");
+	static final File nightmare = new File("files/nightmare.wav");
+	static final File tube = new File("files/tube.wav");
 	private static final String myUserID = "198575970624471040";
 	static final List<String> sausageList = Arrays.asList(new String[] { "sausage", "thomas", "daddy" });
 	static final List<String> uglyList = Arrays.asList(new String[] { "ugly", "motherfucker", "jame" });
@@ -95,6 +97,8 @@ public class BigSausage {
 	static final List<String> legoList = Arrays.asList(new String[] { "lego" });
 	static final List<String> seededList = Arrays.asList(new String[] { "seeded" });
 	static final List<String> scienceList = Arrays.asList(new String[] { "science" });
+	static final List<String> nightmareList = Arrays.asList(new String[] { "nightmare" });
+	static final List<String> tubeList = Arrays.asList(new String[] { "tube" });
 	static final List<String> emptyList = Arrays.asList(new String[] {});
 	static final List<String> whiskeyList = Arrays
 			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
@@ -599,11 +603,15 @@ public class BigSausage {
 			AudioPlayer player = getPlayer(guild);
 			queueLength = player.getPlaylist().size();
 			if (queueLength < IO.getMaxFilesPerMessage(guild)) {
-				player.setVolume(1);
 				player.setLoop(false);
 				player.setPaused(false);
 				join(channelToJoin, triggerUser, commanded);
 				player.queue(f);
+				if(f == nightmare){
+					player.setVolume(0.09f);
+				}else{
+					player.setVolume(1);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
