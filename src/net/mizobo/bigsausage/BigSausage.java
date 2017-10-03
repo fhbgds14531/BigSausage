@@ -41,8 +41,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.3";
-	private static final String CHANGELOG = "Added tube";
+	private static final String VERSION = "0.1.8.4";
+	private static final String CHANGELOG = "Fixed get-fucked sometimes not moving users back";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -107,7 +107,7 @@ public class BigSausage {
 	private static final File serverSettings = new File("settings");
 	static String lastTts = "";
 
-	Map<IUser, IVoiceChannel> movedFrom = new HashMap<IUser, IVoiceChannel>();
+	List<Fucker> fucked = new ArrayList<Fucker>();
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DiscordException, RateLimitException, FileNotFoundException, IOException, ClassNotFoundException {
@@ -248,7 +248,7 @@ public class BigSausage {
 							if (target.getVoiceStateForGuild(guild) != null) {
 								if (target.getVoiceStateForGuild(guild).getChannel() != null) {
 									if (chan.getModifiedPermissions(target).contains(Permissions.VOICE_CONNECT)) {
-										movedFrom.put(target, target.getVoiceStateForGuild(guild).getChannel());
+										fucked.add(new Fucker(target, target.getVoiceStateForGuild(guild).getChannel(), chan));
 										target.moveToVoiceChannel(chan);
 										Thread.sleep(200L);
 										this.checkListAndQueueFile(remainder, guild, target, channel);
@@ -627,11 +627,9 @@ public class BigSausage {
 	public void onTrackFinish(TrackFinishEvent event) throws RateLimitException, DiscordException, MissingPermissionsException {
 		Optional<Track> newT = event.getNewTrack();
 		if (!newT.isPresent()) {
-			List<IUser> users = event.getPlayer().getGuild().getConnectedVoiceChannel().getConnectedUsers();
-			for (IUser u : users) {
-				if (movedFrom.containsKey(u)) {
-					u.moveToVoiceChannel(movedFrom.get(u));
-					movedFrom.remove(u);
+			for(Fucker f : fucked){
+				if(f.originChannel.getGuild() == event.getPlayer().getGuild()){
+					f.fuckTarget.moveToVoiceChannel(f.originChannel);
 				}
 			}
 			event.getPlayer().getGuild().getConnectedVoiceChannel().leave();
