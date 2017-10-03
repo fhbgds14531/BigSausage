@@ -627,10 +627,15 @@ public class BigSausage {
 	public void onTrackFinish(TrackFinishEvent event) throws RateLimitException, DiscordException, MissingPermissionsException {
 		Optional<Track> newT = event.getNewTrack();
 		if (!newT.isPresent()) {
+			List<Fucker> removalList = new ArrayList<Fucker>();
 			for(Fucker f : fucked){
 				if(f.originChannel.getGuild() == event.getPlayer().getGuild()){
 					f.fuckTarget.moveToVoiceChannel(f.originChannel);
+					removalList.add(f);
 				}
+			}
+			for(Fucker f : removalList){
+				fucked.remove(f);
 			}
 			event.getPlayer().getGuild().getConnectedVoiceChannel().leave();
 		} else {
