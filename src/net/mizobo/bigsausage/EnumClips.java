@@ -11,7 +11,8 @@ public enum EnumClips {
 	korean(BigSausage.korean, BigSausage.koreanList, false), bursela(BigSausage.bursela, BigSausage.burselaList, false), burse(BigSausage.burse, BigSausage.burseList, false), 
 	whiskey(BigSausage.whiskey, BigSausage.whiskeyList, false), egg(BigSausage.egg, BigSausage.eggList, false), choice(BigSausage.choice, BigSausage.choiceList, false), 
 	grunch(BigSausage.grunch, BigSausage.grunchList, false), sainte(BigSausage.sainte, BigSausage.sainteList, false), tube(BigSausage.tube, BigSausage.tubeList, false),
-	silence(BigSausage.silence, BigSausage.emptyList, true), never(BigSausage.never, BigSausage.emptyList, true), nightmare(BigSausage.nightmare, BigSausage.nightmareList, true);
+	silence(BigSausage.silence, BigSausage.emptyList, true), never(BigSausage.never, BigSausage.emptyList, true), nightmare(BigSausage.nightmare, BigSausage.nightmareList, true),
+	thomas(BigSausage.thomas, BigSausage.emptyList, true);
 
 	private File file;
 	private List<String> defaultTriggers;
@@ -21,6 +22,10 @@ public enum EnumClips {
 		this.file = fileToPlay;
 		this.defaultTriggers = defaultTriggers;
 		this.hidden = hidden;
+	}
+	
+	public boolean getIsHidden(){
+		return this.hidden;
 	}
 
 	public static EnumClips getFromString(String s) {
@@ -67,6 +72,8 @@ public enum EnumClips {
 				return nightmare;
 			case "tube":
 				return tube;
+			case "thomas":
+				return thomas;
 			default:
 				return null;
 		}

@@ -41,8 +41,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.4";
-	private static final String CHANGELOG = "Fixed get-fucked sometimes not moving users back";
+	private static final String VERSION = "0.1.8.5";
+	private static final String CHANGELOG = "Added \"!bs thomas\"";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -64,6 +64,7 @@ public class BigSausage {
 	static final File grunch = new File("files/grunch.wav");
 	static final File sainte = new File("files/sainte.wav");
 	static final File egg = new File("files/egg.wav");
+	static final File thomas = new File("files/thomas.wav");
 	static final File whiskey = new File("files/whiskey.wav");
 	static final File corndog = new File("files/corndog.png");
 	static final File lego = new File("files/lego.png");
@@ -175,7 +176,7 @@ public class BigSausage {
 		}
 		for (EnumClips clip : EnumClips.values()) {
 			File triggersFile = new File("settings/" + guild.getStringID() + "/triggers/" + clip.toString() + ".txt");
-			if (!triggersFile.exists()) {
+			if (!triggersFile.exists() && clip.getDefaultTriggers().size() != 0) {
 				triggersFile.createNewFile();
 				Files.write(triggersFile.toPath(), clip.getDefaultTriggers(), StandardOpenOption.WRITE);
 				System.out.println("Recreated missing triggers file for \"" + clip.toString() + "\" in guild \"" + guild.getName() + "\"");
@@ -228,6 +229,21 @@ public class BigSausage {
 			final File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
+				case thomas:
+					if(getHasPermission(user, guild, TrustLevel.Trusted) || user.getStringID().contentEquals("158744331178475520")){
+						if (user.getVoiceStateForGuild(guild) != null) {
+							if (user.getVoiceStateForGuild(guild).getChannel() != null) {
+								this.queueFile(thomas, guild, user.getVoiceStateForGuild(guild).getChannel(), user, true);
+							}
+						}
+					} else {
+						if (rand.nextFloat() < 0.02F) {
+							channel.sendMessage("Hey " + guild.getOwner().mention() + ", " + user.mention() + " is trying to use a restricted command!");
+						} else {
+							channel.sendMessage("You don't have permission to use this command!");
+						}
+					}
+					break;
 				case get_fucked:
 					if (getHasPermission(user, guild, TrustLevel.Admin_Only)) {
 						if (wordList.size() < 5) return;
@@ -342,9 +358,11 @@ public class BigSausage {
 						int count = 10;
 						while (count > 0 && ttsString.contentEquals(lastTts)) {
 							ttsString = tts.get(rand.nextInt(tts.size()));
+							count--;
 						}
 						if (count == 0) System.out.println("Gave up trying to find a unique tts in guild " + guild.getName());
 						channel.sendMessage(ttsString, true);
+						lastTts = ttsString;
 					} else {
 						channel.sendMessage("There are currently no tts strings in the registry for this server. try adding some!");
 					}
@@ -533,10 +551,14 @@ public class BigSausage {
 
 	public void setupDefaults(IGuild guild) {
 		for (EnumClips clip : EnumClips.values()) {
-			IO.saveTriggersForGuild(guild, clip.getDefaultTriggers(), clip.toString());
+			if(clip.getDefaultTriggers().size() > 0){
+				IO.saveTriggersForGuild(guild, clip.getDefaultTriggers(), clip.toString());
+			}
 		}
 		for (EnumImage image : EnumImage.values()) {
-			IO.saveTriggersForGuild(guild, image.getDefaultTriggers(), image.toString());
+			if(image.getDefaultTriggers().size() > 0){
+				IO.saveTriggersForGuild(guild, image.getDefaultTriggers(), image.toString());
+			}
 		}
 	}
 
