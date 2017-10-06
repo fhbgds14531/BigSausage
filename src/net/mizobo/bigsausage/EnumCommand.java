@@ -27,6 +27,7 @@ public enum EnumCommand {
 	save_all(true, ""), 
 	update(true, ""),
 	force_update(true, ""),
+	update_to(true, ""),
 	play_clip(true, ""),
 	shutdown(true, "");
 
@@ -102,6 +103,8 @@ public enum EnumCommand {
 				return remove_all_triggers;
 			case "reset-triggers":
 				return reset_triggers;
+			case "update-to":
+				return update_to;
 			case "thomas":
 				return thomas;
 			default:

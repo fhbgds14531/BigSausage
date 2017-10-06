@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum EnumClips {
+public enum EnumClips implements ILinkable{
+	
 	sausage(BigSausage.sausage, BigSausage.sausageList, false), ugly(BigSausage.ugly, BigSausage.uglyList, false), enemy(BigSausage.enemy, BigSausage.enemyList, false), 
 	fire(BigSausage.fire, BigSausage.fireList, false), linked(BigSausage.linked, BigSausage.linkedList, false), miceway(BigSausage.miceway, BigSausage.miceWayList, false), 
 	sceptre(BigSausage.sceptre, BigSausage.sceptreList, false), hatemyself(BigSausage.hatemyself, BigSausage.hateMyselfList, false), hcw(BigSausage.hcw, BigSausage.hcwList, false), 
@@ -24,10 +25,6 @@ public enum EnumClips {
 		this.hidden = hidden;
 	}
 	
-	public boolean getIsHidden(){
-		return this.hidden;
-	}
-
 	public static EnumClips getFromString(String s) {
 		switch (s) {
 			case "sausage":
@@ -97,6 +94,11 @@ public enum EnumClips {
 			}
 		}
 		return out.substring(0, out.lastIndexOf(", "));
+	}
+
+	@Override
+	public boolean getIsHidden() {
+		return this.hidden;
 	}
 
 }

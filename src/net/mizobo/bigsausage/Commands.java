@@ -12,14 +12,15 @@ public class Commands {
 	public static void editTriggers(EnumCommand command, List<String> fullCommandMessage, IGuild guild, IUser commandSender, IChannel channel) {
 			if (BigSausage.getHasPermission(commandSender, guild, TrustLevel.Admin_Only)) {
 				String clipName = fullCommandMessage.get(2).toLowerCase();
+				ILinkable linkable = Util.getLinkableFromString(clipName);
 				String trigger = "";
 				switch (command) {
 					case reset_triggers:
-						IO.saveTriggersForGuild(guild, EnumClips.getFromString(clipName).getDefaultTriggers(), clipName);
+						IO.saveTriggersForGuild(guild, linkable.getDefaultTriggers(), linkable);
 						channel.sendMessage("Reset triggers for \"" + clipName + "\"");
 						break;
 					case remove_all_triggers:
-						IO.saveTriggersForGuild(guild, BigSausage.emptyList, clipName);
+						IO.saveTriggersForGuild(guild, BigSausage.emptyList, linkable);
 						channel.sendMessage("Removed all triggers from the trigger list for \"" + clipName + "\"");
 						break;
 					case add_trigger:
@@ -28,12 +29,12 @@ public class Commands {
 							break;
 						}
 						trigger = fullCommandMessage.get(3);
-						IO.addTriggerWord(trigger, clipName, guild);
+						IO.addTriggerWord(trigger, linkable, guild);
 						channel.sendMessage("Added \"" + trigger + "\" to the trigger list for \"" + clipName + "\"");
 						break;
 					case list_triggers:
 						String out = "";
-						for(String s : IO.getTriggersForGuild(guild, clipName)){
+						for(String s : IO.getTriggersForGuild(guild, linkable)){
 							out += s + ", ";
 						}
 						if(out.length() > 0){
@@ -49,7 +50,7 @@ public class Commands {
 							break;
 						}
 						trigger = fullCommandMessage.get(3);
-						IO.removeTriggerWord(trigger, clipName, guild);
+						IO.removeTriggerWord(trigger, linkable, guild);
 						channel.sendMessage("Removed \"" + trigger + "\" from the trigger list for \"" + clipName + "\"");
 						break;
 					default:

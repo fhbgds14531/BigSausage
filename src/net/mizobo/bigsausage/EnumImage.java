@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum EnumImage {
+public enum EnumImage implements ILinkable{
 	succ(BigSausage.corndog, BigSausage.succList),
 	horse(BigSausage.horse, BigSausage.horseList),
 	lego(BigSausage.lego, BigSausage.legoList),
@@ -15,6 +15,7 @@ public enum EnumImage {
 	File fileToLink;
 	List<String> defaultTriggers;
 	
+	@Override
 	public File getFile(){
 		return this.fileToLink;
 	}
@@ -41,6 +42,7 @@ public enum EnumImage {
 		this.defaultTriggers = defaultTriggers;
 	}
 	
+	@Override
 	public List<String> getDefaultTriggers(){
 		List<String> list = new ArrayList<String>();
 		list.addAll(defaultTriggers);
@@ -53,5 +55,10 @@ public enum EnumImage {
 			out += image.toString() + ", ";
 		}
 		return out.substring(0, out.lastIndexOf(", "));
+	}
+
+	@Override
+	public boolean getIsHidden() {
+		return false;
 	}
 }

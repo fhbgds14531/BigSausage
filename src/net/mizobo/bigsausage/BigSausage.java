@@ -1,11 +1,13 @@
 package net.mizobo.bigsausage;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
@@ -41,8 +43,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.5";
-	private static final String CHANGELOG = "Added \"!bs thomas\"";
+	private static final String VERSION = "0.1.8.6";
+	private static final String CHANGELOG = "Fix a stupid error.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -230,7 +232,7 @@ public class BigSausage {
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
 				case thomas:
-					if(getHasPermission(user, guild, TrustLevel.Trusted) || user.getStringID().contentEquals("158744331178475520")){
+					if (getHasPermission(user, guild, TrustLevel.Trusted) || user.getStringID().contentEquals("158744331178475520")) {
 						if (user.getVoiceStateForGuild(guild) != null) {
 							if (user.getVoiceStateForGuild(guild).getChannel() != null) {
 								this.queueFile(thomas, guild, user.getVoiceStateForGuild(guild).getChannel(), user, true);
@@ -325,6 +327,37 @@ public class BigSausage {
 				case changelog:
 					channel.sendMessage("Version: " + VERSION + "\n Notable changes: " + CHANGELOG);
 					break;
+				case update_to:
+					if (user.getStringID().equals(myUserID)) {
+						if (wordList.size() < 3) {
+							channel.sendMessage("Invalid number of arguments.");
+							return;
+						} else {
+							String newVersionString = wordList.get(2);
+							List<String> content = new ArrayList<String>();
+							URL update = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/jar/" + newVersionString + "/BigSausage.jar");
+							InputStream in = update.openStream(); // throws an IOException
+							BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+							String line;
+							while ((line = reader.readLine()) != null) {
+								content.add(line);
+							}
+							if(!content.contains("    <title>Page not found &middot; GitHub</title>")){
+								System.out.println("Successfull update command given. Updating from " + VERSION + " to " + newVersionString);
+								System.out.println("Downloading jar");
+								update = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/jar/" + newVersionString + "/BigSausage.jar?raw=true");
+								download(update, new File("BigSausage_1.jar"));
+								System.out.println("Done! Attempting to restart...");
+								channel.sendMessage("Restarting...");
+								Runtime.getRuntime().exec("cmd /c start \"\" rename.bat");
+								client.logout();
+								System.exit(0);
+							}else{
+								channel.sendMessage("Invalid target version.");
+							}
+						}
+						break;
+					}
 				case force_update:
 				case update:
 					if (user.getStringID().equals(myUserID)) {
@@ -339,7 +372,7 @@ public class BigSausage {
 							download(update, new File("BigSausage_1.jar"));
 							System.out.println("Done! Attempting to restart...");
 							channel.sendMessage("Restarting...");
-							Runtime.getRuntime().exec(new String[] { "cmd.exe", "/c", "rename.bat" });
+							Runtime.getRuntime().exec("cmd /c start \"\" rename.bat");
 							client.logout();
 							version.deleteOnExit();
 							System.exit(0);
@@ -551,13 +584,13 @@ public class BigSausage {
 
 	public void setupDefaults(IGuild guild) {
 		for (EnumClips clip : EnumClips.values()) {
-			if(clip.getDefaultTriggers().size() > 0){
-				IO.saveTriggersForGuild(guild, clip.getDefaultTriggers(), clip.toString());
+			if (clip.getDefaultTriggers().size() > 0) {
+				IO.saveTriggersForGuild(guild, clip.getDefaultTriggers(), clip);
 			}
 		}
 		for (EnumImage image : EnumImage.values()) {
-			if(image.getDefaultTriggers().size() > 0){
-				IO.saveTriggersForGuild(guild, image.getDefaultTriggers(), image.toString());
+			if (image.getDefaultTriggers().size() > 0) {
+				IO.saveTriggersForGuild(guild, image.getDefaultTriggers(), image);
 			}
 		}
 	}
@@ -586,7 +619,7 @@ public class BigSausage {
 		if (commandText.size() == 0 || commandText.get(0).contentEquals(PREFIX)) return;
 		for (EnumImage image : EnumImage.values()) {
 			for (String word : commandText) {
-				List<String> list = IO.getTriggersForGuild(guild, image.toString());
+				List<String> list = IO.getTriggersForGuild(guild, image);
 				for (String trigger : list) {
 					if (word.toLowerCase().contains(trigger)) {
 						triggerChannel.sendFile(image.getFile());
@@ -597,7 +630,10 @@ public class BigSausage {
 		}
 		for (String word : commandText) {
 			for (EnumClips clip : EnumClips.values()) {
-				List<String> list = IO.getTriggersForGuild(guild, clip.toString());
+				if (clip == EnumClips.hcw) {
+					System.out.println("hcw");
+				}
+				List<String> list = IO.getTriggersForGuild(guild, clip);
 				for (String s : list) {
 					if (word.toLowerCase().contains(s)) {
 						for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
@@ -629,9 +665,9 @@ public class BigSausage {
 				player.setPaused(false);
 				join(channelToJoin, triggerUser, commanded);
 				player.queue(f);
-				if(f == nightmare){
+				if (f == nightmare) {
 					player.setVolume(0.09f);
-				}else{
+				} else {
 					player.setVolume(1);
 				}
 			}
@@ -650,13 +686,13 @@ public class BigSausage {
 		Optional<Track> newT = event.getNewTrack();
 		if (!newT.isPresent()) {
 			List<Fucker> removalList = new ArrayList<Fucker>();
-			for(Fucker f : fucked){
-				if(f.originChannel.getGuild() == event.getPlayer().getGuild()){
+			for (Fucker f : fucked) {
+				if (f.originChannel.getGuild() == event.getPlayer().getGuild()) {
 					f.fuckTarget.moveToVoiceChannel(f.originChannel);
 					removalList.add(f);
 				}
 			}
-			for(Fucker f : removalList){
+			for (Fucker f : removalList) {
 				fucked.remove(f);
 			}
 			event.getPlayer().getGuild().getConnectedVoiceChannel().leave();

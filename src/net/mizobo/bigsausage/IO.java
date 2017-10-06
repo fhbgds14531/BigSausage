@@ -86,28 +86,28 @@ public class IO {
 		return s;
 	}
 
-	public static List<String> getTriggersForGuild(IGuild guild, String forWhat) {
-		EnumClips targetClip = EnumClips.getFromString(forWhat);
-		if (targetClip.getIsHidden()) {
+	public static List<String> getTriggersForGuild(IGuild guild, ILinkable linkable) {
+		if (linkable == null) return new ArrayList<String>();
+		if (!linkable.getIsHidden() && linkable.getDefaultTriggers().size() > 0) {
 			List<String> list = null;
 			try {
-				list = Files.readAllLines(new File("settings/" + guild.getStringID() + "/triggers/" + forWhat + ".txt").toPath());
+				list = Files.readAllLines(new File("settings/" + guild.getStringID() + "/triggers/" + linkable.toString() + ".txt").toPath());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			return (list == null ? new ArrayList<String>() : list);
-		}else{
+		} else {
 			return new ArrayList<String>();
 		}
 	}
 
-	public static void saveTriggersForGuild(IGuild guild, List<String> triggers, String forWhat) {
-		EnumClips targetClip = EnumClips.getFromString(forWhat);
-		if (targetClip.getIsHidden()) {
+	public static void saveTriggersForGuild(IGuild guild, List<String> triggers, ILinkable linkable) {
+		if (linkable == null) return;
+		if (!linkable.getIsHidden() && linkable.getDefaultTriggers().size() > 0) {
 			File triggerDir = new File("settings/" + guild.getStringID() + "/triggers/");
 			if (!triggerDir.exists()) triggerDir.mkdirs();
 			try {
-				File f = new File("settings/" + guild.getStringID() + "/triggers/" + forWhat + ".txt");
+				File f = new File("settings/" + guild.getStringID() + "/triggers/" + linkable.toString() + ".txt");
 				if (f.exists()) f.delete();
 				f.createNewFile();
 				Files.write(f.toPath(), triggers, StandardOpenOption.WRITE);
@@ -117,21 +117,21 @@ public class IO {
 		}
 	}
 
-	public static void addTriggerWord(String word, String forWhat, IGuild guild) {
-		EnumClips targetClip = EnumClips.getFromString(forWhat);
-		if (targetClip.getIsHidden()) {
-			List<String> triggers = getTriggersForGuild(guild, forWhat);
+	public static void addTriggerWord(String word, ILinkable linkable, IGuild guild) {
+		if (linkable == null) return;
+		if (!linkable.getIsHidden() && linkable.getDefaultTriggers().size() > 0) {
+			List<String> triggers = getTriggersForGuild(guild, linkable);
 			triggers.add(word);
-			saveTriggersForGuild(guild, triggers, forWhat);
+			saveTriggersForGuild(guild, triggers, linkable);
 		}
 	}
 
-	public static void removeTriggerWord(String word, String forWhat, IGuild guild) {
-		EnumClips targetClip = EnumClips.getFromString(forWhat);
-		if (targetClip.getIsHidden()) {
-			List<String> triggers = getTriggersForGuild(guild, forWhat);
+	public static void removeTriggerWord(String word, ILinkable linkable, IGuild guild) {
+		if (linkable == null) return;
+		if (!linkable.getIsHidden() && linkable.getDefaultTriggers().size() > 0) {
+			List<String> triggers = getTriggersForGuild(guild, linkable);
 			triggers.remove(word);
-			saveTriggersForGuild(guild, triggers, forWhat);
+			saveTriggersForGuild(guild, triggers, linkable);
 		}
 	}
 }
