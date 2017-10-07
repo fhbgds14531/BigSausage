@@ -114,7 +114,6 @@ public class BigSausage {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DiscordException, RateLimitException, FileNotFoundException, IOException, ClassNotFoundException {
-
 		for (EnumClips clip : EnumClips.values()) {
 			if (!clip.getFile().exists()) {
 				String filename = clip.getFile().getName().replace("files/", "");
@@ -211,6 +210,7 @@ public class BigSausage {
 		}
 		info.add("Users: " + userList.substring(0, userList.lastIndexOf(", ")));
 		Files.write(serverInfo.toPath(), info, StandardOpenOption.WRITE);
+		guild.getDefaultChannel().sendMessage("BigSausage is online! Current Version: " + VERSION + ", Use \"!bs help\" for a list of commands!");
 	}
 
 	@EventSubscriber
