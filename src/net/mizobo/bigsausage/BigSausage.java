@@ -342,7 +342,7 @@ public class BigSausage {
 							while ((line = reader.readLine()) != null) {
 								content.add(line);
 							}
-							if(!content.contains("    <title>Page not found &middot; GitHub</title>")){
+							if (!content.contains("    <title>Page not found &middot; GitHub</title>")) {
 								System.out.println("Successfull update command given. Updating from " + VERSION + " to " + newVersionString);
 								System.out.println("Downloading jar");
 								update = new URL("https://github.com/fhbgds14531/BigSausage/blob/master/jar/" + newVersionString + "/BigSausage.jar?raw=true");
@@ -352,7 +352,7 @@ public class BigSausage {
 								Runtime.getRuntime().exec("cmd /c start \"\" rename.bat");
 								client.logout();
 								System.exit(0);
-							}else{
+							} else {
 								channel.sendMessage("Invalid target version.");
 							}
 						}
@@ -388,15 +388,16 @@ public class BigSausage {
 				case tts:
 					if (tts.size() > 0) {
 						String ttsString = "";
-						int count = 10;
+						int count = 4;
+						ttsString = tts.get(rand.nextInt(tts.size()));
 						while (count > 0 && ttsString.contentEquals(lastTts)) {
 							ttsString = tts.get(rand.nextInt(tts.size()));
 							count--;
 						}
-						if (count == 0){
+						if (count == 0) {
 							System.out.println("Gave up trying to find a unique tts in guild " + guild.getName());
 						}
-						if(ttsString.isEmpty()){
+						if (ttsString.isEmpty()) {
 							System.err.println("Somehow failed to get a tts string from a list with content in guild \"" + guild.getName() + "\"");
 							channel.sendMessage("Error: could not find a tts string. This shouldn't happen.");
 							return;
@@ -415,11 +416,13 @@ public class BigSausage {
 								ttsAddString += s + " ";
 							}
 						}
-						tts.add(ttsAddString.trim());
-						ttsFile.delete();
-						ttsFile.createNewFile();
-						Files.write(ttsFile.toPath(), tts, StandardOpenOption.WRITE);
-						channel.sendMessage(ttsAddString.trim(), true);
+						if (!ttsAddString.isEmpty()) {
+							tts.add(ttsAddString.trim());
+							ttsFile.delete();
+							ttsFile.createNewFile();
+							Files.write(ttsFile.toPath(), tts, StandardOpenOption.WRITE);
+							channel.sendMessage(ttsAddString.trim(), true);
+						}
 					} else {
 						if (rand.nextFloat() < 0.02F) {
 							channel.sendMessage("Hey " + guild.getOwner().mention() + ", " + user.mention() + " is trying to use a restricted command!");
