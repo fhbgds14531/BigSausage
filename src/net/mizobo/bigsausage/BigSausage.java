@@ -43,8 +43,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.6";
-	private static final String CHANGELOG = "Fix a stupid error.";
+	private static final String VERSION = "0.1.8.7";
+	private static final String CHANGELOG = "Fixed a tts command bug";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -393,7 +393,14 @@ public class BigSausage {
 							ttsString = tts.get(rand.nextInt(tts.size()));
 							count--;
 						}
-						if (count == 0) System.out.println("Gave up trying to find a unique tts in guild " + guild.getName());
+						if (count == 0){
+							System.out.println("Gave up trying to find a unique tts in guild " + guild.getName());
+						}
+						if(ttsString.isEmpty()){
+							System.err.println("Somehow failed to get a tts string from a list with content in guild \"" + guild.getName() + "\"");
+							channel.sendMessage("Error: could not find a tts string. This shouldn't happen.");
+							return;
+						}
 						channel.sendMessage(ttsString, true);
 						lastTts = ttsString;
 					} else {
@@ -630,9 +637,6 @@ public class BigSausage {
 		}
 		for (String word : commandText) {
 			for (EnumClips clip : EnumClips.values()) {
-				if (clip == EnumClips.hcw) {
-					System.out.println("hcw");
-				}
 				List<String> list = IO.getTriggersForGuild(guild, clip);
 				for (String s : list) {
 					if (word.toLowerCase().contains(s)) {
