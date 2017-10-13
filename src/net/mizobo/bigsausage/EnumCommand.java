@@ -23,6 +23,7 @@ public enum EnumCommand {
 	get_fucked(false, "Move a user to a specific voice channel, then play the specified clip, can only be used by an Admin. Usage: !bs get-fucked \\@<username> <voice-channel-name> <clips to play>"),
 	max_clips(false, "List or edit the maximum number of audio clips that BigSausage will queue per message. Usage: \"!bs max-clips\" (to list the current setting) or \"!bs max-clips <non-zero, positive integer>\" to set a new maximum."),
 	thomas(false, "Hold on, what did you say?"),
+	tts_info(false, "List information regarding the tts file for this server, Trusted users only. Usage: \"!bs tts-info\""),
 	help(false, ""), 
 	save_all(true, ""), 
 	update(true, ""),
@@ -107,6 +108,8 @@ public enum EnumCommand {
 				return update_to;
 			case "thomas":
 				return thomas;
+			case "tts-info":
+				return tts_info;
 			default:
 				return help;
 		}

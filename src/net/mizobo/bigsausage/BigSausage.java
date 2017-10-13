@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import net.mizobo.bigsausage.Util.RunningAverage;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -43,8 +45,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.7";
-	private static final String CHANGELOG = "Fixed a tts command bug";
+	private static final String VERSION = "0.1.8.8";
+	private static final String CHANGELOG = "Added tts-info command.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -210,7 +212,7 @@ public class BigSausage {
 		}
 		info.add("Users: " + userList.substring(0, userList.lastIndexOf(", ")));
 		Files.write(serverInfo.toPath(), info, StandardOpenOption.WRITE);
-		guild.getDefaultChannel().sendMessage("BigSausage is online! Current Version: " + VERSION + ", Use \"!bs help\" for a list of commands!");
+		// guild.getDefaultChannel().sendMessage("BigSausage is online! Current Version: " + VERSION + ", Use \"!bs help\" for a list of commands!");
 	}
 
 	@EventSubscriber
@@ -231,6 +233,21 @@ public class BigSausage {
 			final File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
+				case tts_info:
+					int numberOfLines = tts.size();
+					int wordCount = 0; 
+					int avgWordsPerEntry;
+					String fileSize = Util.humanReadableByteCount(ttsFile.length(), false);
+					
+					RunningAverage avg = new RunningAverage(tts.size());
+					for(String s: tts){
+						List<String> sWords = Arrays.asList(s.split(" "));
+						avg.add(new BigDecimal(sWords.size()));
+						wordCount += sWords.size();
+					}
+					avgWordsPerEntry = avg.getAverage().intValue();
+					channel.sendMessage(String.format("File size: %s, Number of Entries: %s, Average Words per Entry: %s, Total Word Count: %s", fileSize, numberOfLines, avgWordsPerEntry, wordCount));
+					break;
 				case thomas:
 					if (getHasPermission(user, guild, TrustLevel.Trusted) || user.getStringID().contentEquals("158744331178475520")) {
 						if (user.getVoiceStateForGuild(guild) != null) {
@@ -269,7 +286,7 @@ public class BigSausage {
 										fucked.add(new Fucker(target, target.getVoiceStateForGuild(guild).getChannel(), chan));
 										target.moveToVoiceChannel(chan);
 										Thread.sleep(200L);
-										this.checkListAndQueueFile(remainder, guild, target, channel);
+										this.checkListAndQueueFile(message.getContent(), remainder, guild, target, channel, true);
 									} else {
 										channel.sendMessage("I can't move them there.");
 									}
@@ -539,7 +556,7 @@ public class BigSausage {
 									newList.add(s);
 								}
 							}
-							this.checkListAndQueueFile(newList, guild, targetedUser, channel);
+							this.checkListAndQueueFile(message.getContent(), newList, guild, targetedUser, channel, true);
 						}
 					} else {
 						channel.sendMessage("Who do you think you are, " + user.mention() + "?");
@@ -587,7 +604,7 @@ public class BigSausage {
 			channel.sendMessage("For help please use !bs help");
 		} else {
 			if (IO.getStateForGuild(guild) == State.Enabled) {
-				this.checkListAndQueueFile(wordList, guild, user, channel);
+				this.checkListAndQueueFile(message.getContent(), wordList, guild, user, channel, false);
 			}
 		}
 	}
@@ -625,10 +642,12 @@ public class BigSausage {
 		}
 	}
 
-	public void checkListAndQueueFile(List<String> commandText, IGuild guild, IUser triggerUser, IChannel triggerChannel) throws FileNotFoundException {
+	public void checkListAndQueueFile(String command, List<String> commandText, IGuild guild, IUser triggerUser, IChannel triggerChannel, boolean wasCommanded) throws FileNotFoundException {
+		SecureRandom rand = new SecureRandom();
 		if (commandText.size() == 0 || commandText.get(0).contentEquals(PREFIX)) return;
 		for (EnumImage image : EnumImage.values()) {
 			for (String word : commandText) {
+				boolean found = false;
 				List<String> list = IO.getTriggersForGuild(guild, image);
 				for (String trigger : list) {
 					if (word.toLowerCase().contains(trigger)) {
@@ -636,8 +655,10 @@ public class BigSausage {
 						break;
 					}
 				}
+				if (found) break;
 			}
 		}
+		boolean linkedFile = false;
 		for (String word : commandText) {
 			for (EnumClips clip : EnumClips.values()) {
 				List<String> list = IO.getTriggersForGuild(guild, clip);
@@ -645,14 +666,35 @@ public class BigSausage {
 					if (word.toLowerCase().contains(s)) {
 						for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
 							if (vChannel.getConnectedUsers().contains(triggerUser)) {
-								SecureRandom rand = new SecureRandom();
-								if (rand.nextFloat() < 0.1F) {
-									this.queueFile(silence, guild, vChannel, triggerUser, false);
+								if (rand.nextFloat() < 0.1F && !wasCommanded) {
+									this.queueFile(silence, guild, vChannel, triggerUser, wasCommanded);
 								}
-								if (rand.nextFloat() > 0.0001) {
-									this.queueFile(clip.getFile(), guild, vChannel, triggerUser, false);
+								if (rand.nextFloat() > 0.0001 || wasCommanded) {
+									this.queueFile(clip.getFile(), guild, vChannel, triggerUser, wasCommanded);
 								} else {
-									this.queueFile(never, guild, vChannel, triggerUser, false);
+									this.queueFile(never, guild, vChannel, triggerUser, wasCommanded);
+								}
+								linkedFile = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		if (linkedFile == false && rand.nextFloat() < 0.20F) {
+			for (EnumClips clip : EnumClips.values()) {
+				List<String> list = IO.getTriggersForGuild(guild, clip);
+				for (String s : list) {
+					if (command.replace(" ", "").contains(s)) {
+						for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
+							if (vChannel.getConnectedUsers().contains(triggerUser)) {
+								if (rand.nextFloat() < 0.1F && !wasCommanded) {
+									this.queueFile(silence, guild, vChannel, triggerUser, wasCommanded);
+								}
+								if (rand.nextFloat() > 0.0001 || wasCommanded) {
+									this.queueFile(clip.getFile(), guild, vChannel, triggerUser, wasCommanded);
+								} else {
+									this.queueFile(never, guild, vChannel, triggerUser, wasCommanded);
 								}
 							}
 						}
