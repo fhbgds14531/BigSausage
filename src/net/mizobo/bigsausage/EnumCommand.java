@@ -24,6 +24,7 @@ public enum EnumCommand {
 	max_clips(false, "List or edit the maximum number of audio clips that BigSausage will queue per message. Usage: \"!bs max-clips\" (to list the current setting) or \"!bs max-clips <non-zero, positive integer>\" to set a new maximum."),
 	thomas(false, "Hold on, what did you say?"),
 	tts_info(false, "List information regarding the tts file for this server, Trusted users only. Usage: \"!bs tts-info\""),
+	roll(false, "Roll some dice. Usage: \"!bs roll XdY\" where x is the number of dice and y is the number of sides per die."),
 	help(false, ""), 
 	save_all(true, ""), 
 	update(true, ""),
@@ -49,70 +50,10 @@ public enum EnumCommand {
 	}
 
 	public static EnumCommand getFromString(String s) {
-		switch (s) {
-			case "enable":
-				return enable;
-			case "disable":
-				return disable;
-			case "clips":
-				return clips;
-			case "status":
-				return status;
-			case "target":
-				return target;
-			case "trust":
-				return trust;
-			case "removetrust":
-				return remove_trust;
-			case "setup-defaults":
-				return setup_defaults;
-			case "add-trigger":
-				return add_trigger;
-			case "remove-trigger":
-				return remove_trigger;
-			case "list-triggers":
-				return list_triggers;
-			case "help":
-				return help;
-			case "save-all":
-				return save_all;
-			case "shutdown":
-				return shutdown;
-			case "version":
-				return version;
-			case "tts":
-				return tts;
-			case "remove-tts":
-				return remove_tts;
-			case "add-tts":
-				return add_tts;
-			case "images":
-				return images;
-			case "update":
-				return update;
-			case "force-update":
-				return force_update;
-			case "changelog":
-				return changelog;
-			case "max-clips":
-				return max_clips;
-			case "play-clip":
-				return play_clip;
-			case "get-fucked":
-				return get_fucked;
-			case "remove-all-triggers":
-				return remove_all_triggers;
-			case "reset-triggers":
-				return reset_triggers;
-			case "update-to":
-				return update_to;
-			case "thomas":
-				return thomas;
-			case "tts-info":
-				return tts_info;
-			default:
-				return help;
+		for(EnumCommand c : EnumCommand.values()){
+			if(c.toString().contentEquals(s)) return c;
 		}
+		return help;
 	}
 	
 	public String getHelpText(){

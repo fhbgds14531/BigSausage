@@ -45,8 +45,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.8";
-	private static final String CHANGELOG = "Added tts-info command.";
+	private static final String VERSION = "0.1.8.9";
+	private static final String CHANGELOG = "Added roll command.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -233,6 +233,15 @@ public class BigSausage {
 			final File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
 			switch (c) {
+				case roll:
+					if(wordList.size() < 3){
+						channel.sendMessage("Incorrect number of arguments. Use \"!bs help roll\" for usage");
+						break;
+					}
+					Dice d = Dice.getDice(wordList.get(2));
+					
+					channel.sendMessage(wordList.get(2) + "=" + d.roll());
+					break;
 				case tts_info:
 					int numberOfLines = tts.size();
 					int wordCount = 0; 
@@ -646,12 +655,13 @@ public class BigSausage {
 		SecureRandom rand = new SecureRandom();
 		if (commandText.size() == 0 || commandText.get(0).contentEquals(PREFIX)) return;
 		for (EnumImage image : EnumImage.values()) {
+			boolean found = false;
 			for (String word : commandText) {
-				boolean found = false;
 				List<String> list = IO.getTriggersForGuild(guild, image);
 				for (String trigger : list) {
 					if (word.toLowerCase().contains(trigger)) {
 						triggerChannel.sendFile(image.getFile());
+						found = true;
 						break;
 					}
 				}
