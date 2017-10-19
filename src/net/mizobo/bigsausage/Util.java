@@ -3,6 +3,7 @@ package net.mizobo.bigsausage;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 
 public class Util {
@@ -48,5 +49,13 @@ public class Util {
 	        BigDecimal divisor = BigDecimal.valueOf(queue.size());
 	        return sum.divide(divisor, 2, RoundingMode.HALF_UP);
 	    }
+	}
+	
+	public static String getCommaSeparatedString(List list) {
+		String out = "";
+		for (Object o : list) {
+			out += String.valueOf(o) + ", ";
+		}
+		return out.substring(0, out.lastIndexOf(", "));
 	}
 }

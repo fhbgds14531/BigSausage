@@ -1,10 +1,28 @@
+/*
+ * DnD Character Manager.
+ * Copyright (C) 2016 James Hamann
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.mizobo.bigsausage;
 
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Dice {
+public class Dice implements Serializable{
+	private static final long serialVersionUID = -7644086382623742779L;
 
 	private List<Die> dice;
 	
@@ -115,7 +133,8 @@ public class Dice {
 		return this.dice.size() + "d" + this.dice.get(0).faces;
 	}
 	
-	public class Die {
+	public class Die implements Serializable{
+		private static final long serialVersionUID = 449230527060035868L;
 
 		public Die(int faces){
 			this.faces = faces;

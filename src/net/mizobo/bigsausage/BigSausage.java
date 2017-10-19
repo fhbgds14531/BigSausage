@@ -45,8 +45,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.9";
-	private static final String CHANGELOG = "Added roll command.";
+	private static final String VERSION = "0.1.8.10";
+	private static final String CHANGELOG = "Subly changed roll command.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -239,8 +239,18 @@ public class BigSausage {
 						break;
 					}
 					Dice d = Dice.getDice(wordList.get(2));
-					
-					channel.sendMessage(wordList.get(2) + "=" + d.roll());
+					List<Integer> roll = d.rollAndReturnListOfResults();
+					int result = 0;
+					for(int i : roll){
+						result += i;
+					}
+					String rolls = Util.getCommaSeparatedString(roll);
+					if(rolls.length() > 30){
+						rolls = rolls.substring(0, 30);
+						rolls = rolls.substring(0, rolls.lastIndexOf(", "));
+						rolls += "...";
+					}
+					channel.sendMessage(wordList.get(2) + "=" + result + " (" + rolls + ")");
 					break;
 				case tts_info:
 					int numberOfLines = tts.size();
