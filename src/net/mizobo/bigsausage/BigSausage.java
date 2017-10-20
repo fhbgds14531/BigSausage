@@ -45,7 +45,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.11";
+	private static final String VERSION = "0.1.8.11_2";
 	private static final String CHANGELOG = "Send help command when mentioned. Added \"!bs commands\"";
 
 	private static String TOKEN;
@@ -152,7 +152,7 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
-		EnumCommand.help.setHelpString("For specific help use !bs help <" + EnumCommand.getCommaSeparatedList() + ">");
+		EnumCommand.help.setHelpString("For specific help use \"!bs help <command name>\". for a list of commands, use \"!bs commands\"");
 		System.out.println("BigSausage ready for mouths.");
 	}
 
@@ -227,7 +227,7 @@ public class BigSausage {
 		List<String> wordList = Arrays.asList(words);
 
 		if(message.getContent().contentEquals("<@361063755045404673>")){
-			channel.sendMessage("For specific help use \"!bs help <command name>\". for a list of commands, use \"!bs commands\"");
+			channel.sendMessage(EnumCommand.help.getHelpText());
 			return;
 		}
 		if (user.getName().contentEquals("BigSausage")) return;
