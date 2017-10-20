@@ -1,5 +1,8 @@
 package net.mizobo.bigsausage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum EnumCommand {
 	enable(false, "Enables my functionality, stupid. Usage: !bs enable"), 
 	disable(false, "Disables  my functionality, stupid. Usage: !bs disable"), 
@@ -25,6 +28,7 @@ public enum EnumCommand {
 	thomas(false, "Hold on, what did you say?"),
 	tts_info(false, "List information regarding the tts file for this server, Trusted users only. Usage: \"!bs tts-info\""),
 	roll(false, "Roll some dice. Usage: \"!bs roll XdY\" where x is the number of dice and y is the number of sides per die."),
+	commands(false, "Show all commands. Usage: \"!bs commands\""),
 	help(false, ""), 
 	save_all(true, ""), 
 	update(true, ""),
@@ -73,5 +77,31 @@ public enum EnumCommand {
 			}
 		}
 		return out.substring(0, out.lastIndexOf(", "));
+	}
+	
+	public static String getCommaSeparatedFormattedList() {
+		List<String> names = new ArrayList<String>();
+		for(EnumCommand command : EnumCommand.values()){
+			names.add(command.toString());
+		}
+		String[] nameArray = new String[names.size()];
+		names.toArray(nameArray);
+		int maxLength = Util.getMaxLength(nameArray);
+		String out = "";
+		int index = 0;
+		for (EnumCommand com : EnumCommand.values()) {
+			if(!com.isSecret){
+				out += com.toString() + " ";
+				for(int i = com.toString().length(); i < maxLength; i++){
+					out += " ";
+				}
+				index++;
+				if(index == 4){
+					out+= "\n";
+					index = 0;
+				}
+			}
+		}
+		return out.trim();
 	}
 }

@@ -58,4 +58,18 @@ public class Util {
 		}
 		return out.substring(0, out.lastIndexOf(", "));
 	}
+	
+	public static int getMaxLength(String[] in) {
+		  int c = 0;
+		  if (in != null && in.length > 0) {
+		    for (String i : in) {
+		      i = (i != null) ? i.trim() : "";
+		      if (i.length() > c) {
+		        c = i.length();
+		      }
+		    }
+		  }
+		  return c;
+		}
+
 }

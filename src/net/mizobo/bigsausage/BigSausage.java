@@ -45,8 +45,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.10";
-	private static final String CHANGELOG = "Subly changed roll command.";
+	private static final String VERSION = "0.1.8.11";
+	private static final String CHANGELOG = "Send help command when mentioned. Added \"!bs commands\"";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -220,19 +220,64 @@ public class BigSausage {
 		SecureRandom rand = new SecureRandom();
 		IMessage message = event.getMessage();
 		IUser user = message.getAuthor();
-		if (user.getName().contentEquals("BigSausage")) return;
-
 		String[] words = message.getContent().split(" ");
 
 		IChannel channel = message.getChannel();
 		IGuild guild = message.getGuild();
 		List<String> wordList = Arrays.asList(words);
 
+		if(message.getContent().contentEquals("<@361063755045404673>")){
+			channel.sendMessage("For specific help use \"!bs help <command name>\". for a list of commands, use \"!bs commands\"");
+			return;
+		}
+		if (user.getName().contentEquals("BigSausage")) return;
 		if (words[0].contentEquals(PREFIX) && words.length > 1) {
 			EnumCommand c = EnumCommand.getFromString(words[1]);
 			final File ttsFile = new File("settings/" + guild.getStringID() + "/tts.txt");
 			List<String> tts = Files.readAllLines(ttsFile.toPath());
+			boolean setToStatus = false;
+			if(IO.getStateForGuild(guild) != State.Enabled){
+				switch(c){
+					case add_trigger:
+					case add_tts:
+					case changelog:
+					case clips:
+					case commands:
+					case disable:
+					case enable:
+					case force_update:
+					case help:
+					case images:
+					case list_triggers:
+					case max_clips:
+					case remove_all_triggers:
+					case remove_trigger:
+					case remove_trust:
+					case remove_tts:
+					case reset_triggers:
+					case save_all:
+					case setup_defaults:
+					case shutdown:
+					case status:
+					case trust:
+					case tts_info:
+					case update:
+					case update_to:
+					case version:
+					break;
+					default:
+						setToStatus = true;
+						return;
+				}
+			}
+			if(setToStatus) c = EnumCommand.status;
 			switch (c) {
+				case commands:
+					String commands = EnumCommand.getCommaSeparatedFormattedList();
+					
+					commands = commands.replace(", ", ",\t");
+					channel.sendMessage("```" + commands + "```");
+					break;
 				case roll:
 					if(wordList.size() < 3){
 						channel.sendMessage("Incorrect number of arguments. Use \"!bs help roll\" for usage");
