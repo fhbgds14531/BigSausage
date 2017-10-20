@@ -657,7 +657,7 @@ public class BigSausage {
 				case help:
 					if (wordList.size() == 2) {
 						String commandList = EnumCommand.getCommaSeparatedList();
-						channel.sendMessage("For specific help use !bs help <" + commandList + ">");
+						channel.sendMessage(EnumCommand.help.getHelpText());
 					} else {
 						EnumCommand com = EnumCommand.getFromString(wordList.get(2));
 						channel.sendMessage(com.getHelpText());
