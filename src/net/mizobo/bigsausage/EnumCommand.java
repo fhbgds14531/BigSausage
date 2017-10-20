@@ -29,7 +29,7 @@ public enum EnumCommand {
 	tts_info(false, "List information regarding the tts file for this server, Trusted users only. Usage: \"!bs tts-info\""),
 	roll(false, "Roll some dice. Usage: \"!bs roll XdY\" where x is the number of dice and y is the number of sides per die."),
 	commands(false, "Show all commands. Usage: \"!bs commands\""),
-	help(false, ""), 
+	help(false, "For specific help use \"!bs help <command name>\". for a list of commands, use \"!bs commands\""), 
 	save_all(true, ""), 
 	update(true, ""),
 	force_update(true, ""),
