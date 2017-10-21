@@ -45,8 +45,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.11_3";
-	private static final String CHANGELOG = "Send help command when mentioned. Added \"!bs commands\"";
+	private static final String VERSION = "0.1.8.12";
+	private static final String CHANGELOG = "Added a bunch of new clips.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -80,6 +80,11 @@ public class BigSausage {
 	static final File silence = new File("files/silence.wav");
 	static final File nightmare = new File("files/nightmare.wav");
 	static final File tube = new File("files/tube.wav");
+	static final File boilegg = new File("files/boilegg.wav");
+	static final File bush = new File("files/bush.wav");
+	static final File datstick = new File("files/datstick.wav");
+	static final File shorts = new File("files/shorts.wav");
+	static final File seth = new File("files/suckmycaw.wav");
 	private static final String myUserID = "198575970624471040";
 	static final List<String> sausageList = Arrays.asList(new String[] { "sausage", "thomas", "daddy" });
 	static final List<String> uglyList = Arrays.asList(new String[] { "ugly", "motherfucker", "jame" });
@@ -104,6 +109,11 @@ public class BigSausage {
 	static final List<String> scienceList = Arrays.asList(new String[] { "science" });
 	static final List<String> nightmareList = Arrays.asList(new String[] { "nightmare" });
 	static final List<String> tubeList = Arrays.asList(new String[] { "tube" });
+	static final List<String> boileggList = Arrays.asList(new String[] { "boil" });
+	static final List<String> bushList = Arrays.asList(new String[] { "bush" });
+	static final List<String> datstickList = Arrays.asList(new String[] { "stick", "dat" });
+	static final List<String> shortsList = Arrays.asList(new String[] { "shorts", "justice" });
+	static final List<String> sethList = Arrays.asList(new String[] { "seth" });
 	static final List<String> emptyList = Arrays.asList(new String[] {});
 	static final List<String> whiskeyList = Arrays
 			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
@@ -546,7 +556,11 @@ public class BigSausage {
 					Commands.editTriggers(c, wordList, guild, user, channel);
 					break;
 				case clips:
-					channel.sendMessage("Available clips are: " + EnumClips.getCommaSeparatedList());
+					List<String> clipList = new ArrayList<String>();
+					for(EnumClips clip : EnumClips.values()){
+						clipList.add(clip.toString());
+					}
+					channel.sendMessage("Available clips are: " + Util.getCommaSeparatedFormattedList((String[]) clipList.toArray()));
 					break;
 				case disable:
 					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
@@ -732,7 +746,7 @@ public class BigSausage {
 								if (rand.nextFloat() < 0.1F && !wasCommanded) {
 									this.queueFile(silence, guild, vChannel, triggerUser, wasCommanded);
 								}
-								if (rand.nextFloat() > 0.0001 || wasCommanded) {
+								if (rand.nextFloat() > 0.001 || wasCommanded) {
 									this.queueFile(clip.getFile(), guild, vChannel, triggerUser, wasCommanded);
 								} else {
 									this.queueFile(never, guild, vChannel, triggerUser, wasCommanded);

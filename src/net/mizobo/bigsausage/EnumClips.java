@@ -13,7 +13,8 @@ public enum EnumClips implements ILinkable{
 	whiskey(BigSausage.whiskey, BigSausage.whiskeyList, false), egg(BigSausage.egg, BigSausage.eggList, false), choice(BigSausage.choice, BigSausage.choiceList, false), 
 	grunch(BigSausage.grunch, BigSausage.grunchList, false), sainte(BigSausage.sainte, BigSausage.sainteList, false), tube(BigSausage.tube, BigSausage.tubeList, false),
 	silence(BigSausage.silence, BigSausage.emptyList, true), never(BigSausage.never, BigSausage.emptyList, true), nightmare(BigSausage.nightmare, BigSausage.nightmareList, true),
-	thomas(BigSausage.thomas, BigSausage.emptyList, true);
+	thomas(BigSausage.thomas, BigSausage.emptyList, true), boilegg(BigSausage.boilegg, BigSausage.boileggList, false), bush(BigSausage.bush, BigSausage.bushList, false), 
+	datstick(BigSausage.datstick, BigSausage.datstickList, false), shorts(BigSausage.shorts, BigSausage.shortsList, false), seth(BigSausage.seth, BigSausage.sethList, false);
 
 	private File file;
 	private List<String> defaultTriggers;
@@ -26,54 +27,10 @@ public enum EnumClips implements ILinkable{
 	}
 	
 	public static EnumClips getFromString(String s) {
-		switch (s) {
-			case "sausage":
-				return sausage;
-			case "ugly":
-				return ugly;
-			case "enemy":
-				return enemy;
-			case "fire":
-				return fire;
-			case "linked":
-				return linked;
-			case "miceway":
-				return miceway;
-			case "sceptre":
-				return sceptre;
-			case "hatemyself":
-				return hatemyself;
-			case "hcw":
-				return hcw;
-			case "korean":
-				return korean;
-			case "bursela":
-				return bursela;
-			case "burse":
-				return burse;
-			case "whiskey":
-				return whiskey;
-			case "choice":
-				return choice;
-			case "grunch":
-				return grunch;
-			case "sainte":
-				return sainte;
-			case "egg":
-				return egg;
-			case "silence":
-				return silence;
-			case "never":
-				return never;
-			case "nightmare":
-				return nightmare;
-			case "tube":
-				return tube;
-			case "thomas":
-				return thomas;
-			default:
-				return null;
+		for(EnumClips c : EnumClips.values()){
+			if(c.toString().contentEquals(s)) return c;
 		}
+		return hcw;
 	}
 	
 	public File getFile(){
