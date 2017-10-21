@@ -556,11 +556,11 @@ public class BigSausage {
 					Commands.editTriggers(c, wordList, guild, user, channel);
 					break;
 				case clips:
-					List<String> clipList = new ArrayList<String>();
-					for(EnumClips clip : EnumClips.values()){
-						clipList.add(clip.toString());
+					String[] clipNames = new String[EnumClips.values().length];
+					for(int i = 0; i < clipNames.length; i++){
+						clipNames[i] = EnumClips.values()[i].toString();
 					}
-					channel.sendMessage("Available clips are: " + Util.getCommaSeparatedFormattedList((String[]) clipList.toArray()));
+					channel.sendMessage("Available clips are: " + Util.getCommaSeparatedFormattedList((String[]) clipNames));
 					break;
 				case disable:
 					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
