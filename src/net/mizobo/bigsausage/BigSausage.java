@@ -560,7 +560,7 @@ public class BigSausage {
 					for(int i = 0; i < clipNames.length; i++){
 						clipNames[i] = EnumClips.values()[i].toString();
 					}
-					channel.sendMessage("Available clips are: " + Util.getCommaSeparatedFormattedList((String[]) clipNames));
+					channel.sendMessage("Available clips are:\n```" + Util.getCommaSeparatedFormattedList((String[]) clipNames) + "```");
 					break;
 				case disable:
 					if (getHasPermission(user, guild, TrustLevel.Trusted)) {
