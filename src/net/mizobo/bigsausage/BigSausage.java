@@ -45,7 +45,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.12";
+	private static final String VERSION = "0.1.8.12_1";
 	private static final String CHANGELOG = "Added a bunch of new clips.";
 
 	private static String TOKEN;
