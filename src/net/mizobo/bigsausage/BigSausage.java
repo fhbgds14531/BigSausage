@@ -45,7 +45,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.12_1";
+	private static final String VERSION = "0.1.8.13";
 	private static final String CHANGELOG = "Added a bunch of new clips.";
 
 	private static String TOKEN;
@@ -473,7 +473,11 @@ public class BigSausage {
 					}
 					break;
 				case images:
-					channel.sendMessage("Available images are: " + EnumImage.getCommaSeparatedList());
+					String[] imageNames = new String[EnumImage.values().length];
+					for(int i = 0; i < imageNames.length; i++){
+						imageNames[i] = EnumImage.values()[i].toString();
+					}
+					channel.sendMessage("Available images are:\n```" + Util.getCommaSeparatedFormattedList((String[]) imageNames) + "```");
 					break;
 				case tts:
 					if (tts.size() > 0) {
@@ -556,9 +560,10 @@ public class BigSausage {
 					Commands.editTriggers(c, wordList, guild, user, channel);
 					break;
 				case clips:
-					String[] clipNames = new String[EnumClips.values().length];
+					List<String> nameList = EnumClips.getNonSecretNames();
+					String[] clipNames = new String[nameList.size()];
 					for(int i = 0; i < clipNames.length; i++){
-						clipNames[i] = EnumClips.values()[i].toString();
+						clipNames[i] = nameList.get(i);
 					}
 					channel.sendMessage("Available clips are:\n```" + Util.getCommaSeparatedFormattedList((String[]) clipNames) + "```");
 					break;

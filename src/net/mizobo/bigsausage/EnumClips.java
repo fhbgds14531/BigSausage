@@ -52,6 +52,16 @@ public enum EnumClips implements ILinkable{
 		}
 		return out.substring(0, out.lastIndexOf(", "));
 	}
+	
+	public static List<String> getNonSecretNames(){
+		List<String> list = new ArrayList<String>();
+		for(EnumClips clip : EnumClips.values()){
+			if(!clip.getIsHidden()){
+				list.add(clip.toString());
+			}
+		}
+		return list;
+	}
 
 	@Override
 	public boolean getIsHidden() {
