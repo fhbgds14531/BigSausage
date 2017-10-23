@@ -45,8 +45,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.13";
-	private static final String CHANGELOG = "Added a bunch of new clips.";
+	private static final String VERSION = "0.1.8.14";
+	private static final String CHANGELOG = "Added two new clips.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -85,6 +85,8 @@ public class BigSausage {
 	static final File datstick = new File("files/datstick.wav");
 	static final File shorts = new File("files/shorts.wav");
 	static final File seth = new File("files/suckmycaw.wav");
+	static final File chaos = new File("files/chaos.wav");
+	static final File ipa = new File("files/ipa.wav");
 	private static final String myUserID = "198575970624471040";
 	static final List<String> sausageList = Arrays.asList(new String[] { "sausage", "thomas", "daddy" });
 	static final List<String> uglyList = Arrays.asList(new String[] { "ugly", "motherfucker", "jame" });
@@ -114,6 +116,8 @@ public class BigSausage {
 	static final List<String> datstickList = Arrays.asList(new String[] { "stick", "dat" });
 	static final List<String> shortsList = Arrays.asList(new String[] { "shorts", "justice" });
 	static final List<String> sethList = Arrays.asList(new String[] { "seth" });
+	static final List<String> chaosList = Arrays.asList(new String[] { "chaos", "damn" });
+	static final List<String> ipaList = Arrays.asList(new String[] { "christian", "chin", "ipa" });
 	static final List<String> emptyList = Arrays.asList(new String[] {});
 	static final List<String> whiskeyList = Arrays
 			.asList(new String[] { "beer", "wine", "whiskey", "rum", "vodka", "gin", "scotch", "bourbon", "moonshine", "everclear", "tequila", "brandy" });
