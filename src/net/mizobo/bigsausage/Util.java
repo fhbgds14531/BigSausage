@@ -73,6 +73,14 @@ public class Util {
 		}
 		return c;
 	}
+	
+	public static String getCommaSeparatedFormattedList(List<String> strings) {
+		String[] array = new String[strings.size()];
+		for(int i = 0; i < array.length; i++){
+			array[i] = strings.get(i);
+		}
+		return getCommaSeparatedFormattedList(array);
+	}
 
 	public static String getCommaSeparatedFormattedList(String[] strings) {
 		List<String> names = Arrays.asList(strings);

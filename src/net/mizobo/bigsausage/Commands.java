@@ -34,9 +34,7 @@ public class Commands {
 						break;
 					case list_triggers:
 						String out = "";
-						for(String s : IO.getTriggersForGuild(guild, linkable)){
-							out += s + ", ";
-						}
+						Util.getCommaSeparatedFormattedList(IO.getTriggersForGuild(guild, linkable));
 						if(out.length() > 0){
 							out = "Triggers for \"" + clipName + "\" are as follows: " + out.substring(0, out.lastIndexOf(", "));
 						}else{

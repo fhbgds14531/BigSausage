@@ -45,8 +45,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.14";
-	private static final String CHANGELOG = "Added two new clips.";
+	private static final String VERSION = "0.1.8.15";
+	private static final String CHANGELOG = "Tweaked randomness.";
 
 	private static String TOKEN;
 	private static final String PREFIX = "!bs";
@@ -231,6 +231,7 @@ public class BigSausage {
 	@EventSubscriber
 	public void onMessage(MessageReceivedEvent event) throws Exception {
 		SecureRandom rand = new SecureRandom();
+		rand.setSeed(System.nanoTime());
 		IMessage message = event.getMessage();
 		IUser user = message.getAuthor();
 		String[] words = message.getContent().split(" ");
@@ -774,10 +775,10 @@ public class BigSausage {
 					if (command.replace(" ", "").contains(s)) {
 						for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
 							if (vChannel.getConnectedUsers().contains(triggerUser)) {
-								if (rand.nextFloat() < 0.1F && !wasCommanded) {
+								if (rand.nextFloat() < 0.06F && !wasCommanded) {
 									this.queueFile(silence, guild, vChannel, triggerUser, wasCommanded);
 								}
-								if (rand.nextFloat() > 0.0001 || wasCommanded) {
+								if (rand.nextFloat() > 0.01 || wasCommanded) {
 									this.queueFile(clip.getFile(), guild, vChannel, triggerUser, wasCommanded);
 								} else {
 									this.queueFile(never, guild, vChannel, triggerUser, wasCommanded);
