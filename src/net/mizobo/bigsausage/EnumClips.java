@@ -15,7 +15,7 @@ public enum EnumClips implements ILinkable{
 	silence(BigSausage.silence, BigSausage.emptyList, true), never(BigSausage.never, BigSausage.emptyList, true), nightmare(BigSausage.nightmare, BigSausage.nightmareList, true),
 	thomas(BigSausage.thomas, BigSausage.emptyList, true), boilegg(BigSausage.boilegg, BigSausage.boileggList, false), bush(BigSausage.bush, BigSausage.bushList, false), 
 	datstick(BigSausage.datstick, BigSausage.datstickList, false), shorts(BigSausage.shorts, BigSausage.shortsList, false), seth(BigSausage.seth, BigSausage.sethList, false),
-	chaos(BigSausage.chaos, BigSausage.chaosList, false), ipa(BigSausage.ipa, BigSausage.ipaList, false);
+	chaos(BigSausage.chaos, BigSausage.chaosList, false), ipa(BigSausage.ipa, BigSausage.ipaList, false), fyl(BigSausage.fuck_you_luigi, BigSausage.fylList, false);
 
 	private File file;
 	private List<String> defaultTriggers;
