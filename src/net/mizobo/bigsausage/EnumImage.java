@@ -10,6 +10,7 @@ public enum EnumImage implements ILinkable{
 	lego(BigSausage.lego, BigSausage.legoList),
 	grout(BigSausage.grout, BigSausage.groutList),
 	science(BigSausage.science, BigSausage.scienceList),
+	value(BigSausage.value, BigSausage.valueList),
 	seeded(BigSausage.seeded, BigSausage.seededList);
 	
 	File fileToLink;
