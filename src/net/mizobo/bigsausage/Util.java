@@ -3,7 +3,6 @@ package net.mizobo.bigsausage;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
@@ -53,7 +52,7 @@ public class Util {
 		}
 	}
 
-	public static String getCommaSeparatedString(List list) {
+	public static String getCommaSeparatedString(@SuppressWarnings("rawtypes") List list) {
 		String out = "";
 		for (Object o : list) {
 			out += String.valueOf(o) + ", ";

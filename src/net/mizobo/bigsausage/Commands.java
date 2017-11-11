@@ -34,9 +34,9 @@ public class Commands {
 						break;
 					case list_triggers:
 						String out = "";
-						Util.getCommaSeparatedFormattedList(IO.getTriggersForGuild(guild, linkable));
+						out = Util.getCommaSeparatedFormattedList(IO.getTriggersForGuild(guild, linkable));
 						if(out.length() > 0){
-							out = "Triggers for \"" + clipName + "\" are as follows: " + out.substring(0, out.lastIndexOf(", "));
+							out = "Triggers for \"" + clipName + "\" are as follows: \n```" + out + "```";
 						}else{
 							out = "There are currently no triggers for \"" + clipName + "\". Try adding some with \"!bs add-trigger " + clipName + " <trigger word>\"";
 						}

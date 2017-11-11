@@ -19,7 +19,13 @@ import sx.blah.discord.handle.obj.IGuild;
 
 public class IO {
 
+	@SuppressWarnings("unused")
+	private static Map<String, String> defaultSettings = new HashMap<String, String>();
 	private static Map<String, State> guildSpecificStates;
+	
+	public IO(){
+//		defaultSettings.put("", value)
+	}
 
 	static void loadSettingsForGuild(IGuild guild) {
 		if (guildSpecificStates == null) guildSpecificStates = new HashMap<String, State>();

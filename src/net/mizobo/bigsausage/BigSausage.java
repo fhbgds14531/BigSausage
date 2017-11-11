@@ -45,7 +45,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.8.16";
+	private static final String VERSION = "0.1.8.17";
 	private static final String CHANGELOG = "Added fyl. Fixed a bug where \"!bs trust\" wouldn't save correctly.";
 
 	private static String TOKEN;
@@ -168,6 +168,12 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
+		if(new File("DEBUG.token").exists()){
+			client.changeUsername("BigSausage - Beta");
+			client.changePlayingText("under maintinence");
+		}else{
+			client.changeUsername("BigSausage");
+		}
 		System.out.println("BigSausage ready for mouths.");
 	}
 
@@ -656,10 +662,10 @@ public class BigSausage {
 						List<String> trusted = trustedUsersPerGuild.get(guild.getStringID());
 						if (words.length == 2) {
 							String out = "";
-							for (String username : trusted) {
-								out += "<@" + username + ">, ";
-							}
-							channel.sendMessage("Trusted users: " + out.substring(0, out.lastIndexOf(", ")));
+							List<String> formattedTrusted = new ArrayList<String>();
+							trusted.forEach(s -> formattedTrusted.add("<@" + s + ">"));
+							out = Util.getCommaSeparatedFormattedList(formattedTrusted);
+							channel.sendMessage("Trusted users: \n" + out + "");
 						} else {
 							String mention = wordList.get(2);
 							mention = mention.replace("<@", "").replace(">", "");
