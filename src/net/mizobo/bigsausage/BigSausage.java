@@ -45,7 +45,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 import sx.blah.discord.util.audio.events.TrackStartEvent;
 
 public class BigSausage {
-	private static final String VERSION = "0.1.9.1";
+	private static final String VERSION = "0.1.9.2";
 	private static final String CHANGELOG = "Added noBreak, yesBreak, and cuffs.";
 
 	private static String TOKEN;
