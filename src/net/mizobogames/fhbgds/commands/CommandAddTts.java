@@ -26,7 +26,9 @@ public class CommandAddTts extends Command {
 			for(String s : command){
 				string += s + " ";
 			}
-			string = string.trim().replace(BigSausage.PREFIX + " " + getCommandString() + " ", "");
+			String commandString = BigSausage.PREFIX + " " + getCommandString();
+			string = string.trim();
+			string = string.replace(commandString, "").trim();
 			if(string.isEmpty()){
 				channel.sendMessage(getHelpString());
 				return;

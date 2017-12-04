@@ -35,8 +35,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "TOKEN.token";
-	public static final String VERSION = "1.2.0";
-	public static final String CHANGELOG = "Added trigger manipulation.";
+	public static final String VERSION = "1.2.1";
+	public static final String CHANGELOG = "Fixed a bug with add-tts";
 	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;
@@ -78,11 +78,12 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
-		if (new File("DEBUG.token").exists() && client.getOurUser().getName().contentEquals("BigSausage")) {
-			client.changeUsername("BigSausage - Beta");
+//		boolean flag = client.getOurUser().getName().contains("BigSausage");
+		if (new File("DEBUG.token").exists() && (client.getOurUser().getName().contentEquals("Big Sausage"))){// || flag)) {
+			client.changeUsername("Big Sausage - Beta");
 			client.changePlayingText("under maintinence");
-		} else if (client.getOurUser().getName().contentEquals("BigSausage - Beta")) {
-			client.changeUsername("BigSausage");
+		} else if (client.getOurUser().getName().contentEquals("Big Sausage - Beta")){// || flag) {
+			client.changeUsername("Big Sausage");
 		}
 		System.out.println("BigSausage is ready for mouths.");
 	}
@@ -146,16 +147,19 @@ public class BigSausage {
 						List<String> indexStrings = new ArrayList<String>();
 						ja.forEach(s -> indexStrings.add(String.valueOf(s)));
 						for (String imageName : indexStrings) {
+							boolean linkedImage = false;
 							JSONArray triggers = (JSONArray) imageIndex.get(imageName);
 							List<String> triggerStrings = new ArrayList<String>();
 							triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
 							for (String trigger : triggerStrings) {
+								if(linkedImage) break;
 								for (String word : wordList) {
 									if (word.toLowerCase().contains(trigger)) {
 										String filename = (String) imageIndex.get(imageName + "_name");
 										File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
 										System.out.println("Sending file \"" + filename + "\" to guild \"" + guild.getName() + "\"...");
 										channel.sendFile(file);
+										linkedImage = true;
 									}
 								}
 							}

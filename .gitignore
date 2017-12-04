@@ -5,6 +5,7 @@ settings/
 *.project
 *.token
 lib/
+guilds/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
