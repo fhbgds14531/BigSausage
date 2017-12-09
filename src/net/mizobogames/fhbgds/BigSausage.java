@@ -35,8 +35,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.2.1";
-	public static final String CHANGELOG = "Fixed a bug with add-tts";
+	public static final String VERSION = "1.2.2";
+	public static final String CHANGELOG = "Added tts-info";
 	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;
@@ -78,11 +78,11 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
-//		boolean flag = client.getOurUser().getName().contains("BigSausage");
-		if (new File("DEBUG.token").exists() && (client.getOurUser().getName().contentEquals("Big Sausage"))){// || flag)) {
+		boolean flag = client.getOurUser().getName().contains("BigSausage");
+		if (new File("DEBUG.token").exists() && (client.getOurUser().getName().contentEquals("Big Sausage") || flag)) {
 			client.changeUsername("Big Sausage - Beta");
 			client.changePlayingText("under maintinence");
-		} else if (client.getOurUser().getName().contentEquals("Big Sausage - Beta")){// || flag) {
+		} else if (client.getOurUser().getName().contentEquals("Big Sausage - Beta") || flag) {
 			client.changeUsername("Big Sausage");
 		}
 		System.out.println("BigSausage is ready for mouths.");

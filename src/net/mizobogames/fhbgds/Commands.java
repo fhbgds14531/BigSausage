@@ -24,6 +24,7 @@ import net.mizobogames.fhbgds.commands.CommandShutdown;
 import net.mizobogames.fhbgds.commands.CommandStatus;
 import net.mizobogames.fhbgds.commands.CommandTrust;
 import net.mizobogames.fhbgds.commands.CommandTts;
+import net.mizobogames.fhbgds.commands.CommandTtsInfo;
 import net.mizobogames.fhbgds.commands.CommandUpdate;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -56,6 +57,7 @@ public class Commands {
 		commands.add(new CommandListFiles("list", "Lists files that have been uploaded. If the third parameter is left blank, will list all files. Usage: `%p% %n% <images|audio>`"));
 		commands.add(new CommandBugreport("bugreport", "Sends a bug report to the official channel, the report includes your user ID and name in case you need to be contacted. " +
 				"Usage: `%p% %n% <description of what went wrong>`"));
+		commands.add(new CommandTtsInfo("tts-info", "Lists off statistics about the tts file for this server."));
 		commands.add(new CommandChangelog("changelog", "Show the changelog for the bot. Usage: `%p% %n%`"));
 		commands.add(new CommandChangelog("version", "Show the current version for the bot. Usage: `%p% %n%`"));
 		commands.add(new CommandUpdate("update", ""));

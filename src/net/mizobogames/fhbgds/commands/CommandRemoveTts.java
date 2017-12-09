@@ -44,9 +44,9 @@ public class CommandRemoveTts extends Command{
 		}
 		String reply = "";
 		if (removed) {
-			reply = "Successfully removed string \"" + ttsRemoveString + "\" from the tts list.";
+			reply = "Successfully removed string \"" + ttsRemoveString.trim() + "\" from the tts list.";
 		} else {
-			reply = "Failed to remove string \"" + ttsRemoveString + "\" from the tts list. Is it exactly the same as an existing string? If not, this command won't work.";
+			reply = "Failed to remove string \"" + ttsRemoveString.trim() + "\" from the tts list. Is it exactly the same as an existing string? If not, this command won't work.";
 		}
 		try{
 		ttsFile.delete();
