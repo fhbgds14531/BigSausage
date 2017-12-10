@@ -47,9 +47,13 @@ public class CommandAddFile extends Command {
 		}
 		if (Util.hasPermission(1, guild, commandAuthor)) {
 			List<Attachment> attachments = message.getAttachments();
-			if (attachments.size() != 1) {
-				channel.sendMessage("Invalid number of attachments. Please attach 1 file at a time. If you believe you are seeing this in error, use `" + BigSausage.PREFIX
-						+ " bugreport <description>` to report the situation.");
+			if (attachments.size() <= 0) {
+				channel.sendMessage("Please attach a file in order to add it (type the command in the file upload comment window). If you believe you are seeing this in error, use `" 
+						+ BigSausage.PREFIX + " bugreport <description>` to report the situation.");
+				return;
+			}else if(attachments.size() > 1){
+				channel.sendMessage("Please attach only one file at a time. If you believe you are seeing this in error, use `" 
+						+ BigSausage.PREFIX + " bugreport <description>` to report the situation.");
 				return;
 			}
 			if (command.size() < 4) {

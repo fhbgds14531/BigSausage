@@ -35,7 +35,7 @@ public class CommandRemoveFile extends Command {
 				JSONArray audioIndex = (JSONArray) audioIndexContents.get("index");
 				JSONArray imageIndex = (JSONArray) imageIndexContents.get("index");
 				String filename;
-				if(audioIndex.contains(fileTitle)){
+				if(audioIndex != null && audioIndex.contains(fileTitle)){
 					filename = (String) audioIndexContents.get(fileTitle + "_name");
 					audioIndexContents.remove(fileTitle);
 					audioIndexContents.remove(fileTitle + "_name");
@@ -55,6 +55,7 @@ public class CommandRemoveFile extends Command {
 				File fileToDelete = new File("guilds/" + guild.getStringID() + "/files/" + filename);
 				if(!filename.isEmpty()){
 					fileToDelete.delete();
+					channel.sendMessage("Removed file `" + fileTitle + "`.");
 				}
 			}
 		}

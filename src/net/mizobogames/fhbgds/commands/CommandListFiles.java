@@ -24,6 +24,7 @@ public class CommandListFiles extends Command {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
+		String output = "Error. If you're seeing this, please report the incident using `" + BigSausage.PREFIX + " bugreport <information about the issue>`";
 		boolean doAudio = false;
 		boolean doImages = false;
 		if (command.size() < 3) {
@@ -66,13 +67,15 @@ public class CommandListFiles extends Command {
 				}else{
 					imageList = "There are currently no images.";
 				}
-				String output = "Error. If you're seeing this, please report the incident using `" + BigSausage.PREFIX + " bugreport <information about the issue>`";
 				if (doImages && !doAudio) {
 					output = "Here are all the image names for this server:\n" + imageList.replace("Images:\n", "");
 				} else if (!doImages && doAudio) {
 					output = "Here are all the audio clip names for this server:\n" + audioList.replace("Audio Clips:\n", "");
 				} else if (doImages && doAudio) {
 					output = "Here are all the image and audio clip names for this server:\n\n" + imageList + "\n" + audioList;
+				}
+				if(output.contains("no audio") && output.contains("no images")){
+					output = "There are currently no files. Try adding some using `" + BigSausage.PREFIX + " add-file`";
 				}
 				channel.sendMessage(output);
 			}
