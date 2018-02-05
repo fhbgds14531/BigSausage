@@ -35,8 +35,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.2.3";
-	public static final String CHANGELOG = "Fixed linking bug, changed some help messages to be more clear.";
+	public static final String VERSION = "1.2.4";
+	public static final String CHANGELOG = "Changed voice linking so it only links one of a specific clip per message.";
 	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;
@@ -122,17 +122,21 @@ public class BigSausage {
 						List<String> indexStrings = new ArrayList<String>();
 						ja.forEach(s -> indexStrings.add(String.valueOf(s)));
 						for (String clipName : indexStrings) {
+							boolean linkedClip = false;
 							JSONArray triggers = (JSONArray) audioIndex.get(clipName);
 							List<String> triggerStrings = new ArrayList<String>();
 							triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
 							for (String trigger : triggerStrings) {
+								if(linkedClip) break;
 								for (String word : wordList) {
+									if(linkedClip) break;
 									if (word.toLowerCase().contains(trigger)) {
 										for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
 											if (vChannel.getConnectedUsers().contains(user)) {
 												String filename = (String) audioIndex.get(clipName + "_name");
 												File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
 												this.queueFile(file, guild, vChannel, user, false);
+												linkedClip = true;
 											}
 										}
 									}
