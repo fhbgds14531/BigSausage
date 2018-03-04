@@ -35,8 +35,9 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.2.4";
-	public static final String CHANGELOG = "Changed voice linking so it only links one of a specific clip per message.";
+	public static final String VERSION = "1.3";
+	public static final String CHANGELOG = "Changed \"add-file\" to \"upload\". Made it so you can disable specific features. Added new commands: \"image\" and \"voice\". they function "+
+	"similarly to \"tts\" in that they will link/play random files from their respective selections.";
 	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;
@@ -62,7 +63,7 @@ public class BigSausage {
 		if (!guildDir.exists()) {
 			guildDir.mkdirs();
 			SettingsManager.setupDefaultSettingsForGuild(guild);
-//			guild.getDefaultChannel().sendMessage("Hello, I am BigSausage! To enable me, please type `" + PREFIX + " enable` and for help, type `" + PREFIX + " help`");
+			// guild.getDefaultChannel().sendMessage("Hello, I am BigSausage! To enable me, please type `" + PREFIX + " enable` and for help, type `" + PREFIX + " help`");
 		}
 		File ttsFile = new File(guildLocString + "/tts.txt");
 		if (!ttsFile.exists()) {
@@ -78,11 +79,11 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
-//		boolean flag = client.getOurUser().getName().contains("BigSausage");
-		if (new File("DEBUG.token").exists() && (client.getOurUser().getName().contentEquals("Big Sausage"))){// || flag)) {
+		// boolean flag = client.getOurUser().getName().contains("BigSausage");
+		if (new File("DEBUG.token").exists() && (client.getOurUser().getName().contentEquals("Big Sausage"))) {// || flag)) {
 			client.changeUsername("Big Sausage - Beta");
 			client.changePlayingText("under maintinence");
-		} else if (client.getOurUser().getName().contentEquals("Big Sausage - Beta")){// || flag) {
+		} else if (client.getOurUser().getName().contentEquals("Big Sausage - Beta")) {// || flag) {
 			client.changeUsername("Big Sausage");
 		}
 		System.out.println("BigSausage is ready for mouths.");
@@ -104,68 +105,68 @@ public class BigSausage {
 
 		IChannel channel = message.getChannel();
 		IGuild guild = message.getGuild();
-		
-		if(message.getContent().replace("!", "").trim().contentEquals(client.getOurUser().mention().replace("!", ""))){
-			commands.getFromString("help").execute(channel, user, guild, Arrays.asList(new String[] {PREFIX, "help"}), message);
+
+		if (message.getContent().replace("!", "").trim().contentEquals(client.getOurUser().mention().replace("!", ""))) {
+			commands.getFromString("help").execute(channel, user, guild, Arrays.asList(new String[] { PREFIX, "help" }), message);
+			return;
 		}
-		
+
 		if (!commands.findAndExecuteCommand(wordList, channel, user, guild, message)) {
-			if ((boolean) SettingsManager.getSettingForGuild(guild, "enabled")) {
-				File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
-				File audioFileIndex = Util.getAudioIndexFile(guild);
-				File imageFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/imageIndex.json");
-				if (indexDir.exists()) {
-					if (audioFileIndex.exists()) {
-						JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
-						JSONArray ja = (JSONArray) audioIndex.get("index");
-						if(ja == null) ja = new JSONArray();
-						List<String> indexStrings = new ArrayList<String>();
-						ja.forEach(s -> indexStrings.add(String.valueOf(s)));
-						for (String clipName : indexStrings) {
-							boolean linkedClip = false;
-							JSONArray triggers = (JSONArray) audioIndex.get(clipName);
-							List<String> triggerStrings = new ArrayList<String>();
-							triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
-							for (String trigger : triggerStrings) {
-								if(linkedClip) break;
-								for (String word : wordList) {
-									if(linkedClip) break;
-									if (word.toLowerCase().contains(trigger)) {
-										for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
-											if (vChannel.getConnectedUsers().contains(user)) {
-												String filename = (String) audioIndex.get(clipName + "_name");
-												File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
-												this.queueFile(file, guild, vChannel, user, false);
-												linkedClip = true;
-											}
+
+			File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
+			File audioFileIndex = Util.getAudioIndexFile(guild);
+			File imageFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/imageIndex.json");
+			if (indexDir.exists()) {
+				if (audioFileIndex.exists() && ((boolean) SettingsManager.getSettingForGuild(guild, "audio-enabled"))) {
+					JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
+					JSONArray ja = (JSONArray) audioIndex.get("index");
+					if (ja == null) ja = new JSONArray();
+					List<String> indexStrings = new ArrayList<String>();
+					ja.forEach(s -> indexStrings.add(String.valueOf(s)));
+					for (String clipName : indexStrings) {
+						boolean linkedClip = false;
+						JSONArray triggers = (JSONArray) audioIndex.get(clipName);
+						List<String> triggerStrings = new ArrayList<String>();
+						triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
+						for (String trigger : triggerStrings) {
+							if (linkedClip) break;
+							for (String word : wordList) {
+								if (linkedClip) break;
+								if (word.toLowerCase().contains(trigger)) {
+									for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
+										if (vChannel.getConnectedUsers().contains(user)) {
+											String filename = (String) audioIndex.get(clipName + "_name");
+											File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+											this.queueFile(file, guild, vChannel, user, false);
+											linkedClip = true;
 										}
 									}
 								}
 							}
 						}
 					}
-					if (imageFileIndex.exists()) {
-						JSONObject imageIndex = Util.getJsonObjectFromFile(guild, imageFileIndex);
-						JSONArray ja = (JSONArray) imageIndex.get("index");
-						if(ja == null) ja = new JSONArray();
-						List<String> indexStrings = new ArrayList<String>();
-						ja.forEach(s -> indexStrings.add(String.valueOf(s)));
-						for (String imageName : indexStrings) {
-							boolean linkedImage = false;
-							JSONArray triggers = (JSONArray) imageIndex.get(imageName);
-							List<String> triggerStrings = new ArrayList<String>();
-							triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
-							for (String trigger : triggerStrings) {
-								if(linkedImage) break;
-								for (String word : wordList) {
-									if(linkedImage) break;
-									if (word.toLowerCase().contains(trigger)) {
-										String filename = (String) imageIndex.get(imageName + "_name");
-										File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
-										System.out.println("Sending file \"" + filename + "\" to guild \"" + guild.getName() + "\"...");
-										channel.sendFile(file);
-										linkedImage = true;
-									}
+				}
+				if (imageFileIndex.exists() && ((boolean) SettingsManager.getSettingForGuild(guild, "images-enabled"))) {
+					JSONObject imageIndex = Util.getJsonObjectFromFile(guild, imageFileIndex);
+					JSONArray ja = (JSONArray) imageIndex.get("index");
+					if (ja == null) ja = new JSONArray();
+					List<String> indexStrings = new ArrayList<String>();
+					ja.forEach(s -> indexStrings.add(String.valueOf(s)));
+					for (String imageName : indexStrings) {
+						boolean linkedImage = false;
+						JSONArray triggers = (JSONArray) imageIndex.get(imageName);
+						List<String> triggerStrings = new ArrayList<String>();
+						triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
+						for (String trigger : triggerStrings) {
+							if (linkedImage) break;
+							for (String word : wordList) {
+								if (linkedImage) break;
+								if (word.toLowerCase().contains(trigger)) {
+									String filename = (String) imageIndex.get(imageName + "_name");
+									File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+									System.out.println("Sending file \"" + filename + "\" to guild \"" + guild.getName() + "\"...");
+									channel.sendFile(file);
+									linkedImage = true;
 								}
 							}
 						}
@@ -184,7 +185,7 @@ public class BigSausage {
 		}
 	}
 
-	private void join(IVoiceChannel channel, IUser user, boolean commanded) throws RateLimitException, DiscordException, MissingPermissionsException {
+	private static void join(IVoiceChannel channel, IUser user, boolean commanded) throws RateLimitException, DiscordException, MissingPermissionsException {
 		if (channel == null || user == null) {
 			return;
 		} else if (user.getVoiceStateForGuild(channel.getGuild()) == null) {
@@ -205,11 +206,11 @@ public class BigSausage {
 		}
 	}
 
-	private AudioPlayer getPlayer(IGuild guild) {
+	private static AudioPlayer getPlayer(IGuild guild) {
 		return AudioPlayer.getAudioPlayerForGuild(guild);
 	}
-	
-	public static void tryRestart(IChannel outputChannel){
+
+	public static void tryRestart(IChannel outputChannel) {
 		try {
 			outputChannel.sendMessage("Restarting...");
 			Runtime.getRuntime().exec("cmd /c start \"\" restart.bat");
@@ -218,8 +219,8 @@ public class BigSausage {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void tryRestartForUpdate(IChannel outputChannel){
+
+	public static void tryRestartForUpdate(IChannel outputChannel) {
 		try {
 			outputChannel.sendMessage("Restarting...");
 			Runtime.getRuntime().exec("cmd /c start \"\" rename.bat");
@@ -229,7 +230,7 @@ public class BigSausage {
 		}
 	}
 
-	private void queueFile(File f, IGuild guild, IVoiceChannel channelToJoin, IUser triggerUser, boolean commanded) {
+	public static void queueFile(File f, IGuild guild, IVoiceChannel channelToJoin, IUser triggerUser, boolean commanded) {
 		int queueLength = 0;
 		try {
 			AudioPlayer player = getPlayer(guild);

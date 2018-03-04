@@ -17,8 +17,10 @@ public class CommandStatus extends Command{
 
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		boolean status = (boolean) SettingsManager.getSettingForGuild(guild, "enabled");
-		channel.sendMessage("BigSausage is currently " + (status ? "enabled." : " disabled."));
+		String audio = (boolean) SettingsManager.getSettingForGuild(guild, "audio-enabled") ? "Enabled" : "Disabled";
+		String images = (boolean) SettingsManager.getSettingForGuild(guild, "images-enabled") ? "Enabled" : "Disabled";
+		String tts = (boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled") ? "Enabled" : "Disabled";
+		channel.sendMessage("Here is the current status of BigSausage's services:\n```Audio: " + audio + "\nImages: " + images + "\nTTS: " + tts + "```");
 	}
 	
 

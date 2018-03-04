@@ -75,7 +75,7 @@ public class CommandListFiles extends Command {
 					output = "Here are all the image and audio clip names for this server:\n\n" + imageList + "\n" + audioList;
 				}
 				if(output.contains("no audio") && output.contains("no images")){
-					output = "There are currently no files. Try adding some using `" + BigSausage.PREFIX + " add-file`";
+					output = "There are currently no files. Try adding some using `" + BigSausage.PREFIX + " upload`";
 				}
 				channel.sendMessage(output);
 			}

@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.mizobogames.fhbgds.BigSausage;
 import net.mizobogames.fhbgds.Command;
+import net.mizobogames.fhbgds.SettingsManager;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -22,20 +23,23 @@ public class CommandTts extends Command {
 
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		SecureRandom rand = new SecureRandom();
-		rand.setSeed(System.nanoTime());
-		File ttsFile = new File("guilds/" + guild.getStringID() + "/tts.txt");
-		List<String> ttses;
-		try {
-			ttses = Files.readAllLines(ttsFile.toPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-			ttses = new ArrayList<String>();
-		}
-		if(!ttses.isEmpty()){
-			channel.sendMessage(ttses.get(rand.nextInt(ttses.size())), true);
+		if ((boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled")) {
+			SecureRandom rand = new SecureRandom();
+			File ttsFile = new File("guilds/" + guild.getStringID() + "/tts.txt");
+			List<String> ttses;
+			try {
+				ttses = Files.readAllLines(ttsFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+				ttses = new ArrayList<String>();
+			}
+			if (!ttses.isEmpty()) {
+				channel.sendMessage(ttses.get(rand.nextInt(ttses.size())), true);
+			} else {
+				channel.sendMessage("There are currently no tts strings in the list, try adding some with `" + BigSausage.PREFIX + " add-tts <tts string>`");
+			}
 		}else{
-			channel.sendMessage("There are currently no tts strings in the list, try adding some with `" + BigSausage.PREFIX + " add-tts <tts string>`");
+			channel.sendMessage("Tts is disabled.");
 		}
 	}
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.mizobogames.fhbgds.Command;
 import net.mizobogames.fhbgds.SettingsManager;
-import net.mizobogames.fhbgds.Util;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -21,9 +20,31 @@ public class CommandEnable extends Command{
 
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		if(Util.hasPermission(1, guild, commandAuthor)){
-			SettingsManager.setSettingForGuild(guild, "enabled", stateToSet);
-			channel.sendMessage("BigSausage is now " + (stateToSet ? "enabled." : " disabled."));
+		String thingToChange = "";
+		if(command.size() > 2){
+			thingToChange = command.get(2).toLowerCase();
+		}else{
+			thingToChange = "all";
+		}
+		switch (thingToChange){
+			case "images":
+				SettingsManager.setSettingForGuild(guild, "images-enabled", stateToSet);
+				channel.sendMessage("Images are now " + (stateToSet ? "enabled." : " disabled."));
+				break;
+			case "audio":
+				SettingsManager.setSettingForGuild(guild, "audio-enabled", stateToSet);
+				channel.sendMessage("Audio is now " + (stateToSet ? "enabled." : " disabled."));
+				break;
+			case "tts":
+				SettingsManager.setSettingForGuild(guild, "tts-enabled", stateToSet);
+				channel.sendMessage("Tts is now " + (stateToSet ? "enabled." : " disabled."));
+				break;
+			case "all":
+				SettingsManager.setSettingForGuild(guild, "audio-enabled", stateToSet);
+				SettingsManager.setSettingForGuild(guild, "images-enabled", stateToSet);
+				SettingsManager.setSettingForGuild(guild, "tts-enabled", stateToSet);
+				channel.sendMessage("Everything is now " + (stateToSet ? "enabled." : " disabled."));
+				break;
 		}
 	}
 
