@@ -79,11 +79,13 @@ public class CommandRandomFile extends Command {
 					File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
 					System.out.println("Sending file \"" + filename + "\" to guild \"" + guild.getName() + "\"...");
 					try {
+						channel.setTypingStatus(true);
 						channel.sendFile(file);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 						channel.sendMessage("Error uploading image `" + imageName + "`.");
 					}
+					channel.setTypingStatus(false);
 				}
 			}
 		}
