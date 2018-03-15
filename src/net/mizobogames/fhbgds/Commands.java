@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.mizobogames.fhbgds.commands.CommandAddFile;
+import net.mizobogames.fhbgds.commands.CommandUpload;
 import net.mizobogames.fhbgds.commands.CommandAddTrigger;
 import net.mizobogames.fhbgds.commands.CommandAddTts;
 import net.mizobogames.fhbgds.commands.CommandBugreport;
@@ -39,8 +39,8 @@ public class Commands {
 	
 	public Commands(){
 		commands.add(help);
-		commands.add(new CommandEnable("enable", "Enables specific functionalities of the bot. Usage: `%p% %n%` [images|audio|tts|all]", true));
-		commands.add(new CommandEnable("disable", "Disables the functionality of the bot. Usage: `%p% %n%` [images|audio|tts|all]", false));
+		commands.add(new CommandEnable("enable", "Enables specific functionalities of the bot. Usage: `%p% %n%` [images|audio|tts|multi-link|all]", true));
+		commands.add(new CommandEnable("disable", "Disables the functionalies of the bot. Usage: `%p% %n%` [images|audio|tts|multi-link|all]", false));
 		commands.add(new CommandStatus("status", "Checks the status of the bot. Usage: `%p% %n%`"));
 		commands.add(new CommandCommands("commands", "Lists all the commands in the bot. Usage: `%p% %n%`"));
 		commands.add(new CommandTts("tts", "Repeat a random tts string from the tts list. Usage: `%p% %n%`"));
@@ -54,7 +54,7 @@ public class Commands {
 		commands.add(new CommandRemoveTrigger("remove-trigger", "Remove a trigger from a clip or image. Usage: `%p% %n% <name> <word>`"));
 		commands.add(new CommandMaxClips("max-clips", "List or edit the maximum number of audio clips that BigSausage will queue per message. Usage: `%p% %n%` to list the current setting or `%p% %n% <number>` to set a new maximum."));
 		commands.add(new CommandRoll("roll", "Roll some dice. Usage: `%p% %n% <X>d<Y>` where X is the number of dice and Y is the number of sides per die."));
-		commands.add(new CommandAddFile("upload", "Adds a file to be linked or played. Audio files must be of the `.wav` format. Usage: `%p% %n% <a name for the file> <default trigger list>`"));
+		commands.add(new CommandUpload("upload", "Adds a file to be linked or played. Audio files must be of the `.wav` format. Usage: `%p% %n% <a name for the file> <default trigger list>`"));
 		commands.add(new CommandListFiles("list", "Lists files that have been uploaded. If the third parameter is left blank, will list all files. Usage: `%p% %n% <images|audio>`"));
 		commands.add(new CommandBugreport("bugreport", "Sends a bug report to the official channel, the report includes your user ID and name in case you need to be contacted. " +
 				"Usage: `%p% %n% <description of what went wrong>`"));

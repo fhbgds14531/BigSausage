@@ -36,8 +36,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 
 public class BigSausage {
 
-	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.3.5";
+	public static final String TOKEN_FILE_NAME = "TOKEN.token";
+	public static final String VERSION = "1.3.6";
 	public static final String CHANGELOG = "Added a setting to allow multiple of the same file to be linked per message. GIF support! Fixed a bug with the \"!bs list\" command exceeding the maximum character limit. (It's still a work in progress but I wanted to at least get it working)";
 	public static final String ME = "198575970624471040";
 
@@ -81,6 +81,26 @@ public class BigSausage {
 		if (!filesDir.exists()) {
 			filesDir.mkdirs();
 			System.out.println("Created files directory for guild \"" + guild.getStringID() + "\"");
+		}
+		try{
+			boolean b = (boolean) SettingsManager.getSettingForGuild(guild, "audio-enabled");
+		}catch(NullPointerException e){
+			SettingsManager.setSettingForGuild(guild, "audio-enabled", false);
+		}
+		try{
+			boolean b = (boolean) SettingsManager.getSettingForGuild(guild, "images-enabled");
+		}catch(NullPointerException e){
+			SettingsManager.setSettingForGuild(guild, "images-enabled", false);
+		}
+		try{
+			boolean b = (boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled");
+		}catch(NullPointerException e){
+			SettingsManager.setSettingForGuild(guild, "tts-enabled", false);
+		}
+		try{
+			boolean b = (boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled");
+		}catch(NullPointerException e){
+			SettingsManager.setSettingForGuild(guild, "multi-link-enabled", false);
 		}
 	}
 

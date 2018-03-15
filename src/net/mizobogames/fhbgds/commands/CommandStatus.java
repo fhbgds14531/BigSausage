@@ -20,7 +20,8 @@ public class CommandStatus extends Command{
 		String audio = (boolean) SettingsManager.getSettingForGuild(guild, "audio-enabled") ? "Enabled" : "Disabled";
 		String images = (boolean) SettingsManager.getSettingForGuild(guild, "images-enabled") ? "Enabled" : "Disabled";
 		String tts = (boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled") ? "Enabled" : "Disabled";
-		channel.sendMessage("Here is the current status of BigSausage's services:\n```Audio: " + audio + "\nImages: " + images + "\nTTS: " + tts + "```");
+		String multi_link = (boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled") ? "Enabled" : "Disabled";
+		channel.sendMessage("Here is the current status of BigSausage's services:\n```Audio: " + audio + "\nImages: " + images + "\nTTS: " + tts + "\nMulti-Link:" + multi_link + "```");
 	}
 	
 
