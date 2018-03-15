@@ -149,7 +149,7 @@ public class CommandAddFile extends Command {
 				Util.saveJsonToFile(imageFileIndex, obj);
 				channel.sendMessage("Succesfully added file under the name \"" + command.get(2).toLowerCase() + "\"");
 			} else {
-				channel.sendMessage("Invalid file type. Audio clips must be of the `.wav` format and images must be one of the following: `.jpg` `.jpeg` `.png` `.bmp`");
+				channel.sendMessage("Invalid file type. Audio clips must be of the `.wav` format and images must be one of the following: `.jpg` `.jpeg` `.png` `.bmp` `.gif`");
 			}
 		}
 	}
@@ -172,7 +172,7 @@ public class CommandAddFile extends Command {
 	}
 
 	public boolean isImageFilenameValid(String filename) {
-		return filename.matches("([^\\s]+(\\.(?i)(jpg|png|bmp|jpeg))$)");
+		return filename.matches("([^\\s]+(\\.(?i)(jpg|png|bmp|jpeg|gif))$)");
 	}
 
 }

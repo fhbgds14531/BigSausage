@@ -39,10 +39,15 @@ public class CommandEnable extends Command{
 				SettingsManager.setSettingForGuild(guild, "tts-enabled", stateToSet);
 				channel.sendMessage("Tts is now " + (stateToSet ? "enabled." : " disabled."));
 				break;
+			case "multi-link":
+				SettingsManager.setSettingForGuild(guild, "multi-link-enabled", stateToSet);
+				channel.sendMessage("Multiple of the same clip/image per message are now " + (stateToSet ? "enabled." : " disabled."));
+				break;
 			case "all":
 				SettingsManager.setSettingForGuild(guild, "audio-enabled", stateToSet);
 				SettingsManager.setSettingForGuild(guild, "images-enabled", stateToSet);
 				SettingsManager.setSettingForGuild(guild, "tts-enabled", stateToSet);
+				SettingsManager.setSettingForGuild(guild, "multi-link-enabled", stateToSet);
 				channel.sendMessage("Everything is now " + (stateToSet ? "enabled." : " disabled."));
 				break;
 		}

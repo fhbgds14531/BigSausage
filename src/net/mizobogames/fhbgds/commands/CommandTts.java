@@ -24,6 +24,7 @@ public class CommandTts extends Command {
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 		if ((boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled")) {
+			channel.setTypingStatus(true);
 			SecureRandom rand = new SecureRandom();
 			File ttsFile = new File("guilds/" + guild.getStringID() + "/tts.txt");
 			List<String> ttses;
@@ -41,6 +42,7 @@ public class CommandTts extends Command {
 		}else{
 			channel.sendMessage("Tts is disabled.");
 		}
+		channel.setTypingStatus(false);
 	}
 
 }

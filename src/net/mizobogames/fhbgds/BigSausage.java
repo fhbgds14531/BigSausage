@@ -19,12 +19,14 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.ActivityType;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.handle.obj.StatusType;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -35,9 +37,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.3";
-	public static final String CHANGELOG = "Changed \"add-file\" to \"upload\". Made it so you can disable specific features. Added new commands: \"image\" and \"voice\". they function "+
-	"similarly to \"tts\" in that they will link/play random files from their respective selections.";
+	public static final String VERSION = "1.3.5";
+	public static final String CHANGELOG = "Added a setting to allow multiple of the same file to be linked per message. GIF support! Fixed a bug with the \"!bs list\" command exceeding the maximum character limit. (It's still a work in progress but I wanted to at least get it working)";
 	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;
@@ -58,6 +59,12 @@ public class BigSausage {
 	@EventSubscriber
 	public void onGuildJoin(GuildCreateEvent event) throws IOException {
 		IGuild guild = event.getGuild();
+		if (!guild.getStringID().contentEquals("382053109788049429") && !guild.getStringID().contentEquals("381958599225901056")) {
+			guild.getDefaultChannel().sendMessage("You seem to have somehow added the development beta of this bot. This version of the bot will now automatically leave the server. "
+					+ "If you would like to add the regular version of the bot to this server please contact <@" + ME + "> for the correct link.");
+			guild.leave();
+			System.out.println("Left guild \"" + guild.getName() + "\"");
+		}
 		final String guildLocString = "guilds/" + guild.getStringID();
 		File guildDir = new File(guildLocString);
 		if (!guildDir.exists()) {
@@ -79,11 +86,11 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
-		// boolean flag = client.getOurUser().getName().contains("BigSausage");
-		if (new File("DEBUG.token").exists() && (client.getOurUser().getName().contentEquals("Big Sausage"))) {// || flag)) {
+		boolean flag = client.getOurUser().getName().contains("BigSausage");
+		if (new File("DEBUG.token").exists() && (client.getOurUser().getName().contentEquals("Big Sausage"))) {
 			client.changeUsername("Big Sausage - Beta");
-			client.changePlayingText("under maintinence");
-		} else if (client.getOurUser().getName().contentEquals("Big Sausage - Beta")) {// || flag) {
+			client.changePresence(StatusType.ONLINE, ActivityType.PLAYING, "Under maintenance");
+		} else if (client.getOurUser().getName().contentEquals("Big Sausage - Beta") || flag) {
 			client.changeUsername("Big Sausage");
 		}
 		System.out.println("BigSausage is ready for mouths.");
@@ -128,10 +135,11 @@ public class BigSausage {
 						JSONArray triggers = (JSONArray) audioIndex.get(clipName);
 						List<String> triggerStrings = new ArrayList<String>();
 						triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
-						for (String trigger : triggerStrings) {
-							if (linkedClip) break;
-							for (String word : wordList) {
+						for (String word : wordList) {
+							for (String trigger : triggerStrings) {
 								if (linkedClip) break;
+
+								if (linkedClip && !(boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled")) break;
 								if (word.toLowerCase().contains(trigger)) {
 									for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
 										if (vChannel.getConnectedUsers().contains(user)) {
@@ -160,13 +168,15 @@ public class BigSausage {
 						for (String trigger : triggerStrings) {
 							if (linkedImage) break;
 							for (String word : wordList) {
-								if (linkedImage) break;
+								if (linkedImage && !(boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled")) break;
 								if (word.toLowerCase().contains(trigger)) {
 									String filename = (String) imageIndex.get(imageName + "_name");
 									File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
 									System.out.println("Sending file \"" + filename + "\" to guild \"" + guild.getName() + "\"...");
+									channel.setTypingStatus(true);
 									channel.sendFile(file);
 									linkedImage = true;
+									channel.setTypingStatus(false);
 								}
 							}
 						}

@@ -35,6 +35,7 @@ public class CommandListFiles extends Command {
 			if (type.toLowerCase().contentEquals("images")) doImages = true;
 			if (type.toLowerCase().contentEquals("audio")) doAudio = true;
 		}
+		channel.setTypingStatus(true);
 		File filesDir = new File("guilds/" + guild.getStringID() + "/files/");
 		if (filesDir.exists()) {
 			File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
@@ -46,42 +47,75 @@ public class CommandListFiles extends Command {
 				if (audioFileIndex.exists() && doAudio) {
 					JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
 					JSONArray ja = (JSONArray) audioIndex.get("index");
-					if(ja == null) ja = new JSONArray();
+					if (ja == null) ja = new JSONArray();
 					ja.forEach(s -> audioIndexStrings.add(String.valueOf(s)));
 				}
 				if (imageFileIndex.exists() && doImages) {
+					List<String> messages = new ArrayList<String>();
 					JSONObject imageIndex = Util.getJsonObjectFromFile(guild, imageFileIndex);
 					JSONArray ja = (JSONArray) imageIndex.get("index");
-					if(ja == null) ja = new JSONArray();
+					if (ja == null) ja = new JSONArray();
 					ja.forEach(s -> imageIndexStrings.add(String.valueOf(s)));
 				}
 				String audioList = "Audio Clips:\n";
 				if (!audioIndexStrings.isEmpty()) {
 					audioList += "```" + Util.getCommaSeparatedFormattedList(audioIndexStrings) + "```";
-				}else{
+				} else {
 					audioList = "There are currently no audio clips.";
 				}
 				String imageList = "Images:\n";
 				if (!imageIndexStrings.isEmpty()) {
 					imageList += "```" + Util.getCommaSeparatedFormattedList(imageIndexStrings) + "```";
-				}else{
+				} else {
 					imageList = "There are currently no images.";
 				}
 				if (doImages && !doAudio) {
-					output = "Here are all the image names for this server:\n" + imageList.replace("Images:\n", "");
+					String finalOut = "Here are all the image names for this server:\n" + imageList.replace("Images:\n", "");
+					List<String> imageStrings = new ArrayList<String>();
+					while (finalOut.length() > 2000) {
+						imageStrings.add(finalOut.substring(0, finalOut.substring(0, 1994).lastIndexOf(" ")) + "```");
+						finalOut = "```" + finalOut.substring(finalOut.substring(0, 2000).lastIndexOf(" "));
+					}
+					imageStrings.add(finalOut);
+
+					for (String s : imageStrings) {
+						channel.sendMessage(s);
+					}
 				} else if (!doImages && doAudio) {
-					output = "Here are all the audio clip names for this server:\n" + audioList.replace("Audio Clips:\n", "");
+					String finalOut = "Here are all the audio clip names for this server:\n" + audioList.replace("Audio Clips:\n", "");
+					List<String> audioStrings = new ArrayList<String>();
+					while (finalOut.length() > 2000) {
+						audioStrings.add(finalOut.substring(0, finalOut.substring(0, 1994).lastIndexOf(" ")) + "```");
+						finalOut = finalOut.substring(finalOut.substring(0, 2000).lastIndexOf(" ")).replaceFirst("\n", "");
+						if(finalOut.startsWith("   ")) finalOut = finalOut.substring(3);
+						finalOut = "```" + finalOut;
+					}
+					audioStrings.add(finalOut);
+
+					for (String s : audioStrings) {
+						channel.sendMessage(s);
+					}
 				} else if (doImages && doAudio) {
-					output = "Here are all the image and audio clip names for this server:\n\n" + imageList + "\n" + audioList;
+					String finalOut = "Here are all the image and audio clip names for this server:\n\n" + imageList + "\n" + audioList;
+					List<String> allStrings = new ArrayList<String>();
+					while (finalOut.length() > 2000) {
+						allStrings.add(finalOut.substring(0, finalOut.substring(0, 1994).lastIndexOf(" ")) + "```");
+						finalOut = "```" + finalOut.substring(finalOut.substring(0, 1994).lastIndexOf(" ")).replaceFirst("\n", "").replaceFirst(" ", "");
+					}
+					allStrings.add(finalOut);
+
+					for (String s : allStrings) {
+						channel.sendMessage(s);
+					}
 				}
-				if(output.contains("no audio") && output.contains("no images")){
-					output = "There are currently no files. Try adding some using `" + BigSausage.PREFIX + " upload`";
+				if (output.contains("no audio") && output.contains("no images")) {
+					channel.sendMessage("There are currently no files. Try adding some using `" + BigSausage.PREFIX + " upload`");
 				}
-				channel.sendMessage(output);
 			}
 		} else {
 			channel.sendMessage("The files directory is empty.");
 		}
+		channel.setTypingStatus(false);
 	}
 
 }
