@@ -36,8 +36,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 
 public class BigSausage {
 
-	public static final String TOKEN_FILE_NAME = "TOKEN.token";
-	public static final String VERSION = "1.3.6";
+	public static final String TOKEN_FILE_NAME = "BigSausage.token";
+	public static final String VERSION = "1.3.6b";
 	public static final String CHANGELOG = "Added a setting to allow multiple of the same file to be linked per message. GIF support! Fixed a bug with the \"!bs list\" command exceeding the maximum character limit. (It's still a work in progress but I wanted to at least get it working)";
 	public static final String ME = "198575970624471040";
 
@@ -156,9 +156,8 @@ public class BigSausage {
 						List<String> triggerStrings = new ArrayList<String>();
 						triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
 						for (String word : wordList) {
+							if (linkedClip && !(boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled")) break;
 							for (String trigger : triggerStrings) {
-								if (linkedClip) break;
-
 								if (linkedClip && !(boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled")) break;
 								if (word.toLowerCase().contains(trigger)) {
 									for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
@@ -186,7 +185,7 @@ public class BigSausage {
 						List<String> triggerStrings = new ArrayList<String>();
 						triggers.forEach(object -> triggerStrings.add(String.valueOf(object)));
 						for (String trigger : triggerStrings) {
-							if (linkedImage) break;
+							if (linkedImage && !(boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled")) break;
 							for (String word : wordList) {
 								if (linkedImage && !(boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled")) break;
 								if (word.toLowerCase().contains(trigger)) {
