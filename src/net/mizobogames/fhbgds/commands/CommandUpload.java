@@ -112,6 +112,11 @@ public class CommandUpload extends Command {
 				Util.saveJsonToFile(audioFileIndex, obj);
 				channel.sendMessage("Succesfully added file under the name \"" + command.get(2).toLowerCase() + "\"");
 			} else if (isImageFilenameValid(attachments.get(0).getFilename())) {
+				if (attachments.get(0).getFilesize() > 4999999) {
+					channel.sendMessage("That file is too big! Please keep filesizes below 5MB. If you believe you are seeing this in error, use `" + BigSausage.PREFIX
+							+ " bugreport <description>` to report the situation.");
+					return;
+				}
 				String filename = attachments.get(0).getFilename().toLowerCase();
 				String extension = filename.substring(filename.indexOf("."));
 				File attachment = new File("guilds/" + guild.getStringID() + "/files/" + filename);

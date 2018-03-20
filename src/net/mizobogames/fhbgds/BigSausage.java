@@ -37,7 +37,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.3.8";
+	public static final String VERSION = "1.3.9";
 	public static final String CHANGELOG = "I finally link things in the order they were typed. Added a setting to allow multiple of the same file to be linked per message. GIF support! Fixed a bug with the \"!bs list\" command exceeding the maximum character limit. (It's still a work in progress but I wanted to at least get it working)";
 	public static final String ME = "198575970624471040";
 
@@ -59,7 +59,7 @@ public class BigSausage {
 	@EventSubscriber
 	public void onGuildJoin(GuildCreateEvent event) throws IOException {
 		IGuild guild = event.getGuild();
-		if (!guild.getStringID().contentEquals("382053109788049429") && !guild.getStringID().contentEquals("381958599225901056")) {
+		if (!guild.getStringID().contentEquals("382053109788049429") && !guild.getStringID().contentEquals("381958599225901056") && new File("DEBUG.token").exists()) {
 			guild.getDefaultChannel().sendMessage("You seem to have somehow added the development beta of this bot. This version of the bot will now automatically leave the server. "
 					+ "If you would like to add the regular version of the bot to this server please contact <@" + ME + "> for the correct link.");
 			guild.leave();
