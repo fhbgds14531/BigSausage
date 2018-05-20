@@ -61,7 +61,7 @@ public class Commands {
 		commands.add(new CommandTtsInfo("tts-info", "Lists off statistics about the tts file for this server."));
 		commands.add(new CommandChangelog("changelog", "Show the changelog for the bot. Usage: `%p% %n%`"));
 		commands.add(new CommandChangelog("version", "Show the current version for the bot. Usage: `%p% %n%`"));
-		commands.add(new CommandRandomFile("voice", "Play a random voice clip. Usage: `%p% %n%`"));
+		commands.add(new CommandRandomFile("voice", "Play a random voice clip or several. Usage: `%p% %n% [number of clips to play (optional)]`"));
 		commands.add(new CommandRandomFile("image", "Upload a random image. Usage: `%p% %n%`"));
 		commands.add(new CommandUpdate("update", ""));
 		commands.add(new CommandShutdown("shutdown", ""));
@@ -78,15 +78,21 @@ public class Commands {
 	}
 	
 	public boolean findAndExecuteCommand(List<String> messageContent, IChannel channel, IUser author, IGuild guild, IMessage message){
-		if(messageContent.get(0).contentEquals(BigSausage.PREFIX) || messageContent.get(0).replace("!", "").startsWith(BigSausage.client.getOurUser().mention().replace("!", ""))){
-			if(messageContent.size() > 1){
-				this.getFromString(messageContent.get(1)).execute(channel, author, guild, messageContent, message);
-				return true;
+		try{
+			if(messageContent.get(0).contentEquals(BigSausage.PREFIX) || messageContent.get(0).replace("!", "").startsWith(BigSausage.client.getOurUser().mention().replace("!", ""))){
+				if(messageContent.size() > 1){
+					this.getFromString(messageContent.get(1)).execute(channel, author, guild, messageContent, message);
+					return true;
+				}else{
+					help.execute(channel, author, guild, Arrays.asList(new String[] {BigSausage.PREFIX, "help"}), message);
+					return true;
+				}
 			}else{
-				help.execute(channel, author, guild, Arrays.asList(new String[] {BigSausage.PREFIX, "help"}), message);
-				return true;
+				return false;
 			}
-		}else{
+		}catch (Exception e){
+			e.printStackTrace();
+			channel.sendMessage("Are you trying to break me? If not, please send the command you just typed using `!bs bugreport` to the developer. If so, please don't.");
 			return false;
 		}
 	}

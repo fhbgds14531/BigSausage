@@ -38,6 +38,16 @@ public class CommandRandomFile extends Command {
 					channel.sendMessage("Audio clips are currently disabled.");
 					return;
 				}
+				String arg3 = command.get(2);
+				if(arg3 == null || arg3.isEmpty()){
+					arg3 = "1";
+				}
+				int numToLink = Integer.valueOf(arg3);
+				long maxLinkable = (long) SettingsManager.getSettingForGuild(guild, "max_clips_per_message");
+				if (numToLink > maxLinkable){
+					numToLink = Integer.valueOf(String.valueOf(maxLinkable));
+					channel.sendMessage("The maximum allowed number of audio clips to be queued at once is " + maxLinkable + ", so I'll queue that many instead.");
+				}
 				File audioFileIndex = Util.getAudioIndexFile(guild);
 				if (audioFileIndex.exists() && ((boolean) SettingsManager.getSettingForGuild(guild, "audio-enabled"))) {
 					JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
@@ -49,12 +59,14 @@ public class CommandRandomFile extends Command {
 						channel.sendMessage("Couldn't find any files to play... Try adding some!");
 						return;
 					}
-					String clipName = indexStrings.get(rand.nextInt(indexStrings.size()));
-					for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
-						if (vChannel.getConnectedUsers().contains(commandAuthor)) {
-							String filename = (String) audioIndex.get(clipName + "_name");
-							File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
-							BigSausage.queueFile(file, guild, vChannel, commandAuthor, false);
+					for(int i = 0; i < numToLink; i++){
+						String clipName = indexStrings.get(rand.nextInt(indexStrings.size()));
+						for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
+							if (vChannel.getConnectedUsers().contains(commandAuthor)) {
+								String filename = (String) audioIndex.get(clipName + "_name");
+								File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+								BigSausage.queueFile(file, guild, vChannel, commandAuthor, false);
+							}
 						}
 					}
 				}
@@ -89,7 +101,6 @@ public class CommandRandomFile extends Command {
 				}
 			}
 		}
-
 	}
 
 }

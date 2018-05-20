@@ -21,7 +21,9 @@ public class CommandStatus extends Command{
 		String images = (boolean) SettingsManager.getSettingForGuild(guild, "images-enabled") ? "Enabled" : "Disabled";
 		String tts = (boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled") ? "Enabled" : "Disabled";
 		String multi_link = (boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled") ? "Enabled" : "Disabled";
-		channel.sendMessage("Here is the current status of BigSausage's services:\n```Audio: " + audio + "\nImages: " + images + "\nTTS: " + tts + "\nMulti-Link:" + multi_link + "```");
+		String max_clips = String.valueOf((long) SettingsManager.getSettingForGuild(guild, "max_clips_per_message"));
+		channel.sendMessage("Here is the current status of BigSausage's services:\n```Audio Clip Playback: " + audio + "\nImage Linking:   \t" + images + "\nText To Speech:  \t" + tts + "\nMulti-Link:  \t\t" + multi_link + 
+				"\nAudio Clips/Message: " + max_clips + "```");
 	}
 	
 
