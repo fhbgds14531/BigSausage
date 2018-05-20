@@ -38,9 +38,12 @@ public class CommandRandomFile extends Command {
 					channel.sendMessage("Audio clips are currently disabled.");
 					return;
 				}
-				String arg3 = command.get(2);
-				if(arg3 == null || arg3.isEmpty()){
-					arg3 = "1";
+				String arg3 = "1";
+				if(command.size() > 2){
+					arg3 = command.get(2);
+					if(arg3 == null || arg3.isEmpty()){
+						arg3 = "1";
+					}
 				}
 				int numToLink = Integer.valueOf(arg3);
 				long maxLinkable = (long) SettingsManager.getSettingForGuild(guild, "max_clips_per_message");
