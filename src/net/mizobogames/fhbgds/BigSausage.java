@@ -37,7 +37,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.4.4";
+	public static final String VERSION = "1.4.5";
 	public static final String CHANGELOG = "Bugfixes and \"!bs voice\" now accepts an argument for the number of clips to play.";
 	public static final String ME = "198575970624471040";
 
@@ -235,6 +235,7 @@ public class BigSausage {
 		}
 		if(ianLocated){
 			IGuild guild = ianChannel.getGuild();
+			if(!(boolean) SettingsManager.getSettingForGuild(guild, "ian_mode")) return;
 			File audioFileIndex = Util.getAudioIndexFile(guild);
 			JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
 			JSONArray ja = (JSONArray) audioIndex.get("index");
