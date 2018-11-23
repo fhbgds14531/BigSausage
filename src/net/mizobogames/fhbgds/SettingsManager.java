@@ -62,6 +62,7 @@ public class SettingsManager {
 			o.put("trusted_users", trusted);
 			o.put("enabled", false);
 			o.put("max_clips_per_message", 4L);
+			o.put("ian_mode", false);
 			return o;
 		}
 	}
@@ -100,6 +101,7 @@ public class SettingsManager {
 		o.put("trusted_users", trusted);
 		o.put("enabled", false);
 		o.put("max_clips_per_message", 4L);
+		o.put("ian_mode", false);
 		try {
 			FileWriter writer = new FileWriter(guildSettingsFile);
 			writer.write(o.toJSONString());

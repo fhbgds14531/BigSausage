@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +18,7 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.voice.user.UserVoiceChannelJoinEvent;
 import sx.blah.discord.handle.obj.ActivityType;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -37,7 +37,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.4.1";
+	public static final String VERSION = "1.4.2";
 	public static final String CHANGELOG = "Bugfixes and \"!bs voice\" now accepts an argument for the number of clips to play.";
 	public static final String ME = "198575970624471040";
 
@@ -56,6 +56,8 @@ public class BigSausage {
 		client.login();
 	}
 
+	
+	@SuppressWarnings("unused")
 	@EventSubscriber
 	public void onGuildJoin(GuildCreateEvent event) throws IOException {
 		IGuild guild = event.getGuild();
@@ -123,8 +125,6 @@ public class BigSausage {
 	@SuppressWarnings("unchecked")
 	@EventSubscriber
 	public void onMessage(MessageReceivedEvent event) throws FileNotFoundException {
-		SecureRandom rand = new SecureRandom();
-		rand.setSeed(System.nanoTime());
 		IMessage message = event.getMessage();
 		IUser user = message.getAuthor();
 		String[] words = message.getContent().split(" ");
@@ -139,7 +139,6 @@ public class BigSausage {
 		}
 
 		if (!commands.findAndExecuteCommand(wordList, channel, user, guild, message)) {
-
 			File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
 			File audioFileIndex = Util.getAudioIndexFile(guild);
 			File imageFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/imageIndex.json");
@@ -161,10 +160,13 @@ public class BigSausage {
 								if (linkedClip && !(boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled")) break;
 								if (word.toLowerCase().contains(trigger)) {
 									for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
+										if((boolean) SettingsManager.getSettingForGuild(guild, "ian_mode")){
+											user = guild.getUserByID(157707349803532297L);
+										}
 										if (vChannel.getConnectedUsers().contains(user)) {
 											String filename = (String) audioIndex.get(clipName + "_name");
 											File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
-											this.queueFile(file, guild, vChannel, user, false);
+											queueFile(file, guild, vChannel, user, false);
 											linkedClip = true;
 										}
 									}
@@ -213,6 +215,36 @@ public class BigSausage {
 		}
 	}
 
+	@EventSubscriber
+	public void onJoinChannel(UserVoiceChannelJoinEvent event){
+		boolean ianLocated = false;
+		IVoiceChannel ianChannel = null;
+		List<IGuild> guilds = client.getGuilds();
+		for(IGuild guild : guilds){
+			for(IVoiceChannel channel : guild.getVoiceChannels()){
+				for(IUser user : channel.getConnectedUsers()){
+					if(user.getLongID() == 157707349803532297L){
+						ianLocated = true;
+						ianChannel = channel;
+						break;
+					}
+				}
+			}
+		}
+		if(ianLocated){
+			IGuild guild = ianChannel.getGuild();
+			File audioFileIndex = Util.getAudioIndexFile(guild);
+			JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
+			JSONArray ja = (JSONArray) audioIndex.get("index");
+			if (ja == null) ja = new JSONArray();
+			List<String> indexStrings = new ArrayList<String>();
+			ja.forEach(s -> indexStrings.add(String.valueOf(s)));
+			String filename = (String) audioIndex.get("loudsauce_name");
+			File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+			queueFile(file, guild, ianChannel, guild.getUserByID(157707349803532297L), false);
+		}
+	}
+	
 	private static void join(IVoiceChannel channel, IUser user, boolean commanded) throws RateLimitException, DiscordException, MissingPermissionsException {
 		if (channel == null || user == null) {
 			return;
@@ -266,8 +298,10 @@ public class BigSausage {
 			if (queueLength < (long) SettingsManager.getSettingForGuild(guild, "max_clips_per_message")) {
 				player.setLoop(false);
 				player.setPaused(false);
-				if (!channelToJoin.isConnected()) join(channelToJoin, triggerUser, commanded);
-				player.queue(f);
+				if (!channelToJoin.isConnected() && channelToJoin.getUserLimit() < channelToJoin.getConnectedUsers().size()){
+					join(channelToJoin, triggerUser, commanded);
+					player.queue(f);
+				}
 				player.setVolume(1);
 			}
 		} catch (Exception e) {
