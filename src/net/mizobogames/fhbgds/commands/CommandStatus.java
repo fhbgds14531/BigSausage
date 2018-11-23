@@ -24,7 +24,7 @@ public class CommandStatus extends Command{
 		String max_clips = String.valueOf((long) SettingsManager.getSettingForGuild(guild, "max_clips_per_message"));
 		String ian_mode = (boolean) SettingsManager.getSettingForGuild(guild, "ian_mode") ? "Enabled" : "Disabled";
 		channel.sendMessage("Here is the current status of BigSausage's services:\n```Audio Clip Playback: " + audio + "\nImage Linking:   \t" + images + "\nText To Speech:  \t" + tts + "\nMulti-Link:  \t\t" + multi_link + 
-				"\nAudio Clips/Message: " + max_clips + "\nIan Mode: " + ian_mode + "```");
+				"\nAudio Clips/Message: " + max_clips + "\nIan Mode:\t\t\t" + ian_mode + "```");
 	}
 	
 

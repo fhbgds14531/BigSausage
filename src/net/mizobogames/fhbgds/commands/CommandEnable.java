@@ -34,7 +34,7 @@ public class CommandEnable extends Command {
 					channel.sendMessage("Images are now " + (stateToSet ? "enabled." : " disabled."));
 					break;
 				case "ian-mode":
-					SettingsManager.setSettingForGuild(guild, "images-enabled", stateToSet);
+					SettingsManager.setSettingForGuild(guild, "ian_mode", stateToSet);
 					channel.sendMessage("Ian mode is now " + (stateToSet ? "enabled." : " disabled."));
 					break;
 				case "audio":
