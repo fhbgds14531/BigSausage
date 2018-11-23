@@ -37,7 +37,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.4.2";
+	public static final String VERSION = "1.4.3";
 	public static final String CHANGELOG = "Bugfixes and \"!bs voice\" now accepts an argument for the number of clips to play.";
 	public static final String ME = "198575970624471040";
 
@@ -160,9 +160,6 @@ public class BigSausage {
 								if (linkedClip && !(boolean) SettingsManager.getSettingForGuild(guild, "multi-link-enabled")) break;
 								if (word.toLowerCase().contains(trigger)) {
 									for (IVoiceChannel vChannel : guild.getVoiceChannels()) {
-										if((boolean) SettingsManager.getSettingForGuild(guild, "ian_mode")){
-											user = guild.getUserByID(157707349803532297L);
-										}
 										if (vChannel.getConnectedUsers().contains(user)) {
 											String filename = (String) audioIndex.get(clipName + "_name");
 											File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
