@@ -104,6 +104,11 @@ public class BigSausage {
 		} catch (NullPointerException e) {
 			SettingsManager.setSettingForGuild(guild, "multi-link-enabled", false);
 		}
+		try {
+			boolean b = (boolean) SettingsManager.getSettingForGuild(guild, "ian-mode");
+		} catch (NullPointerException e) {
+			SettingsManager.setSettingForGuild(guild, "ian-mode", false);
+		}
 	}
 
 	@EventSubscriber
