@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import net.mizobogames.fhbgds.commands.CommandTts;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -37,7 +38,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.4.6.1";
+	public static final String VERSION = "1.4.6.2";
 	public static final String CHANGELOG = "Just bugfixes.";
 	public static final String ME = "198575970624471040";
 
@@ -48,12 +49,12 @@ public class BigSausage {
 
 	public static void main(String[] args) throws IOException {
 		System.setProperty("http.agent", "Chrome");
-		commands = new Commands();
 		TOKEN = Files.readAllLines(new File(TOKEN_FILE_NAME).toPath()).get(0);
 		System.out.println("Logging in...");
 		client = new ClientBuilder().withToken(TOKEN).withRecommendedShardCount().build();
 		client.getDispatcher().registerListener(new BigSausage());
 		client.login();
+		commands = new Commands();
 	}
 
 	
@@ -120,6 +121,7 @@ public class BigSausage {
 		} else if (client.getOurUser().getName().contentEquals("Big Sausage - Beta") || flag) {
 			client.changeUsername("Big Sausage");
 		}
+		CommandTts.setupGuilds();
 		System.out.println("BigSausage is ready for mouths.");
 	}
 
@@ -217,6 +219,7 @@ public class BigSausage {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@EventSubscriber
 	public void onJoinChannel(UserVoiceChannelJoinEvent event){
 		boolean ianLocated = false;

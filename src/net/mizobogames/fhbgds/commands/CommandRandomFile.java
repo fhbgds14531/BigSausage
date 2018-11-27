@@ -28,6 +28,7 @@ public class CommandRandomFile extends Command {
 		if (commandString.contentEquals("image")) image = true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 		SecureRandom rand = new SecureRandom();

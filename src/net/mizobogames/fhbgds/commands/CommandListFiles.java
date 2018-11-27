@@ -51,7 +51,6 @@ public class CommandListFiles extends Command {
 					ja.forEach(s -> audioIndexStrings.add(String.valueOf(s)));
 				}
 				if (imageFileIndex.exists() && doImages) {
-					List<String> messages = new ArrayList<String>();
 					JSONObject imageIndex = Util.getJsonObjectFromFile(guild, imageFileIndex);
 					JSONArray ja = (JSONArray) imageIndex.get("index");
 					if (ja == null) ja = new JSONArray();

@@ -19,35 +19,46 @@ import sx.blah.discord.handle.obj.IUser;
 
 public class CommandTts extends Command {
 
-	private Map<IGuild, List<String>> ttsStrings;
-	
+	private static Map<IGuild, List<String>> ttsStrings;
+
 	public CommandTts(String commandString, String helpString) {
 		super(commandString, helpString);
+	}
+
+	public static void setupGuilds() {
 		ttsStrings = new HashMap<IGuild, List<String>>();
+		for (IGuild guild : BigSausage.client.getGuilds()) {
+			ttsStrings.put(guild, new ArrayList<String>());
+		}
 	}
 
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		if ((boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled")) {
-			SecureRandom rand = new SecureRandom();
-			File ttsFile = new File("guilds/" + guild.getStringID() + "/tts.txt");
-			if (ttsStrings.get(guild).isEmpty()) {
-				try {
-					ttsStrings.put(guild, Files.readAllLines(ttsFile.toPath()));
-				} catch (IOException e) {
-					e.printStackTrace();
-					ttsStrings.put(guild, new ArrayList<String>());
+		try {
+			if ((boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled")) {
+				SecureRandom rand = new SecureRandom();
+				File ttsFile = new File("guilds/" + guild.getStringID() + "/tts.txt");
+				if (ttsStrings.get(guild).isEmpty()) {
+					try {
+						ttsStrings.put(guild, Files.readAllLines(ttsFile.toPath()));
+					} catch (IOException e) {
+						e.printStackTrace();
+						ttsStrings.put(guild, new ArrayList<String>());
+					}
 				}
-			}
-			if (!ttsStrings.isEmpty()) {
-				String send = ttsStrings.get(guild).get(rand.nextInt(ttsStrings.size()));
-				channel.sendMessage(send, true);
-				ttsStrings.get(guild).remove(send);
+				if (!ttsStrings.get(guild).isEmpty()) {
+					String send = ttsStrings.get(guild).get(rand.nextInt(ttsStrings.size()-1));
+					channel.sendMessage(send, true);
+					ttsStrings.get(guild).remove(send);
+				} else {
+					channel.sendMessage("There are currently no tts strings in the list, try adding some with `" + BigSausage.PREFIX + " add-tts <tts string>`");
+				}
 			} else {
-				channel.sendMessage("There are currently no tts strings in the list, try adding some with `" + BigSausage.PREFIX + " add-tts <tts string>`");
+				channel.sendMessage("Tts is disabled.");
 			}
-		} else {
-			channel.sendMessage("Tts is disabled.");
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			channel.sendMessage("Something went wrong, please use `bs bugreport` to inform my creator what you were doing when it happened.");
 		}
 	}
 
