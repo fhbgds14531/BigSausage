@@ -37,7 +37,7 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.4.5";
+	public static final String VERSION = "1.4.6";
 	public static final String CHANGELOG = "Bugfixes and \"!bs voice\" now accepts an argument for the number of clips to play.";
 	public static final String ME = "198575970624471040";
 
@@ -301,10 +301,11 @@ public class BigSausage {
 			if (queueLength < (long) SettingsManager.getSettingForGuild(guild, "max_clips_per_message")) {
 				player.setLoop(false);
 				player.setPaused(false);
-				if (!channelToJoin.isConnected() && channelToJoin.getUserLimit() < channelToJoin.getConnectedUsers().size()){
+				if(channelToJoin.getUserLimit() >= channelToJoin.getConnectedUsers().size()) return;
+				if (!channelToJoin.isConnected()){
 					join(channelToJoin, triggerUser, commanded);
-					player.queue(f);
 				}
+				player.queue(f);
 				player.setVolume(1);
 			}
 		} catch (Exception e) {

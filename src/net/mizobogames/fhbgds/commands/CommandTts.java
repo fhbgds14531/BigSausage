@@ -17,32 +17,36 @@ import sx.blah.discord.handle.obj.IUser;
 
 public class CommandTts extends Command {
 
+	private List<String> ttsStrings;
+
 	public CommandTts(String commandString, String helpString) {
 		super(commandString, helpString);
+		ttsStrings = new ArrayList<String>();
 	}
 
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 		if ((boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled")) {
-			channel.setTypingStatus(true);
 			SecureRandom rand = new SecureRandom();
 			File ttsFile = new File("guilds/" + guild.getStringID() + "/tts.txt");
-			List<String> ttses;
-			try {
-				ttses = Files.readAllLines(ttsFile.toPath());
-			} catch (IOException e) {
-				e.printStackTrace();
-				ttses = new ArrayList<String>();
+			if (ttsStrings.isEmpty()) {
+				try {
+					ttsStrings = Files.readAllLines(ttsFile.toPath());
+				} catch (IOException e) {
+					e.printStackTrace();
+					ttsStrings = new ArrayList<String>();
+				}
 			}
-			if (!ttses.isEmpty()) {
-				channel.sendMessage(ttses.get(rand.nextInt(ttses.size())), true);
+			if (!ttsStrings.isEmpty()) {
+				String send = ttsStrings.get(rand.nextInt(ttsStrings.size()));
+				channel.sendMessage(send, true);
+				ttsStrings.remove(send);
 			} else {
 				channel.sendMessage("There are currently no tts strings in the list, try adding some with `" + BigSausage.PREFIX + " add-tts <tts string>`");
 			}
-		}else{
+		} else {
 			channel.sendMessage("Tts is disabled.");
 		}
-		channel.setTypingStatus(false);
 	}
 
 }

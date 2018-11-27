@@ -14,7 +14,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 public class CommandAddTts extends Command {
-
+	
 	public CommandAddTts(String commandString, String helpString) {
 		super(commandString, helpString);
 	}
