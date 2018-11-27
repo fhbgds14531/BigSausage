@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.mizobogames.fhbgds.BigSausage;
 import net.mizobogames.fhbgds.Command;
@@ -17,11 +19,11 @@ import sx.blah.discord.handle.obj.IUser;
 
 public class CommandTts extends Command {
 
-	private List<String> ttsStrings;
-
+	private Map<IGuild, List<String>> ttsStrings;
+	
 	public CommandTts(String commandString, String helpString) {
 		super(commandString, helpString);
-		ttsStrings = new ArrayList<String>();
+		ttsStrings = new HashMap<IGuild, List<String>>();
 	}
 
 	@Override
@@ -29,18 +31,18 @@ public class CommandTts extends Command {
 		if ((boolean) SettingsManager.getSettingForGuild(guild, "tts-enabled")) {
 			SecureRandom rand = new SecureRandom();
 			File ttsFile = new File("guilds/" + guild.getStringID() + "/tts.txt");
-			if (ttsStrings.isEmpty()) {
+			if (ttsStrings.get(guild).isEmpty()) {
 				try {
-					ttsStrings = Files.readAllLines(ttsFile.toPath());
+					ttsStrings.put(guild, Files.readAllLines(ttsFile.toPath()));
 				} catch (IOException e) {
 					e.printStackTrace();
-					ttsStrings = new ArrayList<String>();
+					ttsStrings.put(guild, new ArrayList<String>());
 				}
 			}
 			if (!ttsStrings.isEmpty()) {
-				String send = ttsStrings.get(rand.nextInt(ttsStrings.size()));
+				String send = ttsStrings.get(guild).get(rand.nextInt(ttsStrings.size()));
 				channel.sendMessage(send, true);
-				ttsStrings.remove(send);
+				ttsStrings.get(guild).remove(send);
 			} else {
 				channel.sendMessage("There are currently no tts strings in the list, try adding some with `" + BigSausage.PREFIX + " add-tts <tts string>`");
 			}
