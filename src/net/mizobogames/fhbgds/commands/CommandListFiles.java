@@ -102,11 +102,11 @@ public class CommandListFiles extends Command {
 						finalOut = "```" + finalOut.substring(finalOut.substring(0, 1994).lastIndexOf(" ")).replaceFirst("\n", "").replaceFirst(" ", "");
 					}
 					allStrings.add(finalOut);
-
+					
 					for (String s : allStrings) {
 						channel.sendMessage(s);
 						try{
-							Thread.sleep(200l);
+							Thread.sleep(500l);
 						}catch(Exception e){
 							e.printStackTrace();
 							channel.sendMessage("`Sorry, something went wrong.`");

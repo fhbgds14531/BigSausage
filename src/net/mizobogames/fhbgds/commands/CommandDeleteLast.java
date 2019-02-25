@@ -29,7 +29,7 @@ public class CommandDeleteLast extends Command {
 			MessageHistory history = channel.getMessageHistory(15);
 			int i;
 			List<IMessage> messages = new ArrayList<IMessage>();
-			for(i = 0; i < 15; i++){
+			for(i = 1; i < 16; i++){
 				if(history.get(i).getAuthor().getLongID() == BigSausage.client.getOurUser().getLongID()){
 					messages.add(history.get(i));
 				}else{
