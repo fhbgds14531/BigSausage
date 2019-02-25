@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 
 import net.mizobogames.fhbgds.BigSausage;
 import net.mizobogames.fhbgds.Command;
+import net.mizobogames.fhbgds.PermissionLevels;
 import net.mizobogames.fhbgds.Util;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -23,7 +24,7 @@ public class CommandRemoveFile extends Command {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		if (Util.hasPermission(1, guild, commandAuthor)) {
+		if (Util.hasPermission(PermissionLevels.PERMISSION_LEVEL_TRUSTED, guild, commandAuthor)) {
 			if(command.size() != 3){
 				channel.sendMessage("Invalid number of arguments! Usage: `" + BigSausage.PREFIX + " " + getCommandString() + " <file_name>`");
 			}else{

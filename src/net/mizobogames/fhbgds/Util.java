@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayDeque;
@@ -192,4 +194,24 @@ public class Util {
 		}
 	}
 
+	public static String getStacktraceString(String message1) {
+		String message = "Failed.";
+
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		
+		BSException e = new BSException(message1);
+		e.fillInStackTrace();
+		e.printStackTrace(pw);
+		
+		message = sw.toString(); // stack trace as a string
+		pw.close();
+		try {
+			sw.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		return message;
+	}
 }

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.mizobogames.fhbgds.commands.CommandUpload;
 import net.mizobogames.fhbgds.commands.CommandAddTrigger;
 import net.mizobogames.fhbgds.commands.CommandAddTts;
 import net.mizobogames.fhbgds.commands.CommandBugreport;
 import net.mizobogames.fhbgds.commands.CommandChangelog;
+import net.mizobogames.fhbgds.commands.CommandDeleteLast;
 import net.mizobogames.fhbgds.commands.CommandEnable;
 import net.mizobogames.fhbgds.commands.CommandHelp;
 import net.mizobogames.fhbgds.commands.CommandListFiles;
@@ -27,6 +27,7 @@ import net.mizobogames.fhbgds.commands.CommandTrust;
 import net.mizobogames.fhbgds.commands.CommandTts;
 import net.mizobogames.fhbgds.commands.CommandTtsInfo;
 import net.mizobogames.fhbgds.commands.CommandUpdate;
+import net.mizobogames.fhbgds.commands.CommandUpload;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -63,6 +64,7 @@ public class Commands {
 		commands.add(new CommandChangelog("version", "Show the current version for the bot. Usage: `%p% %n%`"));
 		commands.add(new CommandRandomFile("voice", "Play a random voice clip or several. Usage: `%p% %n% [number of clips to play (optional)]`"));
 		commands.add(new CommandRandomFile("image", "Upload a random image. Usage: `%p% %n%`"));
+		commands.add(new CommandDeleteLast("clear", "Delete up to the last 15 sequential messages from BigSausage. Usage: `%p% %n%`"));
 		commands.add(new CommandUpdate("update", ""));
 		commands.add(new CommandShutdown("shutdown", ""));
 		commands.add(new CommandRestart("restart", ""));

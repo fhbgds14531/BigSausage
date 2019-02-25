@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.mizobogames.fhbgds.BigSausage;
 import net.mizobogames.fhbgds.Command;
+import net.mizobogames.fhbgds.PermissionLevels;
 import net.mizobogames.fhbgds.SettingsManager;
 import net.mizobogames.fhbgds.Util;
 import sx.blah.discord.handle.obj.IChannel;
@@ -20,7 +21,7 @@ public class CommandMaxClips extends Command {
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 		if (command.size() == 3) {
-			if (Util.hasPermission(2, guild, commandAuthor)) {
+			if (Util.hasPermission(PermissionLevels.PERMISSION_LEVEL_ADMIN, guild, commandAuthor)) {
 				try {
 					long oldValue = (long) SettingsManager.getSettingForGuild(guild, "max_clips_per_message");
 					long newValue = Math.abs(Long.valueOf(command.get(2)));

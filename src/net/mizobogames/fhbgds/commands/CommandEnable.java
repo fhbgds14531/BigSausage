@@ -3,6 +3,7 @@ package net.mizobogames.fhbgds.commands;
 import java.util.List;
 
 import net.mizobogames.fhbgds.Command;
+import net.mizobogames.fhbgds.PermissionLevels;
 import net.mizobogames.fhbgds.SettingsManager;
 import net.mizobogames.fhbgds.Util;
 import sx.blah.discord.handle.obj.IChannel;
@@ -21,7 +22,7 @@ public class CommandEnable extends Command {
 
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		if (Util.hasPermission(1, guild, commandAuthor)) {
+		if (Util.hasPermission(PermissionLevels.PERMISSION_LEVEL_TRUSTED, guild, commandAuthor)) {
 			String thingToChange = "";
 			if (command.size() > 2) {
 				thingToChange = command.get(2).toLowerCase();

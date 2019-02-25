@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.simple.JSONArray;
 
 import net.mizobogames.fhbgds.Command;
+import net.mizobogames.fhbgds.PermissionLevels;
 import net.mizobogames.fhbgds.SettingsManager;
 import net.mizobogames.fhbgds.Util;
 import sx.blah.discord.handle.obj.IChannel;
@@ -22,7 +23,7 @@ public class CommandTrust extends Command {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		if (Util.hasPermission(2, guild, commandAuthor)) {
+		if (Util.hasPermission(PermissionLevels.PERMISSION_LEVEL_ADMIN, guild, commandAuthor)) {
 			JSONArray ja = (JSONArray) SettingsManager.getSettingForGuild(guild, "trusted_users");
 			List<String> trusted = new ArrayList<String>();
 			ja.forEach(s -> trusted.add(String.valueOf(s)));

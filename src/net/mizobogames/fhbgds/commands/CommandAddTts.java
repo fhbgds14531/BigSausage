@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.mizobogames.fhbgds.BigSausage;
 import net.mizobogames.fhbgds.Command;
+import net.mizobogames.fhbgds.PermissionLevels;
 import net.mizobogames.fhbgds.Util;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -21,7 +22,7 @@ public class CommandAddTts extends Command {
 
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		if(Util.hasPermission(1, guild, commandAuthor)){
+		if(Util.hasPermission(PermissionLevels.PERMISSION_LEVEL_TRUSTED, guild, commandAuthor)){
 			String string = "";
 			for(String s : command){
 				string += s + " ";

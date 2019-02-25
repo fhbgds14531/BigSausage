@@ -29,23 +29,23 @@ public class CommandUpload extends Command {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
-		File audioFileIndex = Util.getAudioIndexFile(guild);
-		File imageFileIndex = Util.getImageIndexFile(guild);
-		try {
-			if (!indexDir.exists()) {
-				indexDir.mkdirs();
-			}
-			if (!audioFileIndex.exists()) {
-				audioFileIndex.createNewFile();
-			}
-			if (!imageFileIndex.exists()) {
-				imageFileIndex.createNewFile();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		if (Util.hasPermission(1, guild, commandAuthor)) {
+			File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
+			File audioFileIndex = Util.getAudioIndexFile(guild);
+			File imageFileIndex = Util.getImageIndexFile(guild);
+			try {
+				if (!indexDir.exists()) {
+					indexDir.mkdirs();
+				}
+				if (!audioFileIndex.exists()) {
+					audioFileIndex.createNewFile();
+				}
+				if (!imageFileIndex.exists()) {
+					imageFileIndex.createNewFile();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			List<Attachment> attachments = message.getAttachments();
 			if (attachments.size() <= 0) {
 				channel.sendMessage("Please attach a file in order to add it (type the command in the file upload comment window). If you believe you are seeing this in error, use `"

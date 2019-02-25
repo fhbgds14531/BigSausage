@@ -105,6 +105,16 @@ public class CommandListFiles extends Command {
 
 					for (String s : allStrings) {
 						channel.sendMessage(s);
+						try{
+							Thread.sleep(200l);
+						}catch(Exception e){
+							e.printStackTrace();
+							channel.sendMessage("`Sorry, something went wrong.`");
+							IGuild supportGuild = BigSausage.client.getGuildByID(382053109788049429L);
+							IChannel reportChannel = supportGuild.getChannelByID(382053168042737674L);
+							reportChannel.sendMessage("Something went wrong listing files in guild `" + guild.getLongID() + "` owned by <@" + guild.getOwnerLongID() + ">");
+							reportChannel.sendMessage(Util.getStacktraceString(this.getClass().getName()) + ": thread sleeping");
+						}
 					}
 				}
 				if (output.contains("no audio") && output.contains("no images")) {
