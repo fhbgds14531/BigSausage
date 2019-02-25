@@ -38,8 +38,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.4.7.4";
-	public static final String CHANGELOG = "Added `!bs clear` command. Ignore the following: `500, 2500`";
+	public static final String VERSION = "1.4.7.5";
+	public static final String CHANGELOG = "Added !bs clear command.";
 	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;

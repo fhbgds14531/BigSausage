@@ -68,6 +68,7 @@ public class CommandListFiles extends Command {
 				} else {
 					imageList = "There are currently no images.";
 				}
+				boolean lots = false;
 				if (doImages && !doAudio) {
 					String finalOut = "Here are all the image names for this server:\n" + imageList.replace("Images:\n", "");
 					List<String> imageStrings = new ArrayList<String>();
@@ -86,6 +87,7 @@ public class CommandListFiles extends Command {
 							}else{
 								Thread.sleep(2500L);
 								count = 0;
+								lots = true;
 							}
 						}catch(Exception e){
 							e.printStackTrace();
@@ -95,6 +97,9 @@ public class CommandListFiles extends Command {
 							reportChannel.sendMessage("Something went wrong listing files in guild `" + guild.getLongID() + "` owned by <@" + guild.getOwnerLongID() + ">");
 							reportChannel.sendMessage(Util.getStacktraceString(this.getClass().getName()) + ": thread sleeping");
 						}
+					}
+					if(lots){
+						channel.sendMessage("Wow! That's a lot of things!");
 					}
 				} else if (!doImages && doAudio) {
 					String finalOut = "Here are all the audio clip names for this server:\n" + audioList.replace("Audio Clips:\n", "");
@@ -115,8 +120,9 @@ public class CommandListFiles extends Command {
 							if(count < 3){
 								Thread.sleep(500L);
 							}else{
-								Thread.sleep(2500L);
+								Thread.sleep(2750L);
 								count = 0;
+								lots = true;
 							}
 						}catch(Exception e){
 							e.printStackTrace();
@@ -126,6 +132,9 @@ public class CommandListFiles extends Command {
 							reportChannel.sendMessage("Something went wrong listing files in guild `" + guild.getLongID() + "` owned by <@" + guild.getOwnerLongID() + ">");
 							reportChannel.sendMessage(Util.getStacktraceString(this.getClass().getName()) + ": thread sleeping");
 						}
+					}
+					if(lots){
+						channel.sendMessage("Wow! That's a lot of things!");
 					}
 				} else if (doImages && doAudio) {
 					String finalOut = "Here are all the image and audio clip names for this server:\n\n" + imageList + "\n" + audioList;
@@ -146,6 +155,7 @@ public class CommandListFiles extends Command {
 							}else{
 								Thread.sleep(2500L);
 								count = 0;
+								lots = true;
 							}
 						}catch(Exception e){
 							e.printStackTrace();
@@ -155,6 +165,9 @@ public class CommandListFiles extends Command {
 							reportChannel.sendMessage("Something went wrong listing files in guild `" + guild.getLongID() + "` owned by <@" + guild.getOwnerLongID() + ">");
 							reportChannel.sendMessage(Util.getStacktraceString(this.getClass().getName()) + ": thread sleeping");
 						}
+					}
+					if(lots){
+						channel.sendMessage("Wow! That's a lot of things!");
 					}
 				}
 				if (output.contains("no audio") && output.contains("no images")) {
