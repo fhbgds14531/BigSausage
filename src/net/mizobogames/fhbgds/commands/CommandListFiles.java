@@ -85,7 +85,7 @@ public class CommandListFiles extends Command {
 							if(count < 3){
 								Thread.sleep(500L);
 							}else{
-								Thread.sleep(2750L);
+								Thread.sleep(3000L);
 								count = 0;
 								lots = true;
 							}
