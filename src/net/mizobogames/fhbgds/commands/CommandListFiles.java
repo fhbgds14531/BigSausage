@@ -76,11 +76,17 @@ public class CommandListFiles extends Command {
 						finalOut = "```" + finalOut.substring(finalOut.substring(0, 2000).lastIndexOf(" "));
 					}
 					imageStrings.add(finalOut);
-
+					int count = 0;
 					for (String s : imageStrings) {
 						channel.sendMessage(s);
+						count++;
 						try{
-							Thread.sleep(750l);
+							if(count < 5){
+								Thread.sleep(100L);
+							}else{
+								Thread.sleep(1500L);
+								count = 0;
+							}
 						}catch(Exception e){
 							e.printStackTrace();
 							channel.sendMessage("`Sorry, something went wrong.`");
@@ -101,10 +107,17 @@ public class CommandListFiles extends Command {
 					}
 					audioStrings.add(finalOut);
 
+					int count = 0;
 					for (String s : audioStrings) {
 						channel.sendMessage(s);
+						count++;
 						try{
-							Thread.sleep(750l);
+							if(count < 5){
+								Thread.sleep(100L);
+							}else{
+								Thread.sleep(1500L);
+								count = 0;
+							}
 						}catch(Exception e){
 							e.printStackTrace();
 							channel.sendMessage("`Sorry, something went wrong.`");
@@ -123,10 +136,17 @@ public class CommandListFiles extends Command {
 					}
 					allStrings.add(finalOut);
 					
+					int count = 0;
 					for (String s : allStrings) {
 						channel.sendMessage(s);
+						count++;
 						try{
-							Thread.sleep(750l);
+							if(count < 5){
+								Thread.sleep(100L);
+							}else{
+								Thread.sleep(1500L);
+								count = 0;
+							}
 						}catch(Exception e){
 							e.printStackTrace();
 							channel.sendMessage("`Sorry, something went wrong.`");

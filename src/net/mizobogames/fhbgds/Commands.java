@@ -64,7 +64,7 @@ public class Commands {
 		commands.add(new CommandChangelog("version", "Show the current version for the bot. Usage: `%p% %n%`"));
 		commands.add(new CommandRandomFile("voice", "Play a random voice clip or several. Usage: `%p% %n% [number of clips to play (optional)]`"));
 		commands.add(new CommandRandomFile("image", "Upload a random image. Usage: `%p% %n%`"));
-		commands.add(new CommandDeleteLast("clear", "Delete up to the last 15 sequential messages from BigSausage. Usage: `%p% %n%`"));
+		commands.add(new CommandDeleteLast("clear", "Delete up to the last 15 sequential BigSausage related messages. Usage: `%p% %n%`"));
 		commands.add(new CommandUpdate("update", ""));
 		commands.add(new CommandShutdown("shutdown", ""));
 		commands.add(new CommandRestart("restart", ""));

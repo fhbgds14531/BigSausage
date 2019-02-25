@@ -31,8 +31,9 @@ public class CommandDeleteLast extends Command {
 			List<IMessage> messages = new ArrayList<IMessage>();
 			messages.add(history.getLatestMessage());
 			for(i = 1; i < 16; i++){
-				if(history.get(i).getAuthor().getLongID() == BigSausage.client.getOurUser().getLongID()){
-					messages.add(history.get(i));
+				IMessage m = history.get(i);
+				if((m.getAuthor().getLongID() == BigSausage.client.getOurUser().getLongID()) || m.toString().startsWith(BigSausage.PREFIX)){
+					messages.add(m);
 				}else{
 					break;
 				}
