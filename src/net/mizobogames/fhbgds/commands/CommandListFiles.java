@@ -82,7 +82,7 @@ public class CommandListFiles extends Command {
 						count++;
 						try{
 							if(count < 3){
-								Thread.sleep(100L);
+								Thread.sleep(500L);
 							}else{
 								Thread.sleep(2500L);
 								count = 0;
@@ -113,7 +113,7 @@ public class CommandListFiles extends Command {
 						count++;
 						try{
 							if(count < 3){
-								Thread.sleep(100L);
+								Thread.sleep(500L);
 							}else{
 								Thread.sleep(2500L);
 								count = 0;
@@ -142,7 +142,7 @@ public class CommandListFiles extends Command {
 						count++;
 						try{
 							if(count < 3){
-								Thread.sleep(100L);
+								Thread.sleep(500L);
 							}else{
 								Thread.sleep(2500L);
 								count = 0;
