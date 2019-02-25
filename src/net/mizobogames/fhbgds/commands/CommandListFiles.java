@@ -79,6 +79,16 @@ public class CommandListFiles extends Command {
 
 					for (String s : imageStrings) {
 						channel.sendMessage(s);
+						try{
+							Thread.sleep(750l);
+						}catch(Exception e){
+							e.printStackTrace();
+							channel.sendMessage("`Sorry, something went wrong.`");
+							IGuild supportGuild = BigSausage.client.getGuildByID(382053109788049429L);
+							IChannel reportChannel = supportGuild.getChannelByID(382053168042737674L);
+							reportChannel.sendMessage("Something went wrong listing files in guild `" + guild.getLongID() + "` owned by <@" + guild.getOwnerLongID() + ">");
+							reportChannel.sendMessage(Util.getStacktraceString(this.getClass().getName()) + ": thread sleeping");
+						}
 					}
 				} else if (!doImages && doAudio) {
 					String finalOut = "Here are all the audio clip names for this server:\n" + audioList.replace("Audio Clips:\n", "");
@@ -93,6 +103,16 @@ public class CommandListFiles extends Command {
 
 					for (String s : audioStrings) {
 						channel.sendMessage(s);
+						try{
+							Thread.sleep(750l);
+						}catch(Exception e){
+							e.printStackTrace();
+							channel.sendMessage("`Sorry, something went wrong.`");
+							IGuild supportGuild = BigSausage.client.getGuildByID(382053109788049429L);
+							IChannel reportChannel = supportGuild.getChannelByID(382053168042737674L);
+							reportChannel.sendMessage("Something went wrong listing files in guild `" + guild.getLongID() + "` owned by <@" + guild.getOwnerLongID() + ">");
+							reportChannel.sendMessage(Util.getStacktraceString(this.getClass().getName()) + ": thread sleeping");
+						}
 					}
 				} else if (doImages && doAudio) {
 					String finalOut = "Here are all the image and audio clip names for this server:\n\n" + imageList + "\n" + audioList;
@@ -106,7 +126,7 @@ public class CommandListFiles extends Command {
 					for (String s : allStrings) {
 						channel.sendMessage(s);
 						try{
-							Thread.sleep(500l);
+							Thread.sleep(750l);
 						}catch(Exception e){
 							e.printStackTrace();
 							channel.sendMessage("`Sorry, something went wrong.`");

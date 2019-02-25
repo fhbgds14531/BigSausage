@@ -26,9 +26,10 @@ public class CommandDeleteLast extends Command {
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 		if(Util.hasPermission(PermissionLevels.PERMISSION_LEVEL_TRUSTED, guild, commandAuthor)){
-			MessageHistory history = channel.getMessageHistory(15);
+			MessageHistory history = channel.getMessageHistory(16);
 			int i;
 			List<IMessage> messages = new ArrayList<IMessage>();
+			messages.add(history.getLatestMessage());
 			for(i = 1; i < 16; i++){
 				if(history.get(i).getAuthor().getLongID() == BigSausage.client.getOurUser().getLongID()){
 					messages.add(history.get(i));
@@ -36,7 +37,9 @@ public class CommandDeleteLast extends Command {
 					break;
 				}
 			}
-			channel.bulkDelete(messages);
+			if(!messages.isEmpty()){
+				channel.bulkDelete(messages);
+			}
 		}else{
 			channel.sendMessage("You don't have permission to use that command!");
 		}
