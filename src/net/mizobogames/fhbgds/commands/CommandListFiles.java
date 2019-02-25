@@ -81,7 +81,7 @@ public class CommandListFiles extends Command {
 						channel.sendMessage(s);
 						count++;
 						try{
-							if(count < 5){
+							if(count < 4){
 								Thread.sleep(100L);
 							}else{
 								Thread.sleep(2500L);
@@ -112,7 +112,7 @@ public class CommandListFiles extends Command {
 						channel.sendMessage(s);
 						count++;
 						try{
-							if(count < 5){
+							if(count < 4){
 								Thread.sleep(100L);
 							}else{
 								Thread.sleep(2500L);
@@ -141,7 +141,7 @@ public class CommandListFiles extends Command {
 						channel.sendMessage(s);
 						count++;
 						try{
-							if(count < 5){
+							if(count < 4){
 								Thread.sleep(100L);
 							}else{
 								Thread.sleep(2500L);
