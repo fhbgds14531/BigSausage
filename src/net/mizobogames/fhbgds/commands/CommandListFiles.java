@@ -84,7 +84,7 @@ public class CommandListFiles extends Command {
 							if(count < 5){
 								Thread.sleep(100L);
 							}else{
-								Thread.sleep(1500L);
+								Thread.sleep(2500L);
 								count = 0;
 							}
 						}catch(Exception e){
@@ -115,7 +115,7 @@ public class CommandListFiles extends Command {
 							if(count < 5){
 								Thread.sleep(100L);
 							}else{
-								Thread.sleep(1500L);
+								Thread.sleep(2500L);
 								count = 0;
 							}
 						}catch(Exception e){
@@ -144,7 +144,7 @@ public class CommandListFiles extends Command {
 							if(count < 5){
 								Thread.sleep(100L);
 							}else{
-								Thread.sleep(1500L);
+								Thread.sleep(2500L);
 								count = 0;
 							}
 						}catch(Exception e){
