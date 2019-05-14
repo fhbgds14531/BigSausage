@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import net.mizobogames.fhbgds.commands.CommandFuck;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -38,16 +36,24 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 public class BigSausage {
 
 	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.4.8";
-	public static final String CHANGELOG = "Adding the string \"<ignore>\" anywhere in a message will cause BigSausage to ignore the content of that message.";
+	public static final String VERSION = "1.4.9";
+	public static final String CHANGELOG = "Added !bs fuck.";
 	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;
 	public static final String PREFIX = "!bs";
 	public static IDiscordClient client;
 	public static Commands commands;
+	private Map<Long, Map.Entry<IUser, IVoiceChannel>> fuckReturnList = new HashMap<>();
+
+	private static BigSausage instance;
+
+	private BigSausage(){
+		instance = this;
+	}
 
 	public static void main(String[] args) throws IOException {
+		new BigSausage();
 		System.setProperty("http.agent", "Chrome");
 		TOKEN = Files.readAllLines(new File(TOKEN_FILE_NAME).toPath()).get(0);
 		System.out.println("Logging in...");
@@ -62,18 +68,11 @@ public class BigSausage {
 	@EventSubscriber
 	public void onGuildJoin(GuildCreateEvent event) throws IOException {
 		IGuild guild = event.getGuild();
-//		if (!guild.getStringID().contentEquals("382053109788049429") && !guild.getStringID().contentEquals("381958599225901056") && new File("DEBUG.token").exists()) {
-//			guild.getDefaultChannel().sendMessage("You seem to have somehow added the development beta of this bot. This version of the bot will now automatically leave the server. "
-//					+ "If you would like to add the regular version of the bot to this server please contact <@" + ME + "> for the correct link.");
-//			guild.leave();
-//			System.out.println("Left guild \"" + guild.getName() + "\"");
-//		}
 		final String guildLocString = "guilds/" + guild.getStringID();
 		File guildDir = new File(guildLocString);
 		if (!guildDir.exists()) {
 			guildDir.mkdirs();
 			SettingsManager.setupDefaultSettingsForGuild(guild);
-			// guild.getDefaultChannel().sendMessage("Hello, I am BigSausage! To enable me, please type `" + PREFIX + " enable` and for help, type `" + PREFIX + " help`");
 		}
 		File ttsFile = new File(guildLocString + "/tts.txt");
 		if (!ttsFile.exists()) {
@@ -149,7 +148,7 @@ public class BigSausage {
 			return;
 		}
 		
-		if (!commands.findAndExecuteCommand(wordList, channel, user, guild, message)) {
+	if (!commands.findAndExecuteCommand(wordList, channel, user, guild, message)) {
 			File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
 			File audioFileIndex = Util.getAudioIndexFile(guild);
 			File imageFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/imageIndex.json");
@@ -214,10 +213,34 @@ public class BigSausage {
 		}
 	}
 
+	public void queueFuckReturn(long guildID, IUser fuckTarget, IVoiceChannel originChannel){
+		this.fuckReturnList.put(guildID, new Map.Entry<IUser, IVoiceChannel>() {
+			@Override
+			public IUser getKey() {
+				return fuckTarget;
+			}
+
+			@Override
+			public IVoiceChannel getValue() {
+				return originChannel;
+			}
+
+			@Override
+			public IVoiceChannel setValue(IVoiceChannel value) {
+				return originChannel;
+			}
+		});
+	}
+
 	@EventSubscriber
 	public void onTrackFinish(TrackFinishEvent event) throws RateLimitException, DiscordException, MissingPermissionsException {
 		Optional<Track> newT = event.getNewTrack();
 		if (!newT.isPresent()) {
+			if(fuckReturnList.containsKey(event.getPlayer().getGuild().getLongID())) {
+				Map.Entry<IUser, IVoiceChannel> entry = fuckReturnList.get(event.getPlayer().getGuild().getLongID());
+				entry.getKey().moveToVoiceChannel(entry.getValue());
+				fuckReturnList.remove(event.getPlayer().getGuild().getLongID(), entry);
+			}
 			event.getPlayer().getGuild().getConnectedVoiceChannel().leave();
 		} else {
 		}
@@ -226,33 +249,7 @@ public class BigSausage {
 	@SuppressWarnings("unchecked")
 	@EventSubscriber
 	public void onJoinChannel(UserVoiceChannelJoinEvent event){
-		boolean ianLocated = false;
-		IVoiceChannel ianChannel = null;
-		List<IGuild> guilds = client.getGuilds();
-		for(IGuild guild : guilds){
-			for(IVoiceChannel channel : guild.getVoiceChannels()){
-				for(IUser user : channel.getConnectedUsers()){
-					if(user.getLongID() == 157707349803532297L){
-						ianLocated = true;
-						ianChannel = channel;
-						break;
-					}
-				}
-			}
-		}
-		if(ianLocated){
-			IGuild guild = ianChannel.getGuild();
-			if(!(boolean) SettingsManager.getSettingForGuild(guild, "ian_mode")) return;
-			File audioFileIndex = Util.getAudioIndexFile(guild);
-			JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
-			JSONArray ja = (JSONArray) audioIndex.get("index");
-			if (ja == null) ja = new JSONArray();
-			List<String> indexStrings = new ArrayList<String>();
-			ja.forEach(s -> indexStrings.add(String.valueOf(s)));
-			String filename = (String) audioIndex.get("loudsauce_name");
-			File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
-			queueFile(file, guild, ianChannel, guild.getUserByID(157707349803532297L), false);
-		}
+
 	}
 	
 	private static void join(IVoiceChannel channel, IUser user, boolean commanded) throws RateLimitException, DiscordException, MissingPermissionsException {
@@ -301,7 +298,7 @@ public class BigSausage {
 	}
 
 	public static void queueFile(File f, IGuild guild, IVoiceChannel channelToJoin, IUser triggerUser, boolean commanded) {
-		int queueLength = 0;
+		int queueLength;
 		try {
 			AudioPlayer player = getPlayer(guild);
 			queueLength = player.getPlaylist().size();
@@ -318,5 +315,9 @@ public class BigSausage {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static BigSausage getBot(){
+		return instance;
 	}
 }

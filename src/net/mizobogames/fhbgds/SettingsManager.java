@@ -1,6 +1,7 @@
 package net.mizobogames.fhbgds;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import sx.blah.discord.handle.obj.IGuild;
 
@@ -47,12 +49,16 @@ public class SettingsManager {
 	private static JSONObject getSettingsForGuild(IGuild guild) {
 		checkForFileAndCreateAndSetupDefaults(guild);
 		JSONParser p = new JSONParser();
-		JSONObject obj;
+		JSONObject obj = null;
 		try {
 			obj = (JSONObject) p.parse(new FileReader(new File("guilds/" + guild.getStringID() + "/settings/settings.txt")));
-		} catch (Exception e) {
+		} catch (ParseException e) {
 			e.printStackTrace();
 			return new JSONObject();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		if (obj != null) {
 			return obj;
@@ -62,7 +68,6 @@ public class SettingsManager {
 			o.put("trusted_users", trusted);
 			o.put("enabled", false);
 			o.put("max_clips_per_message", 4L);
-			o.put("ian_mode", false);
 			return o;
 		}
 	}
@@ -101,7 +106,6 @@ public class SettingsManager {
 		o.put("trusted_users", trusted);
 		o.put("enabled", false);
 		o.put("max_clips_per_message", 4L);
-		o.put("ian_mode", false);
 		try {
 			FileWriter writer = new FileWriter(guildSettingsFile);
 			writer.write(o.toJSONString());

@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayDeque;
@@ -19,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
@@ -214,4 +216,14 @@ public class Util {
 
 		return message;
 	}
+
+	public static void sendAutomaticBugReport(String description, Class location, int line, Method method, IGuild connectedGuild, IUser commandTriggerer){
+		String message = "Problem encountered in class " + location.getName() + " in method " + method.getName() + " (line " + line + ")\n";
+		message += "Guild the problem was triggered in: " + connectedGuild.getName() + "(ID:`" + connectedGuild.getLongID() + "`) owned by " + connectedGuild.getOwner().mention() + "(" + connectedGuild.getUsers().size() + " users)\n";
+		message += "Error message: " + message;
+		IGuild supportGuild = BigSausage.client.getGuildByID(382053109788049429L);
+		IChannel reportChannel = supportGuild.getChannelByID(577710759820394506L);
+		reportChannel.sendMessage(message.trim());
+	}
+
 }
